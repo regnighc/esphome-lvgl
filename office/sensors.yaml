@@ -197,4 +197,4 @@ binary_sensor:
         lvgl.widget.update:
           id: storage_lights_button
           state:
-            checked: !lambda return id(office_storage_lights).state == 'on';
+            checked: !lambda return id(office_storage_lights).state == "on";
