@@ -366,7 +366,13 @@ lvgl:
                   text_font: roboto36_font
                   align: top_left
                   id: print_progress_label
-                  text: "--%"
+                  text: "--"
+              - label:
+                  text_font: roboto17_font
+                  align: top_left
+                  x: 52
+                  y: 12
+                  text: "%"
               - label:
                   align: bottom_left
                   text: "Print Progress"

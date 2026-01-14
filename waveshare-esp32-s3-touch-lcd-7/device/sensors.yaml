@@ -35,7 +35,7 @@ sensor:
       - lvgl.label.update:
           id: print_progress_label
           text:
-            format: "%.0f%%"
+            format: "%.0f"
             args: [ 'x' ]
 
 
