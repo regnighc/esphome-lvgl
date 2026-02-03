@@ -835,7 +835,7 @@ lvgl:
                   text: "+1°"
               - label:
                   align: bottom_left
-                  text: "Warmer"
+                  text: "Up"
             on_click:
               - homeassistant.service:
                   service: climate.set_temperature
@@ -871,7 +871,7 @@ lvgl:
                   text: "-1°"
               - label:
                   align: bottom_left
-                  text: "Cooler"
+                  text: "Down"
             on_click:
               - homeassistant.service:
                   service: climate.set_temperature
