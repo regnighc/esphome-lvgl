@@ -988,7 +988,7 @@ lvgl:
                     arc_color: 0x2E6B2E
                     arc_width: 18
                   knob:
-                    color: 0xFFFFFF
+                    bg_color: 0xFFFFFF
                   on_value:
                     - homeassistant.service:
                         service: climate.set_temperature
