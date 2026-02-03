@@ -340,10 +340,14 @@ binary_sensor:
     trigger_on_initial_state: true
     on_state:
       then:
-        lvgl.widget.update:
-          id: office_aircon_button
-          state:
-            checked: !lambda return x;
+        - lvgl.widget.update:
+            id: office_aircon_button
+            state:
+              checked: !lambda return x;
+        - lvgl.widget.update:
+            id: aircon_power_button
+            state:
+              checked: !lambda return x;
 
   # ===========================================================================
   # SENSOR: Battery Charger State

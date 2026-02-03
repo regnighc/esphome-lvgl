@@ -391,13 +391,10 @@ lvgl:
         # BUTTON: Air Conditioner
         # =========================================================================
         # WHAT THIS BUTTON DOES:
-        #   Controls the office air conditioner unit.
-        #   This runs a Home Assistant script (not a simple toggle) which may
-        #   include additional logic like setting temperature or fan speed.
+        #   Opens the air conditioner control page.
         #
         # WHEN PRESSED:
-        #   Calls Home Assistant service: script.office_air_conditioner
-        #   (Scripts can contain multiple actions and conditions)
+        #   Navigates to the aircon controls page.
         #
         # HOW THE BUTTON KNOWS IF IT'S ACTIVE:
         #   sensors.yaml monitors: switch.office_air_conditioner
@@ -419,8 +416,7 @@ lvgl:
                   align: bottom_left
                   text: "Aircon"
             on_click:
-              - homeassistant.service:
-                  service: script.office_air_conditioner
+              - lvgl.page.show: aircon_page
 
         # =========================================================================
         # BUTTON: Battery Charger
@@ -716,3 +712,72 @@ lvgl:
                   data:
                     entity_id: cover.office_blind
                     position: "0"
+
+    - id: aircon_page
+      layout: 
+        type: flex
+        flex_flow: column_wrap
+      scrollbar_mode: "off"
+      scroll_dir: "hor"
+      width: 100%
+      bg_color: Black
+      bg_opa: cover
+      pad_top: 34
+      pad_bottom: 5
+      pad_left: 5
+      pad_right: 5
+
+      widgets:
+
+        # =========================================================================
+        # BUTTON: Back (Return to Main Page)
+        # =========================================================================
+        - button: 
+            height: $button_height_single
+            width: $button_width
+            checkable: false
+            id: aircon_back_button
+            styles: control
+            widgets:
+              - label:
+                  text_font: $icon_font
+                  align: top_left
+                  text: $chevron_left
+              - label:
+                  align: bottom_left
+                  text: "Back"
+            on_click:
+              - lvgl.page.show: main_page
+
+        # =========================================================================
+        # BUTTON: Aircon Power
+        # =========================================================================
+        # WHAT THIS BUTTON DOES:
+        #   Turns the air conditioner on/off.
+        #
+        # WHEN PRESSED:
+        #   Calls Home Assistant service: switch.toggle
+        #   Target: switch.office_air_conditioner
+        #
+        # HOW THE BUTTON KNOWS IF IT'S ACTIVE:
+        #   sensors.yaml monitors: switch.office_air_conditioner
+        # =========================================================================
+        - button: 
+            height: $button_height_single
+            width: $button_width
+            checkable: true
+            id: aircon_power_button
+            styles: control
+            widgets:
+              - label:
+                  text_font: $icon_font
+                  align: top_left
+                  text: $aircon
+              - label:
+                  align: bottom_left
+                  text: "Power"
+            on_click:
+              - homeassistant.service:
+                  service: switch.toggle
+                  data:
+                    entity_id: switch.office_air_conditioner
