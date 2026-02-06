@@ -1321,7 +1321,6 @@ lvgl:
                           if (tgt_v < 20) tgt_v = 20;
                           if (tgt_v > 64) tgt_v = 64;
                           return cur_v < tgt_v ? cur_v : tgt_v;
-                  on_release:
                     - script.execute: heating_send_setpoint
 
               # Mode label
