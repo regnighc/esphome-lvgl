@@ -420,6 +420,69 @@ lvgl:
               - lvgl.page.show: aircon_page
 
         # =========================================================================
+        # BUTTON: More
+        # =========================================================================
+        # WHAT THIS BUTTON DOES:
+        #   Opens the additional controls page.
+        #
+        # WHEN PRESSED:
+        #   Navigates to the extras page.
+        # =========================================================================
+        - button:
+            height: $button_height_single
+            width: $button_width
+            checkable: false
+            id: extras_nav_button
+            styles: control
+            widgets:
+              - label:
+                  text_font: $icon_font
+                  align: top_left
+                  text: $chevron_left
+              - label:
+                  align: bottom_left
+                  text: "More"
+            on_click:
+              - lvgl.page.show: extras_page
+
+    - id: extras_page
+      layout:
+        type: grid
+        grid_columns: [fr(1), fr(1), fr(1)]
+        grid_rows: [fr(1), fr(1), fr(1)]
+      scrollbar_mode: "off"
+      scroll_dir: "hor"
+      width: 100%
+      bg_color: Black
+      bg_opa: cover
+      pad_top: 34
+      pad_bottom: 5
+      pad_left: 5
+      pad_right: 5
+
+      widgets:
+
+        # =========================================================================
+        # BUTTON: Back (Return to Main Page)
+        # =========================================================================
+        - button:
+            height: $button_height_single
+            width: $button_width
+            checkable: false
+            id: extras_back_button
+            styles: control
+            widgets:
+              - label:
+                  text_font: $icon_font
+                  align: top_left
+                  text: $chevron_left
+              - label:
+                  align: bottom_left
+                  text: "Back"
+            on_click:
+              - lvgl.page.show: main_page
+
+        # =========================================================================
         # BUTTON: Heating Thermostat (Lab Layout)
         # =========================================================================
         - button:
