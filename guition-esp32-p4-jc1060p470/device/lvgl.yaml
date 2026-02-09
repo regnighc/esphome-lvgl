@@ -1,7 +1,6 @@
 lvgl:
-  displays:
-    - display_id: my_display
-      byte_order: little_endian
+  display_id: my_display
+  byte_order: little_endian
   
   top_layer:
     widgets:
