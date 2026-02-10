@@ -9,7 +9,7 @@ lvgl:
       - label:
           text: "-° / -°"
           id: temperatures
-          styles: clockbar_style
+          text_font: clockbar_font
           align: top_left
           x: 8
           y: 8
@@ -19,7 +19,7 @@ lvgl:
       - label:
           text: "--:--"
           id: display_time
-          styles: clockbar_style
+          text_font: clockbar_font
           align: top_mid
           x: 0
           y: 8
@@ -255,12 +255,12 @@ lvgl:
                   hidden: true
                   widgets:
                     - label:
-                        styles: stat_style
+                        text_font: statistics_font
                         text_color: 0xFFFFFF
                         id: print_progress_label
                         text: "--"
                     - label:
-                        styles: label_style
+                        text_font: label_font
                         text_color: 0xFFFFFF
                         text: "%"
               - label:
@@ -303,12 +303,12 @@ lvgl:
                   hidden: true
                   widgets:
                     - label:
-                        styles: stat_style
+                        text_font: statistics_font
                         text_color: 0xFFFFFF
                         id: dryer_humidity_label
                         text: "--"
                     - label:
-                        styles: label_style
+                        text_font: label_font
                         text_color: 0xFFFFFF
                         text: "%"
               - label:

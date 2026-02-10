@@ -1,26 +1,16 @@
 # The styles below use these fonts, to change the font size, change the size here
 font:
   - file: "gfonts://Roboto"
-    id: roboto56_font
+    id: statistics_font
     size: 48
     bpp: 4
 
   - file: "gfonts://Roboto"
-    id: roboto28_font
+    id: label_font
     size: 28
     bpp: 4
 
   - file: "gfonts://Roboto"
-    id: roboto20_font
+    id: clockbar_font
     size: 20
     bpp: 4
-
-# The layout references the following styles
-lvgl:
-  style_definitions:
-    - id: clockbar_style
-      text_font: roboto20_font
-    - id: label_style
-      text_font: roboto28_font
-    - id: stat_style
-      text_font: roboto56_font

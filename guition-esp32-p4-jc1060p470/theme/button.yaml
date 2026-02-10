@@ -11,11 +11,10 @@ substitutions:
 lvgl:
   style_definitions:
     - id: control
-      bg_color: $button_control_color
-      
+
   theme:
     button:
-      styles: label_style
+      text_font: label_font
       scroll_on_focus: false
       radius: $radius
       width: $button_width
