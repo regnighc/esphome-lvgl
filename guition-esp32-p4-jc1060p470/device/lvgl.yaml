@@ -263,7 +263,7 @@ lvgl:
                         text_font: label_font
                         text_color: 0xFFFFFF
                         text: "%"
-                        pad_bottom: 4
+                        pad_bottom: 6
               - label:
                   align: bottom_left
                   text: "Printer"
@@ -312,7 +312,7 @@ lvgl:
                         text_font: label_font
                         text_color: 0xFFFFFF
                         text: "%"
-                        pad_bottom: 4
+                        pad_bottom: 6
               - label:
                   align: bottom_left
                   text: "Dryer"
