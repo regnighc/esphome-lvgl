@@ -11,15 +11,15 @@ font:
     bpp: 4
 
   - file: "gfonts://Roboto"
-    id: roboto22_font
-    size: 22
+    id: roboto20_font
+    size: 20
     bpp: 4
 
 # The layout references the following styles
 lvgl:
   style_definitions:
     - id: clockbar_style
-      text_font: roboto22_font
+      text_font: roboto20_font
     - id: label_style
       text_font: roboto22_font
     - id: stat_style
