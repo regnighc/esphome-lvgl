@@ -1,6 +1,6 @@
 # The styles below use these fonts, to change the font size, change the size here
 font:
-  - file: "gfonts://Roboto@300"
+  - file: "gfonts://Roboto@500"
     id: statistics_font
     size: 48
     bpp: 4
