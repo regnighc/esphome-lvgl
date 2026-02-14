@@ -20,19 +20,25 @@ This repository contains ESPHome configurations for creating beautiful, touch-en
 
 ## Supported Devices
 
-| Device | Preview |
-|--------|--------|
-| **Guition ESP32-P4 JC1060P470** (7", ~£40) | ![Guition ESP32-P4 JC1060P470](guition-esp32-p4-jc1060p470.jpg) |
-| **Guition ESP32-S3 4848S040** (4.0", ~£16) | ![Guition ESP32-S3 4848S040](guition-esp32-s3-4848s040.jpg) |
-| **Waveshare ESP32-S3 Touch LCD 7"** (~£40) | ![Waveshare ESP32-S3 Touch LCD 7](waveshare-esp32-s3-touch-lcd-7.jpg) |
+**Guition ESP32-P4 JC1060P470** (7", ~£40)
+
+![Guition ESP32-P4 JC1060P470](guition-esp32-p4-jc1060p470.jpg)
+
+**Guition ESP32-S3 4848S040** (4.0", ~£16)
+
+![Guition ESP32-S3 4848S040](guition-esp32-s3-4848s040.jpg)
+
+**Waveshare ESP32-S3 Touch LCD 7"** (~£40)
+
+![Waveshare ESP32-S3 Touch LCD 7](waveshare-esp32-s3-touch-lcd-7.jpg)
 
 ## Where to Buy
 
 | Device | Configuration | Where to Buy |
 |--------|---------------|--------------|
-| Guition ESP32-P4 JC1060P470 (7") | [esphome.yaml](guition-esp32-p4-jc1060p470/esphome/esphome.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c335W0r5) |
+| Guition ESP32-P4 JC1060P470 (7") | [template.yaml](guition-esp32-p4-jc1060p470/esphome/template.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c335W0r5) |
 | Guition ESP32-S3 4848S040 (4.0") | [template.yaml](guition-esp32-s3-4848s040/esphome/template.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c3sIhvBv) |
-| Waveshare ESP32-S3 Touch LCD 7" | [esphome.yaml](waveshare-esp32-s3-touch-lcd-7/esphome/esphome.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c37ljk8J) |
+| Waveshare ESP32-S3 Touch LCD 7" | [template.yaml](waveshare-esp32-s3-touch-lcd-7/esphome/template.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c37ljk8J) |
 
 
 ## Quick Start
@@ -43,7 +49,7 @@ This repository contains ESPHome configurations for creating beautiful, touch-en
 
 ### 2. Use a Device Template
 
-Pick the esphome.yaml template for your specific device and start from that file:
+Pick the template.yaml for your specific device and start from that file:
 
 ```yaml
 # Example: guition-esp32-s3-4848s040/esphome/template.yaml
