@@ -22,7 +22,7 @@ lvgl:
       pad_right: 12
 
       widgets:
-        # Full-screen artwork background (extends into page padding so no margin); drawn first
+        # Full-screen artwork background (extends into page padding so no margin)
         - image:
             id: album_art_background_widget
             x: -12
@@ -30,23 +30,14 @@ lvgl:
             width: 480px
             height: 480px
             src: album_art_background
-            opa: 40%
-
-        # Album art (top) - 150x150 for faster download; centered in content area
-        - image:
-            id: album_art_widget
-            x: 153
-            y: 0
-            width: 150px
-            height: 150px
-            src: album_art_image
+            opa: 70%
 
         # Song title
         - label:
             id: media_title_label
             text: "—"
             x: 0
-            y: 158
+            y: 0
             width: 100%
             text_font: roboto36_font
             text_color: 0xFFFFFF
@@ -57,7 +48,7 @@ lvgl:
             id: media_artist_label
             text: "—"
             x: 0
-            y: 206
+            y: 48
             width: 100%
             text_font: roboto19_font
             text_color: 0xB0B0B0
@@ -83,12 +74,13 @@ lvgl:
             text_color: 0xFFFFFF
             text_align: right
 
-        # Progress bar above the control buttons (full width, white played / 50% black unplayed)
+        # Progress bar above the control buttons (full content width, white played / 50% black unplayed)
+        # Explicit width 456px and theme override so default theme does not force blue or 50% width
         - bar:
             id: media_progress_bar
             x: 0
             y: 352
-            width: 100%
+            width: 456px
             height: 8px
             min_value: 0
             max_value: 100

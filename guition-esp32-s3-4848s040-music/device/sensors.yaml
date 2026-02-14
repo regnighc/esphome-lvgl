@@ -99,12 +99,6 @@ text_sensor:
             lambda: 'return !x.empty();'
           then:
             - online_image.set_url:
-                id: album_art_image
-                url: !lambda |-
-                  std::string path = x;
-                  while (!path.empty() && (path.back() == '\n' || path.back() == '\r' || path.back() == ' ')) path.pop_back();
-                  return std::string("http://192.168.1.30:8123") + path;
-            - online_image.set_url:
                 id: album_art_background
                 url: !lambda |-
                   std::string path = x;
@@ -118,9 +112,9 @@ text_sensor:
       - lvgl.label.update:
           id: media_play_pause_icon
           text: !lambda |-
-            // UTF-8 for MDI: pause U+F03E4 = EF 83 A4, play U+F040D = EF 84 8D
-            if (x == "playing") return std::string("\xEF\x83\xA4");
-            return std::string("\xEF\x84\x8D");
+            // UTF-8 (4-byte): pause U+F03E4 = F7 A0 8F A4, play U+F040D = F7 A0 90 8D
+            if (x == "playing") return std::string("\xF7\xA0\x8F\xA4");
+            return std::string("\xF7\xA0\x90\x8D");
 
 sensor:
   - platform: homeassistant

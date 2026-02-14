@@ -38,3 +38,11 @@ lvgl:
       checked:
         bg_color: $button_on_color
         text_color: $button_text_color
+    bar:
+      indicator:
+        bg_color: 0xFFFFFF
+        radius: 0
+      main:
+        bg_color: 0x000000
+        bg_opa: 128
+        radius: 0
