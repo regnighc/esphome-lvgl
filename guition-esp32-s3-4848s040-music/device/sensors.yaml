@@ -2,33 +2,33 @@
 # SENSORS - Music dashboard (media_player.office)
 # =============================================================================
 # Subscribes to media_player attributes and updates LVGL labels, bar, image,
-# and play/pause icon. Entity and HA base URL come from substitutions in
-# template.yaml (media_player_entity, ha_base_url).
+# and play/pause icon. To use a different entity, override in your main YAML
+# with a package override or use a local copy and set entity_id.
+# Album art URL uses http://homeassistant.local:8123; change in a local copy
+# if your HA URL differs.
 # =============================================================================
 
 text_sensor:
   - platform: homeassistant
-    entity_id: ${media_player_entity}
+    entity_id: media_player.office
     id: media_title_sensor
     attribute: media_title
     on_value:
       - lvgl.label.update:
           id: media_title_label
           text: !lambda 'return x.empty() ? std::string("—") : x;'
-    trigger_on_initial_state: true
 
   - platform: homeassistant
-    entity_id: ${media_player_entity}
+    entity_id: media_player.office
     id: media_artist_sensor
     attribute: media_artist
     on_value:
       - lvgl.label.update:
           id: media_artist_label
           text: !lambda 'return x.empty() ? std::string("—") : x;'
-    trigger_on_initial_state: true
 
   - platform: homeassistant
-    entity_id: ${media_player_entity}
+    entity_id: media_player.office
     id: media_entity_picture_sensor
     attribute: entity_picture
     on_value:
@@ -38,11 +38,10 @@ text_sensor:
           then:
             - online_image.set_url:
                 id: album_art_image
-                url: !lambda 'return std::string("${ha_base_url}") + std::string(x);'
-    trigger_on_initial_state: true
+                url: !lambda 'return std::string("http://homeassistant.local:8123") + std::string(x);'
 
   - platform: homeassistant
-    entity_id: ${media_player_entity}
+    entity_id: media_player.office
     id: media_player_state_sensor
     on_value:
       - lvgl.label.update:
@@ -50,11 +49,10 @@ text_sensor:
           text: !lambda |-
             if (x == "playing") return std::string(u8"\uF03E4");  // mdi-pause
             return std::string(u8"\uF040D");  // mdi-play
-    trigger_on_initial_state: true
 
 sensor:
   - platform: homeassistant
-    entity_id: ${media_player_entity}
+    entity_id: media_player.office
     id: media_duration_sensor
     attribute: media_duration
     on_value:
@@ -70,7 +68,7 @@ sensor:
             return std::string(buf);
 
   - platform: homeassistant
-    entity_id: ${media_player_entity}
+    entity_id: media_player.office
     id: media_position_sensor
     attribute: media_position
     on_value:
