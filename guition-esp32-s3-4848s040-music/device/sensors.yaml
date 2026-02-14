@@ -25,7 +25,9 @@ interval:
       - lvgl.label.update:
           id: media_elapsed_label
           text: !lambda |-
-            float pos = id(media_position_sensor).has_state() ? id(media_position_sensor).state : 0.0f;
+            // When last_position_timestamp is 0 (e.g. after skip), use last_media_position so we show 0 until HA sends new position
+            float pos = id(last_position_timestamp) != 0 && id(media_position_sensor).has_state()
+              ? id(media_position_sensor).state : id(last_media_position);
             if (id(media_player_state_sensor).state == "playing") {
               auto t = id(sntp_time).now();
               if (t.is_valid() && id(last_position_timestamp) != 0) {
@@ -45,7 +47,8 @@ interval:
       - lvgl.bar.update:
           id: media_progress_bar
           value: !lambda |-
-            float pos = id(media_position_sensor).has_state() ? id(media_position_sensor).state : 0.0f;
+            float pos = id(last_position_timestamp) != 0 && id(media_position_sensor).has_state()
+              ? id(media_position_sensor).state : id(last_media_position);
             if (id(media_player_state_sensor).state == "playing") {
               auto t = id(sntp_time).now();
               if (t.is_valid() && id(last_position_timestamp) != 0) {
@@ -65,11 +68,17 @@ text_sensor:
     id: media_title_sensor
     attribute: media_title
     on_value:
-      # Track changed (skip/next) — reset progress estimation so clock/bar use fresh position
-      - lambda: "id(last_position_timestamp) = 0;"
+      # Track changed (skip/next) — reset progress so UI shows 0 until HA sends new position
+      - lambda: "id(last_position_timestamp) = 0; id(last_media_position) = 0.0f;"
       - lvgl.label.update:
           id: media_title_label
           text: !lambda 'return x.empty() ? std::string("—") : x;'
+      - lvgl.label.update:
+          id: media_elapsed_label
+          text: "0:00"
+      - lvgl.bar.update:
+          id: media_progress_bar
+          value: 0
 
   - platform: homeassistant
     entity_id: media_player.office
@@ -105,7 +114,7 @@ text_sensor:
   - platform: homeassistant
     entity_id: media_player.office
     id: media_player_state_sensor
-    on_value:
+    on_state:
       - lvgl.label.update:
           id: media_play_pause_icon
           text: !lambda |-

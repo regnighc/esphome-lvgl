@@ -20,7 +20,11 @@ lvgl:
 
     - id: control
       bg_color: $button_control_color
-      
+
+    - id: control_round
+      bg_color: $button_control_color
+      radius: 36px
+
   theme:
     button:
       text_font: $text_font
