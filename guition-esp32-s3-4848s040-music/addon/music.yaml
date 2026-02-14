@@ -10,18 +10,19 @@ http_request:
 
 # Placeholder shown while album art is loading or when no art is available
 image:
-  - file: "https://placehold.co/480x240/2d2d2d/555555"
+  - file: "https://placehold.co/200x200/2d2d2d/555555"
     id: album_art_placeholder
     type: rgb565
 
-# Dynamic album art from media_player entity_picture (URL set by sensors.yaml)
+# Dynamic album art from media_player entity_picture (URL set by sensors.yaml).
+# Resize fits inside 200x200 and preserves aspect ratio (letterboxed, no stretch).
 online_image:
-  - url: "https://placehold.co/480x240/2d2d2d/555555"
+  - url: "https://placehold.co/200x200/2d2d2d/555555"
     id: album_art_image
     type: rgb565
     format: jpeg
     placeholder: album_art_placeholder
-    resize: 480x240
+    resize: 200x200
     on_download_finished:
       - lvgl.image.update:
           id: album_art_widget

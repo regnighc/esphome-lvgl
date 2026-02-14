@@ -7,37 +7,26 @@
 
 lvgl:
   buffer_size: 100%
-  top_layer:
-    widgets:
-      - label:
-          text: "--:--"
-          id: display_time
-          styles: roboto15_style
-          align: top_mid
-          x: 0
-          y: 4
-          text_align: center
-          text_color: 0xFFFFFF
 
   pages:
-    # Content area: 480 - 12*2 = 456 wide; 480 - 34 - 12 = 434 tall (after top_layer + padding)
+    # Content area: 480 - 12*2 = 456 wide; full height with 12px padding
     - id: main_page
       scrollbar_mode: "off"
       width: 100%
       height: 100%
       bg_color: 0x1E1E1E
-      pad_top: 34
+      pad_top: 12
       pad_bottom: 12
       pad_left: 12
       pad_right: 12
 
       widgets:
-        # Album art (top) - 456x200 fits content width
+        # Album art (top) - 200x200 square, centered; aspect ratio preserved (no stretch)
         - image:
             id: album_art_widget
-            x: 0
+            x: 128
             y: 0
-            width: 100%
+            width: 200px
             height: 200px
             src: album_art_image
 
@@ -63,7 +52,7 @@ lvgl:
             text_color: 0xB0B0B0
             text_align: left
 
-        # Elapsed time (left of progress bar)
+        # Play clocks: elapsed (left) and duration (right) on one row
         - label:
             id: media_elapsed_label
             text: "0:00"
@@ -73,11 +62,21 @@ lvgl:
             text_font: roboto15_font
             text_color: 0xFFFFFF
 
-        # Progress bar (between time labels: 40 + 8 + 360 + 8 + 40 = 456)
+        - label:
+            id: media_duration_label
+            text: "0:00"
+            x: 416
+            y: 250
+            width: 40px
+            text_font: roboto15_font
+            text_color: 0xFFFFFF
+            text_align: right
+
+        # Progress bar below the clocks, above the controls
         - bar:
             id: media_progress_bar
             x: 48
-            y: 252
+            y: 272
             width: 360px
             height: 8px
             min_value: 0
@@ -90,22 +89,11 @@ lvgl:
               bg_color: 0x505050
               radius: 4
 
-        # Total duration (right of progress bar)
-        - label:
-            id: media_duration_label
-            text: "0:00"
-            x: 416
-            y: 250
-            width: 40px
-            text_font: roboto15_font
-            text_color: 0xFFFFFF
-            text_align: right
-
-        # Control buttons: 72px each, centered in 456 (152 + 72 + 116 + 72 + 116 + 72 + 56)
+        # Control buttons: 72px each, below progress bar
         - button:
             id: media_prev_button
             x: 24
-            y: 282
+            y: 288
             width: 72px
             height: 72px
             styles: control
@@ -124,7 +112,7 @@ lvgl:
         - button:
             id: media_play_pause_button
             x: 192
-            y: 282
+            y: 288
             width: 72px
             height: 72px
             styles: control
@@ -145,7 +133,7 @@ lvgl:
         - button:
             id: media_next_button
             x: 360
-            y: 282
+            y: 288
             width: 72px
             height: 72px
             styles: control
