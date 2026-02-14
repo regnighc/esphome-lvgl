@@ -15,15 +15,14 @@ image:
     type: rgb565
 
 # Dynamic album art from media_player entity_picture (URL set by sensors.yaml).
-# 960x960 (2x display) for sharper downscale to 480x456 widget; opacity set in LVGL.
-# Reduce to 720x720 or 480x480 if you run into memory issues.
+# Decoded at 480x480 to match the physical display resolution (1:1 pixel mapping).
 online_image:
   - url: "https://placehold.co/480x480/2d2d2d/555555"
     id: album_art_background
     type: rgb565
     format: jpeg
     placeholder: album_art_placeholder
-    resize: 960x960
+    resize: 480x480
     on_download_finished:
       - lvgl.image.update:
           id: album_art_background_widget
