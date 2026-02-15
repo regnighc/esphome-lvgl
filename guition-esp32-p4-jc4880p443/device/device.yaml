@@ -1,18 +1,11 @@
 # Designed for guition-esp32-p4-jc4880p443
 esp32:
-  board: esp32-p4-evboard
+  variant: esp32p4
   flash_size: 16MB
   framework:
     type: esp-idf
     advanced:
-      enable_idf_experimental_features: true
-      disable_vfs_support_termios: false
-      disable_vfs_support_select: false
-      disable_vfs_support_dir: false
-    sdkconfig_options:
-      CONFIG_SPIRAM_XIP_FROM_PSRAM: "y"   # Stop screen flashing during OTA
-      CONFIG_SDMMC_HOST_DEFAULT: "y"
-  cpu_frequency: 360MHz
+      enable_idf_experimental_features: yes
 
 # Esphome
 esphome:
@@ -20,14 +13,9 @@ esphome:
   friendly_name: ${friendly_name}
   area: ${room}
 
-# External components
-external_components:
-  - source: github://p1ngb4ck/esphome@dev
-    components: [audio, binary_storage, http_file_browser, nfs_client, picture_viewer, uart, usb_host, usb_uart, usb_storage, sd_storage, smb_client, storage, transcoder, video_player, webdav_server]
-    refresh: 0s
-  
 # Secondary ESP32-C6 device for connectivity
 esp32_hosted:
+  active_high: true
   variant: ESP32C6
   reset_pin: GPIO54
   cmd_pin: GPIO19
@@ -36,11 +24,9 @@ esp32_hosted:
   d1_pin: GPIO15
   d2_pin: GPIO16
   d3_pin: GPIO17
-  active_high: true
 
 # Video memory
 psram:
-  mode: hex
   speed: 200MHz
 
 # Over the Air Updates
@@ -61,45 +47,38 @@ esp_ldo:
 # Backlight
 output:
   - platform: ledc
+    id: backlight_output
     pin: GPIO23
-    id: gpio_backlight_pwm
+    frequency: 100Hz
+    inverted: false
+    min_power: 0.0
+    max_power: 0.8
 
 light:
   - platform: monochromatic
-    output: gpio_backlight_pwm
-    name: Display Backlight
-    icon: mdi:lightbulb-on
+    output: backlight_output
+    name: Screen
+    icon: mdi:television
+    entity_category: config
     id: display_backlight
     restore_mode: ALWAYS_ON
+    default_transition_length: 250ms
 
-# Touchscreen
+# I2C
 i2c:
-  id: i2c_bus
-  sda: 7
-  scl: 8
+  sda: GPIO7
+  scl: GPIO8
   scan: false
   frequency: 400kHz
 
+# Touchscreen
 touchscreen:
-  platform: gt911
-  i2c_id: i2c_bus
-  id: device_touchscreen
-  reset_pin: GPIO3
-  update_interval: 100ms
-  transform: #This is for 90 degree display rotation
-    swap_xy: true
-    mirror_x: false
-    mirror_y: true
- 
- # Display
+  - platform: gt911
+    id: my_touchscreen
+    display: my_display
+
+# Display
 display:
   - platform: mipi_dsi
-    id: device_display
+    id: my_display
     model: JC4880P443
-    byte_order: little_endian
-    rotation: 90
-
-# Special LVGL settings required for this display  
-lvgl:
-  byte_order: little_endian
-   

@@ -1,4 +1,4 @@
-# Guition ESP32-P4 JC4880P443
+# ESP32-P4-JC4880P443
 substitutions:
   name: "your-device-name"
   friendly_name: "Your Room Sensor"
@@ -8,6 +8,8 @@ substitutions:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  fast_connect: true
+  post_connect_roaming: false
 
 # Packages
 packages:
