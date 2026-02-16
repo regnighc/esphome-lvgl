@@ -22,6 +22,17 @@ esphome:
   platformio_options:
     board_build.flash_mode: dio
 
+# Over the Air Updates
+ota:
+  platform: esphome
+
+# Enable Home Assistant API
+api:
+
+# Enable logging
+logger:
+  level: DEBUG
+
 # External components
 external_components:
   - source: github://willumpie82/esphome@dev
@@ -45,10 +56,6 @@ esp32_hosted:
   d2_pin: GPIO16
   d3_pin: GPIO17
   active_high: true
-
-# Enable logging
-logger:
-  level: DEBUG
 
 # Power management
 esp_ldo:
