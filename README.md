@@ -22,23 +22,23 @@ This repository contains ESPHome configurations for creating beautiful, touch-en
 
 **[Guition ESP32-P4 JC1060P470](guition-esp32-p4-jc1060p470/README.md)** (7", ~£40)
 
-![Guition ESP32-P4 JC1060P470](guition-esp32-p4-jc1060p470/guition-esp32-p4-jc1060p470.jpg)
+![Guition ESP32-P4 JC1060P470](images/guition-esp32-p4-jc1060p470.jpg)
 
 **[Guition ESP32-S3 4848S040](guition-esp32-s3-4848s040/README.md)** (4.0", ~£16)
 
-![Guition ESP32-S3 4848S040](guition-esp32-s3-4848s040/guition-esp32-s3-4848s040.jpg)
+![Guition ESP32-S3 4848S040](images/guition-esp32-s3-4848s040.jpg)
 
 **[Waveshare ESP32-S3 Touch LCD 7"](waveshare-esp32-s3-touch-lcd-7/README.md)** (~£40)
 
-![Waveshare ESP32-S3 Touch LCD 7](waveshare-esp32-s3-touch-lcd-7/waveshare-esp32-s3-touch-lcd-7.jpg)
+![Waveshare ESP32-S3 Touch LCD 7](images/waveshare-esp32-s3-touch-lcd-7.jpg)
 
 ## Where to Buy
 
 | Device | Configuration | Where to Buy |
 |--------|---------------|--------------|
-| Guition ESP32-P4 JC1060P470 (7") | [template.yaml](guition-esp32-p4-jc1060p470/esphome/template.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c335W0r5) |
-| Guition ESP32-S3 4848S040 (4.0") | [template.yaml](guition-esp32-s3-4848s040/esphome/template.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c3sIhvBv) |
-| Waveshare ESP32-S3 Touch LCD 7" | [template.yaml](waveshare-esp32-s3-touch-lcd-7/esphome/template.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c37ljk8J) |
+| Guition ESP32-P4 JC1060P470 (7") | [esphome.yaml](guition-esp32-p4-jc1060p470/esphome.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c335W0r5) |
+| Guition ESP32-S3 4848S040 (4.0") | [esphome.yaml](guition-esp32-s3-4848s040/esphome.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c3sIhvBv) |
+| Waveshare ESP32-S3 Touch LCD 7" | [esphome.yaml](waveshare-esp32-s3-touch-lcd-7/esphome.yaml) | [AliExpress](https://s.click.aliexpress.com/e/_c37ljk8J) |
 
 ## Stands
 
@@ -60,7 +60,7 @@ Follow these steps in order. The first flash is the only fiddly part; after that
    Use the [ESPHome installation guide](https://esphome.io/guides/installing_esphome.html). Run the ESPHome dashboard (e.g. `esphome dashboard` or your usual method) and open it in **Chrome** — you’ll need Chrome for USB flashing later.
 
 3. **Add your device config**  
-   For your panel, open the `template.yaml` in that device’s `esphome/` folder (see the table above). **Use the full contents of that file as your ESPHome config**: in the dashboard, create a new device (or edit an existing one) and paste in the template contents. Keep the repo on disk so the paths in the template (e.g. `device/device.yaml`) still resolve, or adjust those paths to match where you put the files.
+   For your panel, open the `esphome.yaml` in that device's folder (see the table above). **Use the full contents of that file as your ESPHome config**: in the dashboard, create a new device (or edit an existing one) and paste in the template contents.
 
 4. **Set WiFi and secrets**  
    In the ESPHome dashboard, open **Secrets** (top right) and add at least:

@@ -2,11 +2,11 @@
 
 7-inch touch LCD panel with ESP32-P4, running ESPHome and LVGL for home automation and sensor displays.
 
-![Guition ESP32-P4 JC1060P470](guition-esp32-p4-jc1060p470.jpg)
+![Guition ESP32-P4 JC1060P470](../images/guition-esp32-p4-jc1060p470.jpg)
 
 ## Configuration
 
-- **Template**: [esphome/template.yaml](esphome/template.yaml) — use the **contents of this file as your ESPHome config** in the dashboard or CLI (create or edit your device config so it matches this file).
+- **Template**: [esphome.yaml](esphome.yaml) — use the **contents of this file as your ESPHome config** in the dashboard or CLI (create or edit your device config so it matches this file).
 
 ## Where to Buy
 
@@ -23,9 +23,8 @@ guition-esp32-p4-jc1060p470/
 ├── addon/          # Time, network, backlight
 ├── assets/         # Fonts and icons
 ├── device/         # device.yaml, sensors.yaml, lvgl.yaml
-├── esphome/        # template.yaml
 ├── theme/          # Button and UI styling
-└── guition-esp32-p4-jc1060p470.jpg
+└── esphome.yaml    # ESPHome config template
 ```
 
 Customize for your setup by editing the YAML files under `device/`, `addon/`, and `theme/`. See the [main README](../README.md) for full quick start and ESPHome setup.
