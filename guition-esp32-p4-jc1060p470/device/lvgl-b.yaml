@@ -8,6 +8,15 @@ image:
     type: RGB565
 
 
+# 1. Image Definitions
+image:
+  - url: "https://your-image-url.com/top.png"
+    id: image_1
+    type: RGB565
+  - url: "https://your-image-url.com/bottom.png"
+    id: image_2
+    type: RGB565
+
 # 2. Time Component
 time:
   - platform: homeassistant
@@ -54,9 +63,9 @@ lvgl:
                 column: 0
                 row: 0
                 bg_color: Black
-                # We remove the layout from the tile itself to prevent the grid error
+                # We do NOT put 'layout' here anymore
                 widgets:
-                  # Container for the Grid (This isolates the grid from the NEXT button)
+                  # This 'obj' acts as the grid container
                   - obj:
                       width: 100%
                       height: 100%
@@ -68,7 +77,6 @@ lvgl:
                         grid_columns: [240, 240, 500] 
                         grid_rows: [130, 130, 130, 130]
                       widgets:
-                        # Clock & Date
                         - obj:
                             grid_cell_column_pos: 0
                             grid_cell_column_span: 2
@@ -80,7 +88,6 @@ lvgl:
                               - label: { id: big_clock_label, text: "00:00", text_font: clockbar_font }
                               - label: { id: date_label, text: "Loading...", text_font: label_font }
 
-                        # Main Dashboard Buttons
                         - button: { id: office_scene_calls_button, grid_cell_column_pos: 0, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
                         - button: { id: office_scene_evening_button, grid_cell_column_pos: 1, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
                         - button: { id: office_scene_dimmed_button, grid_cell_column_pos: 0, grid_cell_row_pos: 2, height: 115, width: 230, styles: control, checkable: true }
@@ -88,11 +95,10 @@ lvgl:
                         - button: { id: office_blind_33_button, grid_cell_column_pos: 0, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
                         - button: { id: office_aircon_button, grid_cell_column_pos: 1, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
 
-                        # Images
                         - image: { id: right_image_top, grid_cell_column_pos: 2, grid_cell_row_pos: 0, grid_cell_row_span: 2, src: image_1, width: 480, height: 250, align: center }
                         - image: { id: right_image_bottom, grid_cell_column_pos: 2, grid_cell_row_pos: 2, grid_cell_row_span: 2, src: image_2, width: 480, height: 250, align: center }
 
-                  # NAVIGATION BUTTON (NEXT) - Now safely outside the grid container
+                  # NEXT Button (outside the grid container)
                   - button:
                       width: 100
                       height: 40
@@ -112,7 +118,7 @@ lvgl:
                 row: 0
                 bg_color: Black
                 widgets:
-                  # Container for the 20 buttons
+                  # Inner Flex Container
                   - obj:
                       width: 100%
                       height: 100%
@@ -127,7 +133,6 @@ lvgl:
                         - button: { id: network_rack_button, height: 110, width: 180, styles: control, checkable: true }
                         - button: { id: office_blind_open_button, height: 110, width: 180, styles: control }
                         - button: { id: office_blind_close_button, height: 110, width: 180, styles: control }
-                        
                         - button:
                             id: printer_power_button
                             height: 110, width: 180, styles: control, checkable: true
@@ -139,7 +144,6 @@ lvgl:
                                   align: center
                                   widgets:
                                     - label: { id: print_progress_label, text: "--" }
-
                         - button:
                             id: filament_heater_button
                             height: 110, width: 180, styles: control, checkable: true
@@ -151,8 +155,7 @@ lvgl:
                                   align: center
                                   widgets:
                                     - label: { id: dryer_humidity_label, text: "--" }
-
-                        # Placeholder Buttons
+                        # Placeholders (9-20)
                         - button: { id: btn_p2_9, height: 110, width: 180, styles: control }
                         - button: { id: btn_p2_10, height: 110, width: 180, styles: control }
                         - button: { id: btn_p2_11, height: 110, width: 180, styles: control }
@@ -166,7 +169,7 @@ lvgl:
                         - button: { id: btn_p2_19, height: 110, width: 180, styles: control }
                         - button: { id: btn_p2_20, height: 110, width: 180, styles: control }
 
-                  # NAVIGATION BUTTON (HOME) - Top Right
+                  # HOME Button (outside the flex container)
                   - button:
                       width: 100
                       height: 40
