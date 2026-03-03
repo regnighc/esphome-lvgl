@@ -95,15 +95,18 @@ pages:
                         - image: { id: right_image_top, grid_cell_column_pos: 2, grid_cell_row_pos: 0, grid_cell_row_span: 2, src: image_1, width: 480, height: 250, align: center }
                         - image: { id: right_image_bottom, grid_cell_column_pos: 2, grid_cell_row_pos: 2, grid_cell_row_span: 2, src: image_2, width: 480, height: 250, align: center }
 
-                  # --- NAVIGATION BUTTON (Safely outside the grid) ---
+
+                  # NEXT BUTTON (Sharing the top-right cell with the image)
                   - button:
+                      grid_cell_column_pos: 2
+                      grid_cell_row_pos: 0
+                      align: top_right
                       width: 100
                       height: 40
-                      align: top_right
-                      x: -10
-                      y: 10
                       widgets:
-                        - label: { text: "NEXT", align: center }
+                        - label: 
+                            text: "NEXT"
+                            align: center
                       on_click:
                         - lambda: |-
                             auto *tv = (lv_obj_t *) id(main_tileview);
