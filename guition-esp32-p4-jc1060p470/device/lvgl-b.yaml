@@ -1,8 +1,8 @@
 # Satisfy the image component requirement
 image:
-  - file: "path/to/your/image1.png"
+  - file: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
     id: image_1
-  - file: "path/to/your/image2.png"
+  - file: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
     id: image_2
 
 time:
