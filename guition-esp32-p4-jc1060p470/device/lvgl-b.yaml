@@ -1,12 +1,14 @@
 # Satisfy the image component requirement
 image:
-  - file: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
+  - url: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
     id: image_1
-    type: RGB
-  - file: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
+    type: RGB565
+  - url: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
     id: image_2
-    type: RGB
+    type: RGB565
 
+
+# 2. Time Component (Used to drive the digital clock and date labels)
 time:
   - platform: homeassistant
     id: ha_time
@@ -24,6 +26,7 @@ lvgl:
   displays: my_display
   byte_order: little_endian
 
+  # 3. Fixed Status Bar (Does not move when pages change)
   top_layer:
     widgets:
       - label:
@@ -45,19 +48,38 @@ lvgl:
       widgets:
         - tileview:
             id: main_tileview
+            scrollbar_mode: "off"
             tiles:
               # --- PAGE 1: MAIN DASHBOARD ---
               - id: main_page
                 column: 0
                 row: 0
                 bg_color: Black
-                pad_top: 60
-                pad_all: 20
+                pad_top: 60    # Space for Top Layer Status Bar
+                pad_bottom: 5
+                pad_left: 10
+                pad_right: 10
                 layout:
                   type: grid
-                  grid_columns: [250, 250, 480]
-                  grid_rows: [120, 120, 120, 120]
+                  grid_columns: [240, 240, 500] 
+                  grid_rows: [130, 130, 130, 130] # Total 520px (Safe for 600px height)
                 widgets:
+                  # Navigation Button to Page 2
+                  - button:
+                      align: top_right
+                      x: -10
+                      y: -50 
+                      width: 100
+                      height: 40
+                      widgets:
+                        - label: { text: "NEXT", align: center }
+                      on_click:
+                        - lvgl.tileview.goto_tile:
+                            id: main_tileview
+                            column: 1
+                            row: 0
+                            animation: true
+
                   # Digital Clock & Date
                   - obj:
                       grid_cell_column_pos: 0
@@ -68,38 +90,69 @@ lvgl:
                       layout: { type: flex, flex_flow: column, flex_align_main: center }
                       widgets:
                         - label: { id: big_clock_label, text: "00:00", text_font: clockbar_font }
-                        - label: { id: date_label, text: "Loading Date...", text_font: label_font }
+                        - label: { id: date_label, text: "Loading...", text_font: label_font }
 
-                  # Retained Buttons (Main Page)
-                  - button: { id: office_scene_calls_button, grid_cell_column_pos: 0, grid_cell_row_pos: 1, height: 110, width: 230, styles: control, checkable: true }
-                  - button: { id: office_scene_evening_button, grid_cell_column_pos: 1, grid_cell_row_pos: 1, height: 110, width: 230, styles: control, checkable: true }
-                  - button: { id: office_scene_dimmed_button, grid_cell_column_pos: 0, grid_cell_row_pos: 2, height: 110, width: 230, styles: control, checkable: true }
-                  - button: { id: office_blind_66_button, grid_cell_column_pos: 1, grid_cell_row_pos: 2, height: 110, width: 230, styles: control, checkable: true }
-                  - button: { id: office_blind_33_button, grid_cell_column_pos: 0, grid_cell_row_pos: 3, height: 110, width: 230, styles: control, checkable: true }
-                  - button: { id: office_aircon_button, grid_cell_column_pos: 1, grid_cell_row_pos: 3, height: 110, width: 230, styles: control, checkable: true }
+                  # Dashboard Buttons (Row 1-3)
+                  - button: { id: office_scene_calls_button, grid_cell_column_pos: 0, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
+                  - button: { id: office_scene_evening_button, grid_cell_column_pos: 1, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
+                  - button: { id: office_scene_dimmed_button, grid_cell_column_pos: 0, grid_cell_row_pos: 2, height: 115, width: 230, styles: control, checkable: true }
+                  - button: { id: office_blind_66_button, grid_cell_column_pos: 1, grid_cell_row_pos: 2, height: 115, width: 230, styles: control, checkable: true }
+                  - button: { id: office_blind_33_button, grid_cell_column_pos: 0, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
+                  - button: { id: office_aircon_button, grid_cell_column_pos: 1, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
 
-                  # Dashboard Images
-                  - image: { id: right_image_top, grid_cell_column_pos: 2, grid_cell_row_pos: 0, grid_cell_row_span: 2, src: image_1, width: 90%, height: 90%, align: center }
-                  - image: { id: right_image_bottom, grid_cell_column_pos: 2, grid_cell_row_pos: 2, grid_cell_row_span: 2, src: image_2, width: 90%, height: 90%, align: center }
+                  # Dashboard Images (One above the other)
+                  - image:
+                      id: right_image_top
+                      grid_cell_column_pos: 2
+                      grid_cell_row_pos: 0
+                      grid_cell_row_span: 2
+                      src: image_1
+                      width: 480 
+                      height: 250 
+                      align: center
+                  - image:
+                      id: right_image_bottom
+                      grid_cell_column_pos: 2
+                      grid_cell_row_pos: 2
+                      grid_cell_row_span: 2
+                      src: image_2
+                      width: 480
+                      height: 250
+                      align: center
 
-              # --- PAGE 2: EXTENDED CONTROLS (Swipe Right) ---
+              # --- PAGE 2: EXTENDED CONTROLS ---
               - id: second_page
                 column: 1
                 row: 0
                 bg_color: Black
-                pad_top: 70
-                pad_all: 20
+                pad_top: 60
                 layout: { type: flex, flex_flow: row_wrap, flex_align_main: space_evenly, pad_row: 15, pad_column: 15 }
                 widgets:
-                  # Moved Buttons (Renamed back to match your sensors.yaml)
+                  # Navigation Button back to Page 1
+                  - button:
+                      align: top_right
+                      x: -10
+                      y: -50
+                      width: 100
+                      height: 40
+                      widgets:
+                        - label: { text: "HOME", align: center }
+                      on_click:
+                        - lvgl.tileview.goto_tile:
+                            id: main_tileview
+                            column: 0
+                            row: 0
+                            animation: true
+
+                  # --- THE 20 BUTTONS ---
                   - button: { id: office_scene_features_button, height: 110, width: 180, styles: control, checkable: true }
                   - button: { id: battery_charger_button, height: 110, width: 180, styles: control, checkable: true }
                   - button: { id: storage_lights_button, height: 110, width: 180, styles: control, checkable: true }
                   - button: { id: network_rack_button, height: 110, width: 180, styles: control, checkable: true }
                   - button: { id: office_blind_open_button, height: 110, width: 180, styles: control, checkable: true }
                   - button: { id: office_blind_close_button, height: 110, width: 180, styles: control, checkable: true }
-
-                  # Complex Printer Button
+                  
+                  # 3D Printer Button with Progress Sub-widgets
                   - button:
                       id: printer_power_button
                       height: 110
@@ -113,9 +166,9 @@ lvgl:
                             hidden: true
                             align: center
                             widgets:
-                              - label: { id: print_progress_label, text: "--", text_font: statistics_font }
+                              - label: { id: print_progress_label, text: "--" }
 
-                  # Complex Dryer Button
+                  # Filament Heater Button with Humidity Sub-widgets
                   - button:
                       id: filament_heater_button
                       height: 110
@@ -129,9 +182,9 @@ lvgl:
                             hidden: true
                             align: center
                             widgets:
-                              - label: { id: dryer_humidity_label, text: "--", text_font: statistics_font }
+                              - label: { id: dryer_humidity_label, text: "--" }
 
-                  # Placeholders to fill the 20-button requirement
+                  # Generic Buttons to complete the set of 20
                   - button: { id: btn_p2_9, height: 110, width: 180, styles: control }
                   - button: { id: btn_p2_10, height: 110, width: 180, styles: control }
                   - button: { id: btn_p2_11, height: 110, width: 180, styles: control }
