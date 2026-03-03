@@ -8,6 +8,7 @@ image:
     type: RGB565
 
 
+# 2. Time
 time:
   - platform: homeassistant
     id: ha_time
@@ -129,7 +130,10 @@ lvgl:
                   
                   - button:
                       id: printer_power_button
-                      height: 110, width: 180, styles: control, checkable: true
+                      height: 110
+                      width: 180
+                      styles: control
+                      checkable: true
                       widgets:
                         - label: { id: printer_power_icon, text: $printer, align: center }
                         - obj:
@@ -141,7 +145,10 @@ lvgl:
 
                   - button:
                       id: filament_heater_button
-                      height: 110, width: 180, styles: control, checkable: true
+                      height: 110
+                      width: 180
+                      styles: control
+                      checkable: true
                       widgets:
                         - label: { id: filament_heater_icon, text: $filament, align: center }
                         - obj:
