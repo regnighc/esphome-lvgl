@@ -7,7 +7,6 @@ image:
     id: image_2
     type: RGB565
 
-
 # 2. Time Component
 time:
   - platform: homeassistant
@@ -60,7 +59,7 @@ lvgl:
                   grid_columns: [240, 240, 500] 
                   grid_rows: [130, 130, 130, 130]
                 widgets:
-                  # Digital Clock & Date
+                  # Clock & Date
                   - obj:
                       grid_cell_column_pos: 0
                       grid_cell_column_span: 2
@@ -72,7 +71,7 @@ lvgl:
                         - label: { id: big_clock_label, text: "00:00", text_font: clockbar_font }
                         - label: { id: date_label, text: "Loading...", text_font: label_font }
 
-                  # Dashboard Buttons
+                  # Main Dashboard Buttons
                   - button: { id: office_scene_calls_button, grid_cell_column_pos: 0, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
                   - button: { id: office_scene_evening_button, grid_cell_column_pos: 1, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
                   - button: { id: office_scene_dimmed_button, grid_cell_column_pos: 0, grid_cell_row_pos: 2, height: 115, width: 230, styles: control, checkable: true }
@@ -80,22 +79,22 @@ lvgl:
                   - button: { id: office_blind_33_button, grid_cell_column_pos: 0, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
                   - button: { id: office_aircon_button, grid_cell_column_pos: 1, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
 
-                  # Images
+                  # Images (The Grid Span keeps them in Col 2)
                   - image: { id: right_image_top, grid_cell_column_pos: 2, grid_cell_row_pos: 0, grid_cell_row_span: 2, src: image_1, width: 480, height: 250, align: center }
                   - image: { id: right_image_bottom, grid_cell_column_pos: 2, grid_cell_row_pos: 2, grid_cell_row_span: 2, src: image_2, width: 480, height: 250, align: center }
 
-                  # NEXT BUTTON (Positioned absolutely so it doesn't fight the grid)
+                  # NAVIGATION BUTTON (NEXT) - Positioned with X/Y to avoid grid error
                   - button:
                       width: 100
                       height: 40
-                      x: 900
+                      x: 910
                       y: 10
                       widgets:
                         - label: { text: "NEXT", align: center }
                       on_click:
                         - lambda: |-
                             auto *tv = (lv_obj_t *) id(main_tileview);
-                            lv_tileview_set_tile_id(tv, 1, 0, LV_ANIM_OFF); # Instant switch is smoother on P4
+                            lv_tileview_set_tile_id(tv, 1, 0, LV_ANIM_OFF);
 
               # --- PAGE 2: CONTROLS ---
               - id: second_page
@@ -105,7 +104,7 @@ lvgl:
                 pad_top: 60
                 layout: { type: flex, flex_flow: row_wrap, flex_align_main: space_evenly, pad_row: 15, pad_column: 15 }
                 widgets:
-                  # HOME BUTTON (Top Right)
+                  # NAVIGATION BUTTON (HOME) - Top Right
                   - button:
                       width: 100
                       height: 40
@@ -119,13 +118,70 @@ lvgl:
                             auto *tv = (lv_obj_t *) id(main_tileview);
                             lv_tileview_set_tile_id(tv, 0, 0, LV_ANIM_OFF);
 
-                  # The 20 Buttons
-                  - button: { id: office_scene_features_button, height: 110, width: 180, styles: control, checkable: true }
-                  - button: { id: battery_charger_button, height: 110, width: 180, styles: control, checkable: true }
-                  - button: { id: storage_lights_button, height: 110, width: 180, styles: control, checkable: true }
-                  - button: { id: network_rack_button, height: 110, width: 180, styles: control, checkable: true }
-                  - button: { id: office_blind_open_button, height: 110, width: 180, styles: control, checkable: true }
-                  - button: { id: office_blind_close_button, height: 110, width: 180, styles: control, checkable: true }
+                  # The 20 Buttons with Home Assistant services
+                  - button: 
+                      id: office_scene_features_button
+                      height: 110
+                      width: 180
+                      styles: control
+                      checkable: true
+                      on_click:
+                        - homeassistant.service:
+                            service: switch.toggle
+                            data: { entity_id: switch.office_features_stateful_scene }
+
+                  - button:
+                      id: battery_charger_button
+                      height: 110
+                      width: 180
+                      styles: control
+                      checkable: true
+                      on_click:
+                        - homeassistant.service:
+                            service: switch.toggle
+                            data: { entity_id: switch.battery_charger }
+
+                  - button:
+                      id: storage_lights_button
+                      height: 110
+                      width: 180
+                      styles: control
+                      checkable: true
+                      on_click:
+                        - homeassistant.service:
+                            service: light.toggle
+                            data: { entity_id: light.office_storage }
+
+                  - button:
+                      id: network_rack_button
+                      height: 110
+                      width: 180
+                      styles: control
+                      checkable: true
+                      on_click:
+                        - homeassistant.service:
+                            service: light.toggle
+                            data: { entity_id: light.office_network_rack }
+
+                  - button:
+                      id: office_blind_open_button
+                      height: 110
+                      width: 180
+                      styles: control
+                      on_click:
+                        - homeassistant.service:
+                            service: cover.set_cover_position
+                            data: { entity_id: cover.office_blind, position: "100" }
+
+                  - button:
+                      id: office_blind_close_button
+                      height: 110
+                      width: 180
+                      styles: control
+                      on_click:
+                        - homeassistant.service:
+                            service: cover.set_cover_position
+                            data: { entity_id: cover.office_blind, position: "0" }
                   
                   - button:
                       id: printer_power_button
@@ -133,6 +189,10 @@ lvgl:
                       width: 180
                       styles: control
                       checkable: true
+                      on_click:
+                        - homeassistant.service:
+                            service: switch.toggle
+                            data: { entity_id: switch.office_3d_printer_power }
                       widgets:
                         - label: { id: printer_power_icon, text: $printer, align: center }
                         - obj:
@@ -148,6 +208,10 @@ lvgl:
                       width: 180
                       styles: control
                       checkable: true
+                      on_click:
+                        - homeassistant.service:
+                            service: switch.toggle
+                            data: { entity_id: switch.office_filament_heater_893b }
                       widgets:
                         - label: { id: filament_heater_icon, text: $filament, align: center }
                         - obj:
@@ -157,6 +221,7 @@ lvgl:
                             widgets:
                               - label: { id: dryer_humidity_label, text: "--" }
 
+                  # Placeholder Buttons (Fill up to 20)
                   - button: { id: btn_p2_9, height: 110, width: 180, styles: control }
                   - button: { id: btn_p2_10, height: 110, width: 180, styles: control }
                   - button: { id: btn_p2_11, height: 110, width: 180, styles: control }
