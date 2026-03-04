@@ -1,6 +1,6 @@
 psram:
 online_image:
-  - id: online_img_w_mmb6g658riviu
+  - id: online_img_cam_1
     url: "http://frigate.local/api/B2C4/person/snapshot.jpg"
     format: PNG
     type: RGB565
@@ -12,7 +12,7 @@ online_image:
 #    on_error:
 #      then:
 #        - lvgl.widget.refresh: w_mmb6g658riviu
-  - id: online_img_w_mmb8u2w7qjs5t
+  - id: online_img_cam_2
     url: "http://frigate.local/api/B2C0/person/snapshot.jpg"
     format: PNG
     type: RGB565
