@@ -27,7 +27,7 @@ external_components:
     refresh: 0s
 
 http_request:
-  user_agent: esphome/device
+  useragent: esphome/device
   timeout: 10s
   
 # Secondary ESP32-C6 device for connectivity
