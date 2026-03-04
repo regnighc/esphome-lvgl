@@ -119,3 +119,25 @@ display:
     update_interval: never
     auto_clear_enabled: false
     hsync_pulse_width: 20     # The only difference to the examples provided
+
+globals:
+  - id: display_page
+    type: int
+    restore_value: false
+    initial_value: '0'
+  - id: page_refresh_default_s
+    type: int
+    restore_value: true
+    initial_value: '600'
+  - id: page_refresh_current_s
+    type: int
+    restore_value: false
+    initial_value: '60'
+  - id: last_page_switch_time
+    type: uint32_t
+    restore_value: false
+    initial_value: '0'
+
+time:
+  - platform: homeassistant
+    id: ha_time
