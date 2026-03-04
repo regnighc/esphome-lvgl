@@ -6,24 +6,24 @@ online_image:
     type: RGB565
     resize: 317x238
     update_interval: 1h
-    on_download_finished:
-      then:
-        - lvgl.widget.refresh: w_mmb6g658riviu
-    on_error:
-      then:
-        - lvgl.widget.refresh: w_mmb6g658riviu
+#    on_download_finished:
+#      then:
+#        - lvgl.widget.refresh: w_mmb6g658riviu
+#    on_error:
+#      then:
+#        - lvgl.widget.refresh: w_mmb6g658riviu
   - id: online_img_w_mmb8u2w7qjs5t
     url: "http://frigate.local/api/B2C0/person/snapshot.jpg"
     format: PNG
     type: RGB565
     resize: 317x238
     update_interval: 1h
-    on_download_finished:
-      then:
-        - lvgl.widget.refresh: w_mmb8u2w7qjs5t
-    on_error:
-      then:
-        - lvgl.widget.refresh: w_mmb8u2w7qjs5t
+#    on_download_finished:
+#      then:
+#        - lvgl.widget.refresh: w_mmb8u2w7qjs5t
+#    on_error:
+#      then:
+#        - lvgl.widget.refresh: w_mmb8u2w7qjs5t
 lvgl:
   id: my_lvgl
   log_level: WARN
