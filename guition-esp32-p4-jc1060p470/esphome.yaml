@@ -12,6 +12,6 @@ wifi:
 # Packages
 packages:
   setup:
-    url: https://github.com/regnighc/esphome-lvgl
+    url: https://github.com/regnighc/esphome-lvgl/kiosk-clock-cam
     file: guition-esp32-p4-jc1060p470/package.yaml
     refresh: 1sec
