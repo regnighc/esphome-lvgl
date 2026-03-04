@@ -59,7 +59,7 @@ lvgl:
             text: !lambda |-
               auto now = id(ha_time).now();
               return now.strftime("%H:%M\n%a, %b %d").c_str();
-            text_font: label_font
+            text_font: icon_font
             text_color: $button_text_color
             text_align: center
             opa: cover
@@ -117,7 +117,7 @@ lvgl:
                           static char buf[16];
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
@@ -141,13 +141,13 @@ lvgl:
                           if (c == "windy") return "\U000F059D";
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day0).state, id(weather_low_day0).state).c_str();"
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
               -
                 obj:
@@ -167,7 +167,7 @@ lvgl:
                           static char buf[16];
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
@@ -191,13 +191,13 @@ lvgl:
                           if (c == "windy") return "\U000F059D";
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day1).state, id(weather_low_day1).state).c_str();"
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
               -
                 obj:
@@ -217,7 +217,7 @@ lvgl:
                           static char buf[16];
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
@@ -241,13 +241,13 @@ lvgl:
                           if (c == "windy") return "\U000F059D";
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day2).state, id(weather_low_day2).state).c_str();"
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
               -
                 obj:
@@ -267,7 +267,7 @@ lvgl:
                           static char buf[16];
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
@@ -291,13 +291,13 @@ lvgl:
                           if (c == "windy") return "\U000F059D";
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day3).state, id(weather_low_day3).state).c_str();"
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
               -
                 obj:
@@ -317,7 +317,7 @@ lvgl:
                           static char buf[16];
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
@@ -341,13 +341,13 @@ lvgl:
                           if (c == "windy") return "\U000F059D";
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day4).state, id(weather_low_day4).state).c_str();"
-                        text_font: label_font
+                        text_font: icon_font
                         text_color: $button_text_color
         - button:
             id: w_mmb7fh34bvnls
@@ -404,7 +404,7 @@ lvgl:
             width: 120
             height: 40
             text: "Hallway"
-            text_font: label_font
+            text_font: icon_font
             text_color: $button_text_color
             text_align: CENTER
             opa: cover
