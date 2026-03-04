@@ -49,6 +49,94 @@ sensor:
             format: "%.0f"
             args: [ 'x' ]
 
+  - platform: homeassistant
+    id: weather_high_day0
+    entity_id: sensor.weather_forecast_day_0_high
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day0
+    entity_id: sensor.weather_forecast_day_0_low
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day1
+    entity_id: sensor.weather_forecast_day_1_high
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day1
+    entity_id: sensor.weather_forecast_day_1_low
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day2
+    entity_id: sensor.weather_forecast_day_2_high
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day2
+    entity_id: sensor.weather_forecast_day_2_low
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day3
+    entity_id: sensor.weather_forecast_day_3_high
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day3
+    entity_id: sensor.weather_forecast_day_3_low
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day4
+    entity_id: sensor.weather_forecast_day_4_high
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day4
+    entity_id: sensor.weather_forecast_day_4_low
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    unit_of_measurement: '°C'
+    internal: true
+  - platform: homeassistant
+    id: input_button_hallway_group_on
+    entity_id: input_button.hallway_group_on
+    internal: true
+  - platform: homeassistant
+    id: input_button_hallway_group_off
+    entity_id: input_button.hallway_group_off
+    internal: true
 
 
 binary_sensor:
@@ -244,3 +332,42 @@ binary_sensor:
           id: network_rack_button
           state:
             checked: !lambda return x;
+
+text_sensor:
+
+  # Weather Forecast Condition Sensors
+  - platform: homeassistant
+    id: weather_cond_day0
+    entity_id: sensor.weather_forecast_day_0_condition
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day1
+    entity_id: sensor.weather_forecast_day_1_condition
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day2
+    entity_id: sensor.weather_forecast_day_2_condition
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day3
+    entity_id: sensor.weather_forecast_day_3_condition
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day4
+    entity_id: sensor.weather_forecast_day_4_condition
+    on_value:
+      then:
+        - lvgl.widget.refresh: w_mmb74vjr22h4z
+    internal: true
