@@ -1,7 +1,7 @@
 psram:
 online_image:
   - id: online_img_cam_1
-    url: "http://frigate.local/api/B2C4/person/snapshot.jpg"
+    url: "http://192.168.2.127:5566/api/B2C4/person/snapshot.jpg"
     format: PNG
     type: RGB565
     resize: 317x238
@@ -13,7 +13,7 @@ online_image:
 #      then:
 #        - lvgl.widget.refresh: w_mmb6g658riviu
   - id: online_img_cam_2
-    url: "http://frigate.local/api/B2C0/person/snapshot.jpg"
+    url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
     format: PNG
     type: RGB565
     resize: 317x238
@@ -33,11 +33,6 @@ lvgl:
   bg_color: 0xFFFFFF  # White (No quotes)
   displays:
     - my_display
-  on_idle:
-    timeout: 10s
-    then:
-      - light.turn_off: display_backlight
-      - lvgl.pause: {}
   
   pages:
     - id: page_0
@@ -56,13 +51,17 @@ lvgl:
             id: main_clock
             x: 76
             y: 11
-            width: 220
-            height: 102
+            width: 320
+            height: 160
             text: !lambda |-
               auto now = id(ha_time).now();
+              if (!now.is_valid()) {
+                return "Syncing...\nPlease wait";
+              }
               return now.strftime("%H:%M\n%a, %b %d").c_str();
             text_color: 0x000000
             text_align: center
+            text_font: statistics_font
 
         # SEPARATOR LINE
         - line:
