@@ -60,7 +60,7 @@ lvgl:
               auto now = id(ha_time).now();
               return now.strftime("%H:%M\n%a, %b %d").c_str();
             text_font: label_font
-            text_color: BLACK
+            text_color: "#000000"
             text_align: center
             opa: cover
         - line:
@@ -118,7 +118,7 @@ lvgl:
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: center
@@ -142,13 +142,13 @@ lvgl:
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day0).state, id(weather_low_day0).state).c_str();"
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
               -
                 obj:
                   width: 20%
@@ -168,7 +168,7 @@ lvgl:
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: center
@@ -192,13 +192,13 @@ lvgl:
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day1).state, id(weather_low_day1).state).c_str();"
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
               -
                 obj:
                   width: 20%
@@ -218,7 +218,7 @@ lvgl:
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: center
@@ -242,13 +242,13 @@ lvgl:
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day2).state, id(weather_low_day2).state).c_str();"
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
               -
                 obj:
                   width: 20%
@@ -268,7 +268,7 @@ lvgl:
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: center
@@ -292,13 +292,13 @@ lvgl:
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day3).state, id(weather_low_day3).state).c_str();"
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
               -
                 obj:
                   width: 20%
@@ -318,7 +318,7 @@ lvgl:
                           future.strftime(buf, sizeof(buf), "%a");
                           return buf;
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: center
@@ -342,13 +342,13 @@ lvgl:
                           if (c == "windy-variant") return "\U000F059E";
                           return "\U000F0590";
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
                     -
                       label:
                         align: bottom_mid
                         text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day4).state, id(weather_low_day4).state).c_str();"
                         text_font: label_font
-                        text_color: BLACK
+                        text_color: "#000000"
         - button:
             id: w_mmb7fh34bvnls
             x: 35
@@ -372,7 +372,7 @@ lvgl:
                 label:
                   align: center
                   text: "On"
-                  text_color: BLACK
+                  text_color: "#000000"
         - button:
             id: w_mmb8i5zun9l75
             x: 35
@@ -396,7 +396,7 @@ lvgl:
                 label:
                   align: center
                   text: "Off"
-                  text_color: BLACK
+                  text_color: "#000000"
         - label:
             id: w_mmb8iw750vjca
             x: 35
@@ -405,7 +405,7 @@ lvgl:
             height: 40
             text: "Hallway"
             text_font: label_font
-            text_color: BLACK
+            text_color: "#000000"
             text_align: CENTER
             opa: cover
             border_width: 0
