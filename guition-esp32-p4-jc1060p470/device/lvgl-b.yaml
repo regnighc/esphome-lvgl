@@ -1,191 +1,426 @@
-# Satisfy the image component requirement
-image:
-  - file: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
-    id: image_1
+psram:
+online_image:
+  - id: online_img_w_mmb6g658riviu
+    url: "http://frigate.local/api/B2C4/person/snapshot.jpg"
+    format: PNG
     type: RGB565
-  - file: "https://groundbreakcarolinas.com/wp-content/uploads/2020/09/President-Trump-Official-Portrait-200x200-1.jpg"
-    id: image_2
+    resize: 317x238
+    update_interval: 1h
+    on_download_finished:
+      then:
+        - lvgl.widget.refresh: w_mmb6g658riviu
+    on_error:
+      then:
+        - lvgl.widget.refresh: w_mmb6g658riviu
+  - id: online_img_w_mmb8u2w7qjs5t
+    url: "http://frigate.local/api/B2C0/person/snapshot.jpg"
+    format: PNG
     type: RGB565
-
-# 2. Time Component
-time:
-  - platform: homeassistant
-    id: ha_time
-    on_time:
-      - seconds: 0
-        then:
-          - lvgl.label.update:
-              id: big_clock_label
-              text: !lambda 'return id(ha_time).now().strftime("%H:%M");'
-          - lvgl.label.update:
-              id: date_label
-              text: !lambda 'return id(ha_time).now().strftime("%A, %B %d");'
-
+    resize: 317x238
+    update_interval: 1h
+    on_download_finished:
+      then:
+        - lvgl.widget.refresh: w_mmb8u2w7qjs5t
+    on_error:
+      then:
+        - lvgl.widget.refresh: w_mmb8u2w7qjs5t
 lvgl:
-  displays: my_display
-  byte_order: little_endian
-
-  top_layer:
-    widgets:
-      - label:
-          text: "-° / -°"
-          id: temperatures
-          text_font: clockbar_font
-          align: top_left
-          x: 20
-          y: 15
-      - label:
-          text: "--:--"
-          id: display_time
-          text_font: clockbar_font
-          align: top_mid
-          y: 15
-
-pages:
-    - id: screen_root
+  id: my_lvgl
+  log_level: WARN
+  bg_color: "0xFFFFFF"
+  displays:
+    - my_display
+  on_idle:
+    timeout: 10s
+    then:
+      - light.turn_off: display_backlight
+      - lvgl.pause:
+  pages:
+    - id: page_0
       widgets:
-        - tileview:
-            id: main_tileview
-            scrollbar_mode: "off"
-            tiles:
-              
-              # ==========================================
-              # PAGE 1: DASHBOARD
-              # ==========================================
-              - id: main_page
-                column: 0
-                row: 0
-                bg_color: Black
-                # ❌ DO NOT PUT 'layout: type: grid' HERE ❌
-                widgets:
-                  
-                  # --- GRID BOX (Holds Clock, Buttons, Images) ---
-                  - obj:
-                      width: 100%
-                      height: 100%
-                      pad_top: 60
-                      bg_opa: TRANSP
-                      border_width: 0
-                      layout:
-                        type: grid
-                        grid_columns: [240, 240, 500] 
-                        grid_rows: [130, 130, 130, 130]
-                      widgets:
-                        # Clock & Date
-                        - obj:
-                            grid_cell_column_pos: 0
-                            grid_cell_column_span: 2
-                            grid_cell_row_pos: 0
-                            bg_opa: TRANSP
-                            border_width: 0
-                            layout: { type: flex, flex_flow: column, flex_align_main: center }
-                            widgets:
-                              - label: { id: big_clock_label, text: "00:00", text_font: clockbar_font }
-                              - label: { id: date_label, text: "Loading...", text_font: label_font }
-
-                        # Buttons
-                        - button: { id: office_scene_calls_button, grid_cell_column_pos: 0, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
-                        - button: { id: office_scene_evening_button, grid_cell_column_pos: 1, grid_cell_row_pos: 1, height: 115, width: 230, styles: control, checkable: true }
-                        - button: { id: office_scene_dimmed_button, grid_cell_column_pos: 0, grid_cell_row_pos: 2, height: 115, width: 230, styles: control, checkable: true }
-                        - button: { id: office_blind_66_button, grid_cell_column_pos: 1, grid_cell_row_pos: 2, height: 115, width: 230, styles: control, checkable: true }
-                        - button: { id: office_blind_33_button, grid_cell_column_pos: 0, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
-                        - button: { id: office_aircon_button, grid_cell_column_pos: 1, grid_cell_row_pos: 3, height: 115, width: 230, styles: control, checkable: true }
-
-                        # Images
-                        - image: { id: right_image_top, grid_cell_column_pos: 2, grid_cell_row_pos: 0, grid_cell_row_span: 2, src: image_1, width: 480, height: 250, align: center }
-                        - image: { id: right_image_bottom, grid_cell_column_pos: 2, grid_cell_row_pos: 2, grid_cell_row_span: 2, src: image_2, width: 480, height: 250, align: center }
-
-
-                  # NEXT BUTTON (Sharing the top-right cell with the image)
-                  - button:
-                      grid_cell_column_pos: 2
-                      grid_cell_row_pos: 0
-                      align: top_right
-                      width: 100
-                      height: 40
-                      widgets:
-                        - label: 
-                            text: "NEXT"
-                            align: center
-                      on_click:
-                        - lambda: |-
-                            auto *tv = (lv_obj_t *) id(main_tileview);
-                            lv_tileview_set_tile_id(tv, 1, 0, LV_ANIM_OFF);
-
-              # ==========================================
-              # PAGE 2: CONTROLS
-              # ==========================================
-              - id: second_page
-                column: 1
-                row: 0
-                bg_color: Black
-                # ❌ DO NOT PUT 'layout: type: flex' HERE ❌
-                widgets:
-                  
-                  # --- FLEX BOX (Holds the 20 Buttons) ---
-                  - obj:
-                      width: 100%
-                      height: 100%
-                      pad_top: 60
-                      bg_opa: TRANSP
-                      border_width: 0
-                      layout: { type: flex, flex_flow: row_wrap, flex_align_main: space_evenly, pad_row: 15, pad_column: 15 }
-                      widgets:
-                        - button: { id: office_scene_features_button, height: 110, width: 180, styles: control, checkable: true }
-                        - button: { id: battery_charger_button, height: 110, width: 180, styles: control, checkable: true }
-                        - button: { id: storage_lights_button, height: 110, width: 180, styles: control, checkable: true }
-                        - button: { id: network_rack_button, height: 110, width: 180, styles: control, checkable: true }
-                        - button: { id: office_blind_open_button, height: 110, width: 180, styles: control }
-                        - button: { id: office_blind_close_button, height: 110, width: 180, styles: control }
-                        
-                        - button:
-                            id: printer_power_button
-                            height: 110, width: 180, styles: control, checkable: true
-                            widgets:
-                              - label: { id: printer_power_icon, text: $printer, align: center }
-                              - obj:
-                                  id: print_progress_container
-                                  hidden: true
-                                  align: center
-                                  widgets:
-                                    - label: { id: print_progress_label, text: "--" }
-
-                        - button:
-                            id: filament_heater_button
-                            height: 110, width: 180, styles: control, checkable: true
-                            widgets:
-                              - label: { id: filament_heater_icon, text: $filament, align: center }
-                              - obj:
-                                  id: dryer_humidity_container
-                                  hidden: true
-                                  align: center
-                                  widgets:
-                                    - label: { id: dryer_humidity_label, text: "--" }
-
-                        # Placeholders 9-20
-                        - button: { id: btn_p2_9, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_10, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_11, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_12, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_13, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_14, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_15, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_16, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_17, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_18, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_19, height: 110, width: 180, styles: control }
-                        - button: { id: btn_p2_20, height: 110, width: 180, styles: control }
-
-                  # --- NAVIGATION BUTTON (Safely outside the flex grid) ---
-                  - button:
-                      width: 100
-                      height: 40
-                      align: top_right
-                      x: -10
-                      y: 10
-                      widgets:
-                        - label: { text: "HOME", align: center }
-                      on_click:
-                        - lambda: |-
-                            auto *tv = (lv_obj_t *) id(main_tileview);
-                            lv_tileview_set_tile_id(tv, 0, 0, LV_ANIM_OFF);
+        - image:
+            id: w_mmb6g658riviu
+            x: 663
+            y: 30
+            width: 317
+            height: 238
+            src: online_img_w_mmb6g658riviu
+            angle: 0
+            pivot_x: 0
+            pivot_y: 0
+            image_recolor: "0x000000"
+            image_recolor_opa: cover
+        - label:
+            id: w_mmb6fn77ic33f
+            x: 76
+            y: 11
+            width: 220
+            height: 102
+            text: !lambda |-
+              auto now = id(ha_time).now();
+              return now.strftime("%H:%M\n%a, %b %d").c_str();
+            text_font: font_roboto_700_55
+            text_color: "0x000000"
+            text_align: center
+            opa: cover
+        - line:
+            id: w_mmb6uzhkskg3l
+            x: 35
+            y: 123
+            width: 301
+            height: 3
+            clickable: false
+            scrollable: false
+            points:
+              -
+                x: 0
+                y: 0
+              -
+                x: 301
+                y: 0
+            line_width: 3
+            line_color: "0x000000"
+            line_rounded: true
+            opa: cover
+        - obj:
+            id: w_mmb74vjr22h4z
+            x: 1
+            y: 126
+            width: 370
+            height: 90
+            bg_color: "0x000000"
+            bg_opa: COVER
+            radius: 8
+            border_width: 1
+            border_color: "0x000000"
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_around
+              flex_align_cross: center
+            widgets:
+              -
+                obj:
+                  width: 20%
+                  height: 100%
+                  bg_opa: transp
+                  border_width: 0
+                  widgets:
+                    -
+                      label:
+                        align: top_mid
+                        text: !lambda |-
+                          if (0 == 0) return "Today";
+                          auto t = id(ha_time).now();
+                          if (!t.is_valid()) return "---";
+                          ESPTime future = ESPTime::from_epoch_local(t.timestamp + (0 * 86400));
+                          static char buf[16];
+                          future.strftime(buf, sizeof(buf), "%a");
+                          return buf;
+                        text_font: font_roboto_700_12
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: center
+                        y: 0
+                        text: !lambda |-
+                          std::string c = id(weather_cond_day0).state;
+                          if (c == "clear-night") return "\U000F0594";
+                          if (c == "cloudy") return "\U000F0590";
+                          if (c == "exceptional") return "\U000F0026";
+                          if (c == "fog") return "\U000F0591";
+                          if (c == "hail") return "\U000F0592";
+                          if (c == "lightning") return "\U000F0593";
+                          if (c == "lightning-rainy") return "\U000F067E";
+                          if (c == "partlycloudy") return "\U000F0595";
+                          if (c == "pouring") return "\U000F0596";
+                          if (c == "rainy") return "\U000F0597";
+                          if (c == "snowy") return "\U000F0598";
+                          if (c == "snowy-rainy") return "\U000F067F";
+                          if (c == "sunny") return "\U000F0599";
+                          if (c == "windy") return "\U000F059D";
+                          if (c == "windy-variant") return "\U000F059E";
+                          return "\U000F0590";
+                        text_font: font_material_design_icons_400_32
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: bottom_mid
+                        text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day0).state, id(weather_low_day0).state).c_str();"
+                        text_font: font_roboto_400_14
+                        text_color: "0x000000"
+              -
+                obj:
+                  width: 20%
+                  height: 100%
+                  bg_opa: transp
+                  border_width: 0
+                  widgets:
+                    -
+                      label:
+                        align: top_mid
+                        text: !lambda |-
+                          if (1 == 0) return "Today";
+                          auto t = id(ha_time).now();
+                          if (!t.is_valid()) return "---";
+                          ESPTime future = ESPTime::from_epoch_local(t.timestamp + (1 * 86400));
+                          static char buf[16];
+                          future.strftime(buf, sizeof(buf), "%a");
+                          return buf;
+                        text_font: font_roboto_700_12
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: center
+                        y: 0
+                        text: !lambda |-
+                          std::string c = id(weather_cond_day1).state;
+                          if (c == "clear-night") return "\U000F0594";
+                          if (c == "cloudy") return "\U000F0590";
+                          if (c == "exceptional") return "\U000F0026";
+                          if (c == "fog") return "\U000F0591";
+                          if (c == "hail") return "\U000F0592";
+                          if (c == "lightning") return "\U000F0593";
+                          if (c == "lightning-rainy") return "\U000F067E";
+                          if (c == "partlycloudy") return "\U000F0595";
+                          if (c == "pouring") return "\U000F0596";
+                          if (c == "rainy") return "\U000F0597";
+                          if (c == "snowy") return "\U000F0598";
+                          if (c == "snowy-rainy") return "\U000F067F";
+                          if (c == "sunny") return "\U000F0599";
+                          if (c == "windy") return "\U000F059D";
+                          if (c == "windy-variant") return "\U000F059E";
+                          return "\U000F0590";
+                        text_font: font_material_design_icons_400_32
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: bottom_mid
+                        text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day1).state, id(weather_low_day1).state).c_str();"
+                        text_font: font_roboto_400_14
+                        text_color: "0x000000"
+              -
+                obj:
+                  width: 20%
+                  height: 100%
+                  bg_opa: transp
+                  border_width: 0
+                  widgets:
+                    -
+                      label:
+                        align: top_mid
+                        text: !lambda |-
+                          if (2 == 0) return "Today";
+                          auto t = id(ha_time).now();
+                          if (!t.is_valid()) return "---";
+                          ESPTime future = ESPTime::from_epoch_local(t.timestamp + (2 * 86400));
+                          static char buf[16];
+                          future.strftime(buf, sizeof(buf), "%a");
+                          return buf;
+                        text_font: font_roboto_700_12
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: center
+                        y: 0
+                        text: !lambda |-
+                          std::string c = id(weather_cond_day2).state;
+                          if (c == "clear-night") return "\U000F0594";
+                          if (c == "cloudy") return "\U000F0590";
+                          if (c == "exceptional") return "\U000F0026";
+                          if (c == "fog") return "\U000F0591";
+                          if (c == "hail") return "\U000F0592";
+                          if (c == "lightning") return "\U000F0593";
+                          if (c == "lightning-rainy") return "\U000F067E";
+                          if (c == "partlycloudy") return "\U000F0595";
+                          if (c == "pouring") return "\U000F0596";
+                          if (c == "rainy") return "\U000F0597";
+                          if (c == "snowy") return "\U000F0598";
+                          if (c == "snowy-rainy") return "\U000F067F";
+                          if (c == "sunny") return "\U000F0599";
+                          if (c == "windy") return "\U000F059D";
+                          if (c == "windy-variant") return "\U000F059E";
+                          return "\U000F0590";
+                        text_font: font_material_design_icons_400_32
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: bottom_mid
+                        text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day2).state, id(weather_low_day2).state).c_str();"
+                        text_font: font_roboto_400_14
+                        text_color: "0x000000"
+              -
+                obj:
+                  width: 20%
+                  height: 100%
+                  bg_opa: transp
+                  border_width: 0
+                  widgets:
+                    -
+                      label:
+                        align: top_mid
+                        text: !lambda |-
+                          if (3 == 0) return "Today";
+                          auto t = id(ha_time).now();
+                          if (!t.is_valid()) return "---";
+                          ESPTime future = ESPTime::from_epoch_local(t.timestamp + (3 * 86400));
+                          static char buf[16];
+                          future.strftime(buf, sizeof(buf), "%a");
+                          return buf;
+                        text_font: font_roboto_700_12
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: center
+                        y: 0
+                        text: !lambda |-
+                          std::string c = id(weather_cond_day3).state;
+                          if (c == "clear-night") return "\U000F0594";
+                          if (c == "cloudy") return "\U000F0590";
+                          if (c == "exceptional") return "\U000F0026";
+                          if (c == "fog") return "\U000F0591";
+                          if (c == "hail") return "\U000F0592";
+                          if (c == "lightning") return "\U000F0593";
+                          if (c == "lightning-rainy") return "\U000F067E";
+                          if (c == "partlycloudy") return "\U000F0595";
+                          if (c == "pouring") return "\U000F0596";
+                          if (c == "rainy") return "\U000F0597";
+                          if (c == "snowy") return "\U000F0598";
+                          if (c == "snowy-rainy") return "\U000F067F";
+                          if (c == "sunny") return "\U000F0599";
+                          if (c == "windy") return "\U000F059D";
+                          if (c == "windy-variant") return "\U000F059E";
+                          return "\U000F0590";
+                        text_font: font_material_design_icons_400_32
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: bottom_mid
+                        text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day3).state, id(weather_low_day3).state).c_str();"
+                        text_font: font_roboto_400_14
+                        text_color: "0x000000"
+              -
+                obj:
+                  width: 20%
+                  height: 100%
+                  bg_opa: transp
+                  border_width: 0
+                  widgets:
+                    -
+                      label:
+                        align: top_mid
+                        text: !lambda |-
+                          if (4 == 0) return "Today";
+                          auto t = id(ha_time).now();
+                          if (!t.is_valid()) return "---";
+                          ESPTime future = ESPTime::from_epoch_local(t.timestamp + (4 * 86400));
+                          static char buf[16];
+                          future.strftime(buf, sizeof(buf), "%a");
+                          return buf;
+                        text_font: font_roboto_700_12
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: center
+                        y: 0
+                        text: !lambda |-
+                          std::string c = id(weather_cond_day4).state;
+                          if (c == "clear-night") return "\U000F0594";
+                          if (c == "cloudy") return "\U000F0590";
+                          if (c == "exceptional") return "\U000F0026";
+                          if (c == "fog") return "\U000F0591";
+                          if (c == "hail") return "\U000F0592";
+                          if (c == "lightning") return "\U000F0593";
+                          if (c == "lightning-rainy") return "\U000F067E";
+                          if (c == "partlycloudy") return "\U000F0595";
+                          if (c == "pouring") return "\U000F0596";
+                          if (c == "rainy") return "\U000F0597";
+                          if (c == "snowy") return "\U000F0598";
+                          if (c == "snowy-rainy") return "\U000F067F";
+                          if (c == "sunny") return "\U000F0599";
+                          if (c == "windy") return "\U000F059D";
+                          if (c == "windy-variant") return "\U000F059E";
+                          return "\U000F0590";
+                        text_font: font_material_design_icons_400_32
+                        text_color: "0x000000"
+                    -
+                      label:
+                        align: bottom_mid
+                        text: !lambda "return str_sprintf('%.1f/%.1f', id(weather_high_day4).state, id(weather_low_day4).state).c_str();"
+                        text_font: font_roboto_400_14
+                        text_color: "0x000000"
+        - button:
+            id: w_mmb7fh34bvnls
+            x: 35
+            y: 253
+            width: 120
+            height: 120
+            bg_color: "0xE5CA3E"
+            bg_opa: cover
+            border_width: 2
+            border_color: "0x000000"
+            radius: 5
+            opa: cover
+            on_click:
+              -
+                homeassistant.service:
+                  service: button.press
+                  data:
+                    entity_id: input_button.hallway_group_on
+            widgets:
+              -
+                label:
+                  align: center
+                  text: "On"
+                  text_color: "0x000000"
+        - button:
+            id: w_mmb8i5zun9l75
+            x: 35
+            y: 413
+            width: 120
+            height: 120
+            bg_color: "0xE5CA3E"
+            bg_opa: cover
+            border_width: 2
+            border_color: "0x000000"
+            radius: 5
+            opa: cover
+            on_click:
+              -
+                homeassistant.service:
+                  service: button.press
+                  data:
+                    entity_id: input_button.hallway_group_off
+            widgets:
+              -
+                label:
+                  align: center
+                  text: "Off"
+                  text_color: "0x000000"
+        - label:
+            id: w_mmb8iw750vjca
+            x: 35
+            y: 373
+            width: 120
+            height: 40
+            text: "Hallway"
+            text_font: font_roboto_400_20
+            text_color: "0x000000"
+            text_align: CENTER
+            opa: cover
+            border_width: 0
+            border_color: "0x000000"
+            border_side: none
+            radius: 0
+        - image:
+            id: w_mmb8u2w7qjs5t
+            x: 663
+            y: 294
+            width: 317
+            height: 238
+            src: online_img_w_mmb8u2w7qjs5t
+            angle: 0
+            pivot_x: 0
+            pivot_y: 0
+            image_recolor: "0x000000"
+            image_recolor_opa: cover
