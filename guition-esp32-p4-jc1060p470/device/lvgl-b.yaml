@@ -34,7 +34,7 @@ lvgl:
     timeout: 10s
     then:
       - light.turn_off: display_backlight
-      - lvgl.pause:
+      - lvgl.pause: my_lvgl
   pages:
     - id: page_0
       widgets:
