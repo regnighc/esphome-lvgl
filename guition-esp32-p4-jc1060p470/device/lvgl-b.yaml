@@ -5,7 +5,7 @@ online_image:
     format: PNG
     type: RGB565
     resize: 317x238
-    update_interval: 1m
+    update_interval: 1min
 #    on_download_finished:
 #      then:
 #        - lvgl.widget.refresh: w_mmb6g658riviu
@@ -17,7 +17,7 @@ online_image:
     format: PNG
     type: RGB565
     resize: 317x238
-    update_interval: 1m
+    update_interval: 1min
 #    on_download_finished:
 #      then:
 #        - lvgl.widget.refresh: w_mmb8u2w7qjs5t
