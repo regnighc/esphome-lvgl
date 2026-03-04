@@ -3,7 +3,7 @@ packages:
   sensors: !include device/sensors.yaml
   #lvgl: !include device/lvgl.yaml
   lvgl: !include device/lvgl-b.yaml
-  time: !include addon/time.yaml
+  #time: !include addon/time.yaml
   backlight: !include addon/backlight.yaml
   network: !include addon/network.yaml
   fonts: !include assets/fonts.yaml
