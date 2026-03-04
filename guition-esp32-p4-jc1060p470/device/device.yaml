@@ -53,7 +53,12 @@ ota:
 
 # Enable Home Assistant API
 api:
-
+  # This service allows Home Assistant to force a camera refresh
+  services:
+    - service: refresh_frigate_images
+      then:
+        - component.update: online_img_cam_1
+        - component.update: online_img_cam_2
 # Enable logging
 logger:
 
