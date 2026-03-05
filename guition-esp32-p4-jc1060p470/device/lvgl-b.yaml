@@ -37,10 +37,10 @@ online_image:
 
 lvgl:
   id: my_lvgl
-  color_depth: 16
+  color_depth: 24
   log_level: WARN
   bg_color: 0x000000
-  byte_order: big_endian
+  byte_order: little_endian
   displays:
     - my_display
   touchscreens:
