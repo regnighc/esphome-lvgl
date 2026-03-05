@@ -119,7 +119,6 @@ touchscreen:
 # Display
 display:
   - platform: mipi_dsi
-    dither: true
     id: my_display
     model: JC1060P470
     color_order: RGB
