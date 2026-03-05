@@ -4,7 +4,7 @@ online_image:
     url: "http://192.168.2.127:5566/api/B2C4/person/snapshot.jpg"
     format: JPEG
     type: RGB
-    resize: 317x238
+    resize: 640x480
     update_interval: 1min
     on_download_finished:
       then:
@@ -20,7 +20,7 @@ online_image:
     url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
     format: JPEG
     type: RGB
-    resize: 317x238
+    resize: 640x480
     update_interval: 1min
     on_download_finished:
       then:
@@ -37,7 +37,8 @@ online_image:
 
 lvgl:
   id: my_lvgl
-  color_depth: 24
+  color_depth: 16
+  antialiasing: true
   log_level: WARN
   bg_color: 0x000000
   byte_order: little_endian
