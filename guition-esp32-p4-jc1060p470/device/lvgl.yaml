@@ -1,6 +1,6 @@
 lvgl:
   displays: my_display
-  byte_order: little_endian
+  byte_order: big_endian
   
   top_layer:
     widgets:
