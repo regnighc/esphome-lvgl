@@ -38,7 +38,6 @@ online_image:
 lvgl:
   id: my_lvgl
   color_depth: 16
-  antialiasing: true
   log_level: WARN
   bg_color: 0x000000
   byte_order: little_endian
