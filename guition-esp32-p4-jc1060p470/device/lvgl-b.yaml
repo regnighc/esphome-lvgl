@@ -6,12 +6,24 @@ online_image:
     type: RGB565
     resize: 317x238
     update_interval: 1min
+    on_download_finished:
+      then:
+        - lvgl.widget.redraw: w_cam_1
+    on_error:
+      then:
+        - lvgl.widget.redraw: w_cam_1
   - id: online_img_cam_2
     url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
     format: JPEG
     type: RGB565
     resize: 317x238
     update_interval: 1min
+    on_download_finished:
+      then:
+        - lvgl.widget.redraw: w_cam_2
+    on_error:
+      then:
+        - lvgl.widget.redraw: w_cam_2
 # Add this at the top level of your file
 
 
