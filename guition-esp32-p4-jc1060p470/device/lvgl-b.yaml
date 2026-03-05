@@ -107,7 +107,7 @@ lvgl:
             shadow_width: 8
             shadow_opa: 80%
             shadow_color: 0x000000
-            shadow_offset_y: 4
+            shadow_ofs_y: 4
             clip_corner: true
             on_click:
               - logger.log: "LVGL: Hallway ON button pressed"
@@ -133,7 +133,7 @@ lvgl:
             shadow_width: 8
             shadow_opa: 80%
             shadow_color: 0x000000
-            shadow_offset_y: 4
+            shadow_ofs_y: 4
             clip_corner: true
             on_click:
               - logger.log: "LVGL: Hallway OFF button pressed"
