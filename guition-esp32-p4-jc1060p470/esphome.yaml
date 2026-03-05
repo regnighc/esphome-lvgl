@@ -8,6 +8,10 @@ substitutions:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  on_connect:
+    - logger.log: "WiFi connected, refreshing Frigate snapshots"
+    - component.update: online_img_cam_1
+    - component.update: online_img_cam_2
 
 # Packages
 packages:

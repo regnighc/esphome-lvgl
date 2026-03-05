@@ -32,6 +32,7 @@ lvgl:
   id: my_lvgl
   log_level: WARN
   bg_color: 0x000000
+  byte_order: little_endian
   displays:
     - my_display
   touchscreens:
