@@ -31,7 +31,7 @@ online_image:
 lvgl:
   id: my_lvgl
   log_level: WARN
-  bg_color: 0x101214
+  bg_color: 0x000000
   displays:
     - my_display
   
