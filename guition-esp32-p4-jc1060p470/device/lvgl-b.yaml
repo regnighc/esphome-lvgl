@@ -8,12 +8,11 @@ online_image:
     update_interval: 1min
     on_download_finished:
       then:
-        - lvgl.image.update:
-            id: w_cam_1
+        # Force full display redraw so LVGL re-renders the image widget
+        - component.update: my_display
     on_error:
       then:
-        - lvgl.image.update:
-            id: w_cam_1
+        - component.update: my_display
   - id: online_img_cam_2
     url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
     format: JPEG
@@ -22,12 +21,10 @@ online_image:
     update_interval: 1min
     on_download_finished:
       then:
-        - lvgl.image.update:
-            id: w_cam_2
+        - component.update: my_display
     on_error:
       then:
-        - lvgl.image.update:
-            id: w_cam_2
+        - component.update: my_display
 # Add this at the top level of your file
 
 
