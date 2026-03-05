@@ -32,9 +32,10 @@ lvgl:
   id: my_lvgl
   log_level: WARN
   bg_color: 0x000000
-  draw_rounding: 8
   displays:
     - my_display
+  touchscreens:
+    - my_touchscreen
   
   pages:
     - id: page_0
@@ -91,13 +92,14 @@ lvgl:
             y: 253
             width: 120
             height: 120
-            bg_color: 0xFFF0A0
-            radius: 8
+            bg_color: 0xE5CA3E
+            radius: 12
             border_width: 0
             outline_width: 0
             shadow_width: 0
             clip_corner: true
             on_click:
+              - logger.log: "LVGL: Hallway ON button pressed"
               - homeassistant.service:
                   service: input_button.press
                   data: { entity_id: input_button.hallway_group_on }
@@ -113,13 +115,14 @@ lvgl:
             y: 413
             width: 120
             height: 120
-            bg_color: 0xFFF0A0
-            radius: 8
+            bg_color: 0xE5CA3E
+            radius: 12
             border_width: 0
             outline_width: 0
             shadow_width: 0
             clip_corner: true
             on_click:
+              - logger.log: "LVGL: Hallway OFF button pressed"
               - homeassistant.service:
                   service: input_button.press
                   data: { entity_id: input_button.hallway_group_off }
