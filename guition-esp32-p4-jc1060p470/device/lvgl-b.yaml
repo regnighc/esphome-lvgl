@@ -31,7 +31,7 @@ online_image:
 lvgl:
   id: my_lvgl
   log_level: WARN
-  bg_color: 0x131314
+  bg_color: 0x101214
   displays:
     - my_display
   
@@ -90,7 +90,7 @@ lvgl:
             y: 253
             width: 120
             height: 120
-            bg_color: 0xE5CA3E
+            bg_color: 0xE5B03E
             radius: 5
             on_click:
               - homeassistant.service:
@@ -108,7 +108,7 @@ lvgl:
             y: 413
             width: 120
             height: 120
-            bg_color: 0x555555
+            bg_color: 0x404040
             radius: 5
             on_click:
               - homeassistant.service:
