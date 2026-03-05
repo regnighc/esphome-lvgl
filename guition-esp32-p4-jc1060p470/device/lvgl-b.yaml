@@ -30,7 +30,7 @@ online_image:
 lvgl:
   id: my_lvgl
   log_level: WARN
-  bg_color: 0xFFFFFF  # White (No quotes)
+  bg_color: 0x131314
   displays:
     - my_display
   
@@ -59,7 +59,7 @@ lvgl:
                 return "Syncing...\nPlease wait";
               }
               return now.strftime("%H:%M\n%a, %b %d").c_str();
-            text_color: 0x000000
+            text_color: 0xFFFFFF
             text_align: center
             text_font: statistics_font
 
@@ -71,7 +71,7 @@ lvgl:
             height: 3
             points: [ {x: 0, y: 0}, {x: 301, y: 0} ]
             line_width: 3
-            line_color: 0x000000
+            line_color: 0xFFFFFF
 
         # CAMERA 2
         - image:
@@ -125,5 +125,5 @@ lvgl:
             width: 120
             height: 40
             text: "Hallway"
-            text_color: 0x000000
+            text_color: 0xFFFFFF
             text_align: CENTER
