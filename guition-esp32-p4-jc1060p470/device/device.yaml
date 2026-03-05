@@ -121,6 +121,10 @@ display:
   - platform: mipi_dsi
     id: my_display
     model: JC1060P470
+    # Add these two lines to enable full color
+    pixel_mode: 24
+    color_depth: 24
+    dither: true
     color_order: RGB
     reset_pin:
       number: GPIO05
