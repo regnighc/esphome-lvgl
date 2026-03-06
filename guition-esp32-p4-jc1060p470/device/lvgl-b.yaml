@@ -33,12 +33,6 @@ online_image:
             id: w_cam_2
             src: online_img_cam_2
 # Add this at the top level of your file
-image:
-  - file: online_img_cam_1  # Relative path
-    id: online_img_cam_1_img
-    type: RGB565
-    #resize: 600x1024
-    byte_order: little_endian
 
 
 ################################################################################
@@ -98,7 +92,7 @@ lvgl:
             y: 30
             width: 317
             height: 238
-            src: online_img_cam_1_img
+            src: online_img_cam_1
 
         # CLOCK / DATE
         - label:
