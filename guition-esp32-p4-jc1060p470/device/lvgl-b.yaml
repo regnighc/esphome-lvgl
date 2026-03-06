@@ -60,7 +60,7 @@ color:
 
 lvgl:
   id: my_lvgl
-  #color_depth: 24
+  color_depth: 32
   #color_depth: 16
   log_level: DEBUG
   buffer_size: 100%
