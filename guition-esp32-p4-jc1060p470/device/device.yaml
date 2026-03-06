@@ -13,6 +13,8 @@ esp32:
     sdkconfig_options:
       CONFIG_SPIRAM_XIP_FROM_PSRAM: "y"   # Stop screen flashing during OTA
       CONFIG_SDMMC_HOST_DEFAULT: "y"
+      CONFIG_LV_MEM_CUSTOM: "y"
+      CONFIG_LV_MEM_ADR: "0x48000000" # This forces LVGL into PSRAM space on P4
 
 # Esphome
 esphome:
