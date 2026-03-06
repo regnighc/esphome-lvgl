@@ -13,6 +13,11 @@ wifi:
     - component.update: online_img_cam_1
     - component.update: online_img_cam_2
 
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+ap:
+  ssid: "${device_wifi_name} Hotspot"
+  password: !secret wifi_ap_password
+
 # Packages
 packages:
   setup:
