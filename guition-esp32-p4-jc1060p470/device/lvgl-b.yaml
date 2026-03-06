@@ -33,13 +33,43 @@ online_image:
             id: w_cam_2
             src: online_img_cam_2
 # Add this at the top level of your file
+image:
+  - file: online_img_cam_1  # Relative path
+    id: online_img_cam_1_img
+    type: RGB565
+    #resize: 600x1024
+    byte_order: little_endian
 
+
+################################################################################
+# Colours
+################################################################################
+color:
+  - id: lcars_beige
+    hex: "E6CC99"
+  - id: lcars_blue_gray
+    hex: "99B3CC"
+  - id: black
+    hex: "000000"
+  - id: lcars_white
+    hex: "FFFFFF"
+  - id: lcars_orange
+    hex: "ff8800"
+  - id: lcars_lightblue
+    hex: "6c7acc"
+  - id: lcars_red
+    hex: "eb4e4e"
+  - id: lcars_lightorange
+    hex: "ff9c00"
+  - id: lcars_lavender
+    hex: "cc99ff"
 
 lvgl:
   id: my_lvgl
-  color_depth: 16
-  log_level: WARN
-  bg_color: 0x000000
+  #color_depth: 16
+  log_level: DEBUG
+  buffer_size: 100%
+  #bg_color: 0x000000
   byte_order: little_endian
   displays:
     - my_display
@@ -49,6 +79,18 @@ lvgl:
   pages:
     - id: page_0
       widgets:
+        # Root object with the background image
+        - obj:
+            x: 0
+            y: 0
+            width: 100%
+            height: 100%
+            bg_color: black #0x000000
+            #bg_image_src: lcars_background
+            #bg_image_opa: COVER
+            border_width: 0
+            pad_all: 0
+      widgets:
         # CAMERA 1
         - image:
             id: w_cam_1
@@ -56,7 +98,7 @@ lvgl:
             y: 30
             width: 317
             height: 238
-            src: online_img_cam_1
+            src: online_img_cam_1_img
 
         # CLOCK / DATE
         - label:
