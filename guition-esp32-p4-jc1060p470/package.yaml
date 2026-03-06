@@ -1,5 +1,6 @@
 packages:
   device: !include device/device.yaml
+  storage: !include device/storage.yaml
   sensors: !include device/sensors.yaml
   #lvgl: !include device/lvgl.yaml
   lvgl: !include device/lvgl-b.yaml
