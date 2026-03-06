@@ -179,7 +179,7 @@ display:
 
     # Since your snippet says .dpi_clock_freq_mhz = 51.2
     # We ensure the DSI clock is sufficient
-    data_bit_rate: 400Mbps  # Adjust based on P4 defaults if needed
+    lane_bit_rate: 400Mbps  # Adjust based on P4 defaults if needed
 
 globals:
   - id: display_page
