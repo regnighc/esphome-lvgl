@@ -22,16 +22,16 @@ online_image:
     type: RGB #RGB565
     #resize: 640x480
     update_interval: 1min
-    on_download_finished:
-      then:
-        - lvgl.image.update:
-            id: w_cam_2
-            src: online_img_cam_2
-    on_error:
-      then:
-        - lvgl.image.update:
-            id: w_cam_2
-            src: online_img_cam_2
+    #on_download_finished:
+      #then:
+        #- lvgl.image.update:
+            #id: w_cam_2
+            #src: online_img_cam_2
+    #on_error:
+      #then:
+        #- lvgl.image.update:
+            #id: w_cam_2
+            #src: online_img_cam_2
 # Add this at the top level of your file
 
 
