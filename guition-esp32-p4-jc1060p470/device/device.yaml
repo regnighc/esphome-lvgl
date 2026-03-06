@@ -147,7 +147,7 @@ display:
     auto_clear_enabled: false
     #hsync_pulse_width: 20     # The only difference to the examples provided
     # Match the resolution from your code snippet
-    pixel_mode: 24bit
+    #pixel_mode: 24bit
     color_depth: 24
     
     # Timing parameters from your snippet:
