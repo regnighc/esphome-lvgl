@@ -5,7 +5,6 @@ esp32:
   cpu_frequency: 360MHZ
   framework:
     type: esp-idf
-    version: recommended
     advanced:
       enable_idf_experimental_features: true
       disable_vfs_support_termios: false
