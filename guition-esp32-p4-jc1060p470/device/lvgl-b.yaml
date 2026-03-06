@@ -19,7 +19,7 @@ online_image:
   - id: online_img_cam_2
     url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
     format: JPEG
-    type: RGB888 #RGB565
+    type: RGB #RGB565
     #resize: 640x480
     update_interval: 1min
     on_download_finished:
@@ -87,15 +87,27 @@ lvgl:
             pad_all: 0
       widgets:
         # CAMERA 1
-        - image:
-            id: w_cam_1
+         #- image:
+            #id: w_cam_1
+            #x: 663
+            #y: 30
+            #width: 317
+            #height: 238
+            #src: online_img_cam_1
+            #antialias: true
+            #mode: virtual
+
+        - obj:
             x: 663
             y: 30
             width: 317
             height: 238
-            src: online_img_cam_1
-            antialias: true
-            mode: virtual
+            bg_color: 0xFF0000  # Pure Red
+            widgets:
+              - label:
+                  text: "COLOR TEST"
+                  align: CENTER
+                  text_color: 0xFFFFFF
 
         # CLOCK / DATE
         - label:
