@@ -54,6 +54,25 @@ ota:
 
 # Enable Home Assistant API
 api:
+  id: ha_api
+  encryption:
+    key: !secret ha_api_pw
+  on_client_connected:
+    - if:
+        condition:
+          lambda: 'return (0 == client_info.find("Home Assistant "));'
+        then:
+          - lvgl.label.update:
+              id: lbl_hastatus
+              text: "$wifi"
+  on_client_disconnected:
+    - if:
+        condition:
+          lambda: 'return (0 == client_info.find("Home Assistant "));'
+        then:
+          - lvgl.label.update:
+              id: lbl_hastatus
+              text: "$wifi_off"
   # This service allows Home Assistant to force a camera refresh
   services:
     - service: refresh_frigate_images
