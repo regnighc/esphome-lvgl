@@ -153,8 +153,8 @@ display:
     id: my_display
     model: JC1060P470
     # Add these two lines to enable full color
-    pixel_mode: 24bit
-    color_depth: 24
+    #pixel_mode: 24bit
+    #color_depth: 24
     draw_rounding: 4
     #color_order: RGB
     reset_pin:
@@ -162,7 +162,25 @@ display:
     rotation: 90
     update_interval: never
     auto_clear_enabled: false
-    hsync_pulse_width: 20     # The only difference to the examples provided
+    #hsync_pulse_width: 20     # The only difference to the examples provided
+    # Match the resolution from your code snippet
+    width: 1024
+    height: 600
+    pixel_mode: 24bit
+    color_depth: 24
+    
+    # Timing parameters from your snippet:
+    hsync_pulse_width: 24
+    hsync_back_porch: 136
+    hsync_front_porch: 160
+    
+    vsync_pulse_width: 2
+    vsync_back_porch: 21
+    vsync_front_porch: 12
+
+    # Since your snippet says .dpi_clock_freq_mhz = 51.2
+    # We ensure the DSI clock is sufficient
+    data_rate: 400Mbps  # Adjust based on P4 defaults if needed
 
 globals:
   - id: display_page
