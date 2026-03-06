@@ -151,13 +151,13 @@ display:
     color_depth: 24
     
     # Timing parameters from your snippet:
-    hsync_pulse_width: 24
-    hsync_back_porch: 136
-    hsync_front_porch: 160
+    #hsync_pulse_width: 24
+    #hsync_back_porch: 136
+    #hsync_front_porch: 160
     
-    vsync_pulse_width: 2
-    vsync_back_porch: 21
-    vsync_front_porch: 12
+    #vsync_pulse_width: 2
+    #vsync_back_porch: 21
+    #vsync_front_porch: 12
 
     # Since your snippet says .dpi_clock_freq_mhz = 51.2
     # We ensure the DSI clock is sufficient
