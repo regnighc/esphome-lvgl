@@ -2,17 +2,10 @@
 esp32:
   variant: ESP32P4
   flash_size: 16MB
-  cpu_frequency: 400MHz
   framework:
     type: esp-idf
     advanced:
       enable_idf_experimental_features: true
-      disable_vfs_support_termios: false
-      disable_vfs_support_select: false
-      disable_vfs_support_dir: false
-    sdkconfig_options:
-      CONFIG_SPIRAM_XIP_FROM_PSRAM: "y"   # Stop screen flashing during OTA
-      CONFIG_SDMMC_HOST_DEFAULT: "y"
 
 # Esphome
 esphome:
@@ -21,6 +14,23 @@ esphome:
   area: ${room}
   platformio_options:
     board_build.flash_mode: dio
+
+# Secondary ESP32-C6 device for connectivity
+esp32_hosted:
+  variant: esp32c6
+  reset_pin: GPIO54
+  cmd_pin: GPIO19
+  clk_pin: GPIO18
+  d0_pin: GPIO14
+  d1_pin: GPIO15
+  d2_pin: GPIO16
+  d3_pin: GPIO17
+  active_high: true
+
+# Video memory
+psram:
+  mode: hex
+  speed: 200MHz
 
 # Over the Air Updates
 ota:
@@ -35,27 +45,8 @@ logger:
 
 # External components
 external_components:
-  - source: github://willumpie82/esphome@dev
-    components: [mipi_dsi]
   - source: github://kvj/esphome@jd9365_gsl3680
     components: [gsl3680]
-
-# Video memory
-psram:
-  mode: hex
-  speed: 200MHz
-
-# Secondary ESP32-C6 device for connectivity
-esp32_hosted:
-  variant: esp32c6
-  reset_pin: GPIO54
-  cmd_pin: GPIO19
-  clk_pin: GPIO18
-  d0_pin: GPIO14
-  d1_pin: GPIO15
-  d2_pin: GPIO16
-  d3_pin: GPIO17
-  active_high: true
 
 # Power management
 esp_ldo:
@@ -79,20 +70,6 @@ light:
     default_transition_length: 0s
     gamma_correct: 1.0
 
-# Display
-display:
-  - platform: mipi_dsi
-    model: JC8012P4A1
-    reset_pin: GPIO27
-    update_interval: 17ms
-    id: my_display
-    rotation: 180
-    auto_clear_enabled: false
-    color_order: RGB
-    dimensions:
-      width: 800
-      height: 1280
-
 # I2C
 i2c:
   - id: i2c_bus_a
@@ -113,13 +90,6 @@ touchscreen:
       swap_xy: false
       mirror_x: false
       mirror_y: true
-    on_touch:
-      then:
-        - lvgl.label.update:
-            id: txtlbl
-            text:
-              format: "Touch at %d/%d"
-              args: [touch.x, touch.y]
     on_release:
       then:
         - if:
@@ -128,3 +98,17 @@ touchscreen:
               - light.turn_on: display_backlight
               - lvgl.resume:
               - lvgl.widget.redraw:
+
+# Display
+display:
+  - platform: mipi_dsi
+    model: JC8012P4A1
+    reset_pin: GPIO27
+    update_interval: 17ms
+    id: my_display
+    rotation: 180
+    auto_clear_enabled: false
+    color_order: RGB
+    dimensions:
+      width: 800
+      height: 1280
