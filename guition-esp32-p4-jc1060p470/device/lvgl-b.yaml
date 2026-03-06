@@ -94,6 +94,8 @@ lvgl:
             width: 317
             height: 238
             src: online_img_cam_1
+            antialias: true
+            mode: virtual
 
         # CLOCK / DATE
         - label:
