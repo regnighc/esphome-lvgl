@@ -6,7 +6,7 @@ packages:
   lvgl: !include device/lvgl-b.yaml
   time: !include addon/time.yaml
   backlight: !include addon/backlight.yaml
-  network: !include addon/network.yaml
+  #network: !include addon/network.yaml
   fonts: !include assets/fonts.yaml
   icons: !include assets/icons.yaml
   button: !include theme/button.yaml
