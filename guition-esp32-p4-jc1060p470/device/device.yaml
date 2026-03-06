@@ -153,12 +153,12 @@ display:
     id: my_display
     model: JC1060P470
     # Add these two lines to enable full color
-    pixel_mode: 24
-    color_depth: 16
-    color_order: RGB
+    #pixel_mode: 24
+    #color_depth: 16
+    #color_order: RGB
     reset_pin:
       number: GPIO05
-    rotation: 0
+    rotation: 90
     update_interval: never
     auto_clear_enabled: false
     hsync_pulse_width: 20     # The only difference to the examples provided
