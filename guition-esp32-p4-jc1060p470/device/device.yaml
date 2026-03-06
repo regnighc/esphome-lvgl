@@ -50,6 +50,7 @@ psram:
 # Over the Air Updates
 ota:
   platform: esphome
+  password: !secret ota_pw
 
 # Enable Home Assistant API
 api:
