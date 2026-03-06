@@ -59,8 +59,15 @@ api:
       then:
         - component.update: online_img_cam_1
         - component.update: online_img_cam_2
+
+web_server:
+  port: 80
+  version: 3
+  include_internal: true
+  
 # Enable logging
 logger:
+  level: DEBUG
 
 # Power management
 esp_ldo:
@@ -115,6 +122,10 @@ touchscreen:
     i2c_id: bus_a
     reset_pin: GPIO22
     interrupt_pin: GPIO21
+    transform:
+      swap_xy: true
+      mirror_x: false
+      mirror_y: true
 
 # Display
 display:
