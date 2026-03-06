@@ -85,7 +85,7 @@ lvgl:
             #bg_image_opa: COVER
             border_width: 0
             pad_all: 0
-      widgets:
+      #widgets:
         # CAMERA 1
          #- image:
             #id: w_cam_1
