@@ -3,7 +3,7 @@ online_image:
   - id: online_img_cam_1
     url: "http://192.168.2.127:5566/api/B2C4/person/snapshot.jpg"
     format: JPEG
-    type: RGB888 #RGB565
+    type: RGB #RGB565
     #resize: 640x480
     update_interval: 1min
     on_download_finished:
