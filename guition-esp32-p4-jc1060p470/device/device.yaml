@@ -142,7 +142,7 @@ display:
     #color_order: RGB
     reset_pin:
       number: GPIO05
-    rotation: 90
+    rotation: 0 #90
     update_interval: never
     auto_clear_enabled: false
     #hsync_pulse_width: 20     # The only difference to the examples provided
@@ -162,7 +162,7 @@ display:
 
     # Since your snippet says .dpi_clock_freq_mhz = 51.2
     # We ensure the DSI clock is sufficient
-    lane_bit_rate: 400Mbps  # Adjust based on P4 defaults if needed
+    #lane_bit_rate: 400Mbps  # Adjust based on P4 defaults if needed
 
 globals:
   - id: display_page
