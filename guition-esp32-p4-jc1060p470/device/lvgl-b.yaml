@@ -92,26 +92,25 @@ lvgl:
             border_width: 0
             pad_all: 0
             
-      widgets:
-         # CAMERA 1
-         - image:
-            id: w_cam_1
-            x: 663
-            y: 30
-            width: 320
-            height: 240
-            src: online_img_cam_1
-            antialias: true
-            mode: virtual
+       # CAMERA 1
+       - image:
+          id: w_cam_1
+          x: 663
+          y: 30
+          width: 320
+          height: 240
+          src: online_img_cam_1
+          antialias: true
+          mode: virtual
 
-        # CAMERA 2
-        - image:
-            id: w_cam_2
-            x: 663
-            y: 294
-            width: 320
-            height: 240
-            src: online_img_cam_2
+      # CAMERA 2
+      - image:
+          id: w_cam_2
+          x: 663
+          y: 294
+          width: 320
+          height: 240
+          src: online_img_cam_2
 
         # CLOCK / DATE
         - label:
