@@ -16,12 +16,18 @@ online_image:
         #- lvgl.image.update:
             #id: w_cam_1
             #src: online_img_cam_1
-  - id: online_img_cam_2
-    url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
-    format: JPEG
-    type: RGB565 #RGB565
+
+
+online_image:
+  - url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
+    id: online_img_cam_2
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    placeholder: album_art_placeholder
     resize: 320x240
     update_interval: 1min
+    buffer_size: 131072
     on_download_finished:
       then:
         - lvgl.image.update:
@@ -32,7 +38,6 @@ online_image:
         - lvgl.image.update:
             id: w_cam_2
             src: online_img_cam_2
-# Add this at the top level of your file
 
 
 ################################################################################
