@@ -7,7 +7,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    resize: 320x240
+    #resize: 320x240
     update_interval: 1min
     buffer_size: 131072
     on_download_finished:
@@ -26,7 +26,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    resize: 320x240
+    #resize: 320x240
     update_interval: 1min
     buffer_size: 131072
     #on_download_finished:
@@ -91,29 +91,17 @@ lvgl:
             #bg_image_opa: COVER
             border_width: 0
             pad_all: 0
-      #widgets:
-        # CAMERA 1
-         #- image:
-            #id: w_cam_1
-            #x: 663
-            #y: 30
-            #width: 317
-            #height: 238
-            #src: online_img_cam_1
-            #antialias: true
-            #mode: virtual
-
-        - obj:
+      widgets:
+         CAMERA 1
+         - image:
+            id: w_cam_1
             x: 663
             y: 30
-            width: 317
-            height: 238
-            bg_color: 0xFF0000  # Pure Red
-            widgets:
-              - label:
-                  text: "COLOR TEST"
-                  align: CENTER
-                  text_color: 0xFFFFFF
+            width: 320
+            height: 240
+            src: online_img_cam_1
+            antialias: true
+            mode: virtual
 
         # CLOCK / DATE
         - label:
@@ -147,8 +135,8 @@ lvgl:
             id: w_cam_2
             x: 663
             y: 294
-            width: 317
-            height: 238
+            width: 320
+            height: 240
             src: online_img_cam_2
 
         # HALLWAY CONTROLS (Simplfied)
@@ -206,7 +194,7 @@ lvgl:
 
         - label:
             x: 35
-            y: 373
+            y: 363
             width: 120
             height: 40
             text: "Hallway"
