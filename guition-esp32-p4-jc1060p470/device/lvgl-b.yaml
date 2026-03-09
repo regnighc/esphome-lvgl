@@ -138,6 +138,7 @@ lvgl:
 
         # CAMERA 2
         - image:
+            byte_order: little_endian
             id: w_cam_2
             x: 663
             y: 294
