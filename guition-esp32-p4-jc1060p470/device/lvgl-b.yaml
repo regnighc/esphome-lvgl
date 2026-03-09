@@ -93,24 +93,24 @@ lvgl:
             pad_all: 0
             
        # CAMERA 1
-       - image:
-          id: w_cam_1
-          x: 663
-          y: 30
-          width: 320
-          height: 240
-          src: online_img_cam_1
-          antialias: true
-          mode: virtual
+        - image:
+            id: w_cam_1
+            x: 663
+            y: 30
+            width: 320
+            height: 240
+            src: online_img_cam_1
+            antialias: true
+            mode: virtual
 
       # CAMERA 2
-      - image:
-          id: w_cam_2
-          x: 663
-          y: 294
-          width: 320
-          height: 240
-          src: online_img_cam_2
+        - image:
+            id: w_cam_2
+            x: 663
+            y: 294
+            width: 320
+            height: 240
+            src: online_img_cam_2
 
         # CLOCK / DATE
         - label:
