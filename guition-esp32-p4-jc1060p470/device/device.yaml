@@ -131,7 +131,7 @@ touchscreen:
     interrupt_pin: GPIO21
     transform:
       swap_xy: true
-      mirror_x: false
+      mirror_x: true
       mirror_y: true
 
 # Display
