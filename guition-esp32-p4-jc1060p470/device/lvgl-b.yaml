@@ -103,9 +103,9 @@ lvgl:
             layout:
               type: flex
               flex_flow: ROW
-              flex_align_main: CENTER
-              flex_align_cross: CENTER
-              flex_track_cross: CENTER
+              flex_align_main: CENTER  # Horizontal alignment
+              flex_align_cross: CENTER # Vertical alignment
+              flex_track_align: CENTER # Alignment of the "track" itself
             widgets:
               # Home Button (Active State)
               - button:
@@ -267,9 +267,9 @@ lvgl:
             layout:
               type: flex
               flex_flow: ROW
-              flex_align_main: CENTER
-              flex_align_cross: CENTER
-              flex_track_cross: CENTER
+              flex_align_main: CENTER  # Horizontal alignment
+              flex_align_cross: CENTER # Vertical alignment
+              flex_track_align: CENTER # Alignment of the "track" itself
             widgets:
               # Home Button
               - button:
