@@ -78,7 +78,7 @@ lvgl:
     - my_touchscreen
   
   pages:
-    - id: page_0
+    - id: main_page
       widgets:
         # Root object with the background image
         - obj:
@@ -91,6 +91,47 @@ lvgl:
             #bg_image_opa: COVER
             border_width: 0
             pad_all: 0
+      # --- NAVIGATION BAR (Duplicate 1) ---
+        - obj:
+            width: 100%
+            height: 90
+            align: BOTTOM_MID
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            border_color: 0x333333
+            layout:
+              type: flex
+              flex_flow: ROW
+              flex_align_main: CENTER
+              flex_align_cross: CENTER
+              flex_track_cross: CENTER
+            widgets:
+              # Home Button (Active State)
+              - button:
+                  width: 70
+                  height: 70
+                  bg_color: 0x2196F3 # Highlighted because we are on Home
+                  widgets:
+                    - label: { text: "HOME" } # Or use a symbol if you have fonts
+              
+              # Page Title
+              - label:
+                  text: "MAIN DASHBOARD"
+                  width: 300
+                  text_align: CENTER
+                  pad_left: 50
+                  pad_right: 50
+
+              # Test Bed Button
+              - button:
+                  width: 70
+                  height: 70
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: test_page
+                  widgets:
+                    - label: { text: "TEST" }
             
        # CAMERA 1
         - image:
@@ -200,3 +241,58 @@ lvgl:
             text: "Hallway"
             text_color: 0xFFFFFF
             text_align: CENTER
+
+# ==========================================
+    # PAGE 2: TEST BED
+    # ==========================================
+    - id: test_page
+      bg_color: 0x101010
+      widgets:
+        # --- Placeholder for Experiments ---
+        - label:
+            text: "Test Bed Experiments"
+            align: CENTER
+            y: -50
+            text_color: 0x00FF00
+
+        # --- NAVIGATION BAR (Duplicate 2) ---
+        - obj:
+            width: 100%
+            height: 90
+            align: BOTTOM_MID
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            border_color: 0x333333
+            layout:
+              type: flex
+              flex_flow: ROW
+              flex_align_main: CENTER
+              flex_align_cross: CENTER
+              flex_track_cross: CENTER
+            widgets:
+              # Home Button
+              - button:
+                  width: 70
+                  height: 70
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: main_page
+                  widgets:
+                    - label: { text: "HOME" }
+              
+              # Page Title
+              - label:
+                  text: "TEST BED"
+                  width: 300
+                  text_align: CENTER
+                  pad_left: 50
+                  pad_right: 50
+
+              # Test Bed Button (Active State)
+              - button:
+                  width: 70
+                  height: 70
+                  bg_color: 0x2196F3 # Highlighted because we are on Test
+                  widgets:
+                    - label: { text: "TEST" }
