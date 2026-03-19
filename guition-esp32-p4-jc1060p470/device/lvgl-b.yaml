@@ -125,7 +125,7 @@ lvgl:
                     - label:
                         id: main_clock
                         width: 320
-                        text:!lambda |-
+                        text: !lambda |-
                           auto now = id(sntp_time).now();
                           if (!now.is_valid()) {
                             return "Syncing...\nPlease wait";
