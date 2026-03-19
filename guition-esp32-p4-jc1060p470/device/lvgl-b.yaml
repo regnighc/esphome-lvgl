@@ -97,22 +97,18 @@ lvgl:
         - obj:
             id: main_content_area
             width: 100%
-            # CRITICAL: Instructs layout engine to consume all remaining height
-            flex_grow: 1  
+            flex_grow: 1
             bg_opa: TRANSP
             border_width: 0
             pad_all: 10
-            scroll_dir: "y" # Restrict to vertical scrolling
-            # Utilize flex wrap for responsive grid-like button placement
-            layout:
+            scroll_dir: VER  # Corrected from "y"
+            layout: 
               type: flex
               flex_flow: row_wrap
               flex_align_main: center
               flex_align_cross: start
-              pad_row: 20
-              pad_column: 20
-            widgets:
               
+            widgets:             
               # Example Dashboard Element: Dynamic Clock
               - label:
                   id: main_clock
