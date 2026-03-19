@@ -64,235 +64,205 @@ color:
   - id: lcars_lavender
     hex: "cc99ff"
 
+# LVGL User Interface Paradigm
 lvgl:
   id: my_lvgl
-  #color_depth: 32
   color_depth: 16
-  log_level: DEBUG
+  # Ensure maximum buffer allocation for tearing prevention
   buffer_size: 100%
-  #bg_color: 0x000000
   byte_order: little_endian
   displays:
     - my_display
   touchscreens:
     - my_touchscreen
-  
+
   pages:
+    # =============================================================
+    # ROOT PAGE: MAIN DASHBOARD
+    # =============================================================
     - id: main_page
+      # Enforce vertical stacking to separate content from navigation
+      layout:
+        type: flex
+        flex_flow: column
+      width: 100%
+      height: 100%
+      bg_color: 0x000000
+      pad_all: 0
+
       widgets:
-        # Root object with the background image
+        # ---------------------------------------------------------
+        # ZONE 1: SCROLLABLE MAIN CONTENT
+        # ---------------------------------------------------------
         - obj:
-            x: 0
-            y: 0
+            id: main_content_area
             width: 100%
-            height: 100%
-            bg_color: black #0x000000
-            #bg_image_src: lcars_background
-            #bg_image_opa: COVER
+            # CRITICAL: Instructs layout engine to consume all remaining height
+            flex_grow: 1  
+            bg_opa: TRANSP
             border_width: 0
-            pad_all: 0
-      # --- NAVIGATION BAR (Duplicate 1) ---
+            pad_all: 10
+            scroll_dir: "y" # Restrict to vertical scrolling
+            # Utilize flex wrap for responsive grid-like button placement
+            layout:
+              type: flex
+              flex_flow: row_wrap
+              flex_align_main: center
+              flex_align_cross: start
+              pad_row: 20
+              pad_column: 20
+            widgets:
+              
+              # Example Dashboard Element: Dynamic Clock
+              - label:
+                  id: main_clock
+                  width: 320
+                  text: "00:00"
+                  text_color: 0xFFFFFF
+                  text_align: center
+                  text_font: statistics_font
+
+              # Example Dashboard Element: Action Button
+              - button:
+                  id: btn_hall_on
+                  width: 180
+                  height: 140
+                  bg_color: 0x313131
+                  radius: 12
+                  # Use on_click to verify intentional actuation
+                  on_click:
+                    - homeassistant.service:
+                        service: input_button.press
+                        data: { entity_id: input_button.hallway_group_on }
+                  widgets:
+                    - label:
+                        align: center
+                        text: "HALLWAY\nON"
+                        text_align: center
+                        text_color: 0xFFFFFF
+
+        # ---------------------------------------------------------
+        # ZONE 2: FIXED BOTTOM NAVIGATION BAR
+        # ---------------------------------------------------------
         - obj:
+            id: nav_bar_main
             width: 100%
-            height: 90
-            align: BOTTOM_MID
+            height: 100
+            # CRITICAL: Prevent scroll engines from stealing touch events
+            scrollable: false  
             bg_color: 0x1A1A1A
             border_width: 1
             border_side: TOP
             border_color: 0x333333
+            # Distribute navigation items evenly across the width
             layout:
               type: flex
-              flex_flow: ROW
-              flex_align_main: CENTER   # Horizontal: Centers buttons/title in the row
-              flex_align_cross: CENTER  # Vertical: Centers items top-to-bottom within the bar
-              flex_align_track: CENTER  # Track: Centers the entire group of rows if they wrap
+              flex_flow: row
+              flex_align_main: space_evenly 
+              flex_align_cross: center
             widgets:
-              # Home Button (Active State)
+              # Active Navigation Button
               - button:
-                  width: 70
+                  width: 140
                   height: 70
-                  bg_color: 0x2196F3 # Highlighted because we are on Home
+                  bg_color: 0x2196F3 # Blue highlight indicates active page
                   widgets:
-                    - label: { text: "HOME" } # Or use a symbol if you have fonts
+                    - label: 
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
               
-              # Page Title
+              # Central Status Indicator
               - label:
-                  text: "MAIN DASHBOARD"
+                  text: "DASHBOARD ACTIVE"
                   width: 300
-                  text_align: CENTER
-                  pad_left: 50
-                  pad_right: 50
+                  text_align: center
+                  text_color: 0x888888
 
-              # Test Bed Button
+              # Inactive Navigation Button: Route to Next Page
               - button:
-                  width: 70
+                  width: 140
                   height: 70
                   bg_color: 0x2A2A2A
                   on_click:
                     - lvgl.page.show: test_page
                   widgets:
-                    - label: { text: "TEST" }
-            
-       # CAMERA 1
-        - image:
-            id: w_cam_1
-            x: 663
-            y: 30
-            width: 320
-            height: 240
-            src: online_img_cam_1
-            antialias: true
-            mode: virtual
+                    - label: 
+                        text: "TEST"
+                        align: center
+                        text_color: 0xFFFFFF
 
-      # CAMERA 2
-        - image:
-            id: w_cam_2
-            x: 663
-            y: 294
-            width: 320
-            height: 240
-            src: online_img_cam_2
-
-        # CLOCK / DATE
-        - label:
-            id: main_clock
-            x: 76
-            y: 11
-            width: 320
-            height: 160
-            text: !lambda |-
-              auto now = id(sntp_time).now();
-              if (!now.is_valid()) {
-                return "Syncing...\nPlease wait";
-              }
-              return now.strftime("%H:%M\n%a, %b %d").c_str();
-            text_color: 0xFFFFFF
-            text_align: center
-            text_font: statistics_font
-
-        # SEPARATOR LINE
-        - line:
-            x: 35
-            y: 123
-            width: 301
-            height: 3
-            points: [ {x: 0, y: 0}, {x: 301, y: 0} ]
-            line_width: 3
-            line_color: 0xFFFFFF
-
-        # HALLWAY CONTROLS (Simplfied)
-        - button:
-            id: btn_hall_on
-            x: 35
-            y: 253
-            width: 120
-            height: 120
-            bg_color: 0xE5CA3E
-            radius: 12
-            border_width: 2
-            border_color: 0xC0A020
-            shadow_width: 8
-            shadow_opa: 80%
-            shadow_color: 0x000000
-            shadow_ofs_y: 4
-            clip_corner: true
-            on_click:
-              - logger.log: "LVGL: Hallway ON button pressed"
-              - homeassistant.service:
-                  service: input_button.press
-                  data: { entity_id: input_button.hallway_group_on }
-            widgets:
-              - label:
-                  align: center
-                  text: "ON"
-                  text_color: 0x000000
-
-        - button:
-            id: btn_hall_off
-            x: 35
-            y: 413
-            width: 120
-            height: 120
-            bg_color: 0xE5CA3E
-            radius: 12
-            border_width: 2
-            border_color: 0xC0A020
-            shadow_width: 8
-            shadow_opa: 80%
-            shadow_color: 0x000000
-            shadow_ofs_y: 4
-            clip_corner: true
-            on_click:
-              - logger.log: "LVGL: Hallway OFF button pressed"
-              - homeassistant.service:
-                  service: input_button.press
-                  data: { entity_id: input_button.hallway_group_off }
-            widgets:
-              - label:
-                  align: center
-                  text: "OFF"
-                  text_color: 0xFFFFFF
-
-        - label:
-            x: 35
-            y: 363
-            width: 120
-            height: 40
-            text: "Hallway"
-            text_color: 0xFFFFFF
-            text_align: CENTER
-
-# ==========================================
-    # PAGE 2: TEST BED
-    # ==========================================
+    # =============================================================
+    # SECONDARY PAGE: TEST ENVIRONMENT
+    # =============================================================
     - id: test_page
+      layout:
+        type: flex
+        flex_flow: column
+      width: 100%
+      height: 100%
       bg_color: 0x101010
-      widgets:
-        # --- Placeholder for Experiments ---
-        - label:
-            text: "Test Bed Experiments"
-            align: CENTER
-            y: -50
-            text_color: 0x00FF00
+      pad_all: 0
 
-        # --- NAVIGATION BAR (Duplicate 2) ---
+      widgets:
         - obj:
+            id: test_content_area
             width: 100%
-            height: 90
-            align: BOTTOM_MID
+            flex_grow: 1
+            bg_opa: TRANSP
+            border_width: 0
+            layout:
+              type: flex
+              flex_flow: column
+              flex_align_main: center
+              flex_align_cross: center
+            widgets:
+              - label:
+                  text: "Test Bed Experiments"
+                  text_color: 0x00FF00
+                  text_font: label_font
+
+        - obj:
+            id: nav_bar_test
+            width: 100%
+            height: 100
+            scrollable: false 
             bg_color: 0x1A1A1A
             border_width: 1
             border_side: TOP
             border_color: 0x333333
             layout:
               type: flex
-              flex_flow: ROW
-              flex_align_main: CENTER   # Horizontal: Centers buttons/title in the row
-              flex_align_cross: CENTER  # Vertical: Centers items top-to-bottom within the bar
-              flex_align_track: CENTER  # Track: Centers the entire group of rows if they wrap
+              flex_flow: row
+              flex_align_main: space_evenly 
+              flex_align_cross: center
             widgets:
-              # Home Button
+              # Route Back to Main Page
               - button:
-                  width: 70
+                  width: 140
                   height: 70
                   bg_color: 0x2A2A2A
                   on_click:
                     - lvgl.page.show: main_page
                   widgets:
-                    - label: { text: "HOME" }
+                    - label: 
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
               
-              # Page Title
               - label:
-                  text: "TEST BED"
+                  text: "TEST ENVIRONMENT"
                   width: 300
-                  text_align: CENTER
-                  pad_left: 50
-                  pad_right: 50
+                  text_align: center
+                  text_color: 0x888888
 
-              # Test Bed Button (Active State)
+              # Active Navigation Button
               - button:
-                  width: 70
+                  width: 140
                   height: 70
-                  bg_color: 0x2196F3 # Highlighted because we are on Test
+                  bg_color: 0x2196F3
                   widgets:
-                    - label: { text: "TEST" }
+                    - label: 
+                        text: "TEST"
+                        align: center
+                        text_color: 0xFFFFFF

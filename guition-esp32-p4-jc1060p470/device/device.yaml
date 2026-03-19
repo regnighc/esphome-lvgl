@@ -7,14 +7,17 @@ esp32:
     type: esp-idf
     advanced:
       enable_idf_experimental_features: true
-      disable_vfs_support_termios: false
-      disable_vfs_support_select: false
-      disable_vfs_support_dir: false
     sdkconfig_options:
-      CONFIG_SPIRAM_XIP_FROM_PSRAM: "y"   # Stop screen flashing during OTA
-      CONFIG_SDMMC_HOST_DEFAULT: "y"
+      # Route LVGL heap entirely into PSRAM
       CONFIG_LV_MEM_CUSTOM: "y"
-      CONFIG_LV_MEM_ADR: "0x48000000" # This forces LVGL into PSRAM space on P4
+      CONFIG_LV_MEM_ADR: "0x48000000"
+      CONFIG_SPIRAM_XIP_FROM_PSRAM: "y"
+
+
+# Video memory
+psram:
+  mode: hex
+  speed: 200MHz
 
 # Esphome
 esphome:
@@ -46,10 +49,6 @@ esp32_hosted:
   d3_pin: GPIO17
   active_high: true
 
-# Video memory
-psram:
-  mode: hex
-  speed: 200MHz
 
 # Over the Air Updates
 ota:
@@ -109,8 +108,6 @@ i2c:
     sda: GPIO07
     scl: GPIO08
     frequency: 400kHz
-    sda_pullup_enabled: False
-    scl_pullup_enabled: False
 
 i2c_device:
   - id: i2cdev1
@@ -130,22 +127,19 @@ touchscreen:
     reset_pin: GPIO22
     interrupt_pin: GPIO21
     transform:
-      swap_xy: true
+      # CRITICAL: Disabled to match 1024x600 native landscape
+      swap_xy: false
+      # Mirror parameters depend on factory flex cable bonding
       mirror_x: false
-      mirror_y: true
+      mirror_y: false
 
 # Display
 display:
   - platform: mipi_dsi
     id: my_display
     model: JC1060P470
-    # Add these two lines to enable full color
-    #pixel_mode: 24bit
-    #color_depth: 24
-    draw_rounding: 2
-    #color_order: RGB
-    reset_pin:
-      number: GPIO05
+    #draw_rounding: 2
+    reset_pin: GPIO05
     rotation: 0 #90
     update_interval: never
     auto_clear_enabled: false
