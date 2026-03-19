@@ -22,5 +22,6 @@ ap:
 packages:
   setup:
     url: https://github.com/regnighc/esphome-lvgl
+    ref: Gem1
     file: guition-esp32-p4-jc1060p470/package.yaml
     refresh: 1sec
