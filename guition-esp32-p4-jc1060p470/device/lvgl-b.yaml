@@ -159,30 +159,43 @@ lvgl:
                           pad_row: 15
                         widgets:
                           # HALLWAY ON BUTTON
-                          - button:
-                              id: btn_hall_on
+                          # HALLWAY SQUARE BRIGHTNESS SLIDER
+                          - slider:
+                              id: hallway_brightness_slider
                               width: 120
                               height: 120
-                              bg_color: 0xE5CA3E
+                              min_value: 0
+                              max_value: 255
+                              #pad_top: 20
+                              
+                              # Main background (the empty track)
+                              bg_color: 0x313131
                               radius: 12
-                              border_width: 2
-                              border_color: 0xC0A020
-                              shadow_width: 8
-                              shadow_opa: 80%
-                              shadow_color: 0x000000
-                              shadow_ofs_y: 4
-                              clip_corner: true
-                              on_click:
-                                - logger.log: "LVGL: Hallway ON button pressed"
+                              
+                              # Indicator (the yellow fill)
+                              indicator:
+                                bg_color: 0xE5CA3E
+                                radius: 12
+                                
+                              # Knob styling (hidden to make it look like a flat bar)
+                              knob:
+                                bg_opa: TRANSP 
+                              
+                              # Dispatch ONLY when the finger is lifted
+                              on_release:
                                 - homeassistant.service:
-                                    service: input_button.press
-                                    data: { entity_id: input_button.hallway_group_on }
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.hallway_overhead_group
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
                               widgets:
                                 - label:
                                     align: center
-                                    text: "ON"
+                                    text: "Hallway"
                                     text_color: 0x000000
-
                           # HALLWAY LABEL
                           - label:
                               width: 120
@@ -215,38 +228,7 @@ lvgl:
                                     text: "OFF"
                                     text_color: 0xFFFFFF
 
-                    # HALLWAY SQUARE BRIGHTNESS SLIDER
-                    - slider:
-                        id: hallway_brightness_slider
-                        width: 120
-                        height: 120
-                        min_value: 0
-                        max_value: 255
-                        pad_top: 20
-                        
-                        # Main background (the empty track)
-                        bg_color: 0x313131
-                        radius: 12
-                        
-                        # Indicator (the yellow fill)
-                        indicator:
-                          bg_color: 0xE5CA3E
-                          radius: 12
-                          
-                        # Knob styling (hidden to make it look like a flat bar)
-                        knob:
-                          bg_opa: TRANSP 
-                        
-                        # Dispatch ONLY when the finger is lifted
-                        on_release:
-                          - homeassistant.service:
-                              service: light.turn_on
-                              data:
-                                entity_id: light.hallway_overhead_group
-                              data_template:
-                                brightness: "{{ slider_val }}"
-                              variables:
-                                slider_val: !lambda "return (int)x;"
+
 
               # --- RIGHT COLUMN (Cameras) ---
               - obj:
