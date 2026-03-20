@@ -243,8 +243,7 @@ lvgl:
                               data:
                                 entity_id: light.hallway_overhead_group
                                 # Extract the final value via pure LVGL C++ and cast to an integer
-                                brightness: !lambda |-
-                                  return (int)lv_bar_get_value(id(hallway_brightness_slider).get_obj());
+                                brightness: !lambda "return int(x);"
 
               # --- RIGHT COLUMN (Cameras) ---
               - obj:
