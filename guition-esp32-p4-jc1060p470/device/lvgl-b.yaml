@@ -99,8 +99,8 @@ lvgl:
             flex_grow: 1
             bg_opa: TRANSP
             border_width: 0
-            pad_all: 20
-            scroll_dir: VER
+            pad_all: 5
+            #scroll_dir: VER
             layout: 
               type: flex
               flex_flow: row
@@ -148,7 +148,7 @@ lvgl:
                         bg_opa: TRANSP
                         border_width: 0
                         # Shift down ~4x the standard 15px gap
-                        pad_top: 60  
+                        pad_top: 40  
                         layout:
                           type: flex
                           flex_flow: column
@@ -173,8 +173,8 @@ lvgl:
                               on_click:
                                 - logger.log: "LVGL: Hallway ON button pressed"
                                 - homeassistant.service:
-                                    service: light.turn_on
-                                    data: { entity_id: light.hallway }
+                                    service: input_button.press
+                                    data: { entity_id: input_button.hallway_group_on }
                               widgets:
                                 - label:
                                     align: center
@@ -205,8 +205,8 @@ lvgl:
                               on_click:
                                 - logger.log: "LVGL: Hallway OFF button pressed"
                                 - homeassistant.service:
-                                    service: light.turn_off
-                                    data: { entity_id: light.hallway }
+                                    service: input_button.press
+                                    data: { entity_id: input_button.hallway_group_off }
                               widgets:
                                 - label:
                                     align: center
@@ -223,7 +223,7 @@ lvgl:
                     type: flex
                     flex_flow: column
                     flex_align_cross: center
-                    pad_row: 20
+                    pad_row: 10 #20
                   widgets:
                     # CAMERA 1
                     - image:
@@ -247,7 +247,7 @@ lvgl:
         - obj:
             id: nav_bar_main
             width: 100%
-            height: 90
+            height: 80
             scrollable: false
             bg_color: 0x1A1A1A
             border_width: 1
@@ -261,8 +261,8 @@ lvgl:
             widgets:
               # Home Button (Active State)
               - button:
-                  width: 140
-                  height: 70
+                  width: 120
+                  height: 60
                   bg_color: 0x2196F3
                   widgets:
                     - label: 
@@ -275,12 +275,12 @@ lvgl:
                   text: "MAIN DASHBOARD"
                   width: 300
                   text_align: center
-                  text_color: 0x888888
+                  text_color: 0xFFFFFF
 
               # Test Bed Button
               - button:
-                  width: 140
-                  height: 70
+                  width: 120
+                  height: 60
                   bg_color: 0x2A2A2A
                   on_click:
                     - lvgl.page.show: test_page
