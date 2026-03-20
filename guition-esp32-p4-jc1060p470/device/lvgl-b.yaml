@@ -238,7 +238,7 @@ lvgl:
                           bg_opa: TRANSP 
                         
                         # Dispatch ONLY when the finger is lifted
-on_release:
+                        on_release:
                           - homeassistant.service:
                               service: light.turn_on
                               data:
