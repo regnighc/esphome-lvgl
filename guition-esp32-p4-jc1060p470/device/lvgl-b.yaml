@@ -224,17 +224,18 @@ lvgl:
                         max_value: 255
                         # Shift it into alignment with your other buttons
                         pad_top: 20
-                        styles:
-                          main:
-                            bg_color: 0x313131
-                            radius: 12
-                          indicator:
-                            bg_color: 0xE5CA3E
-                            radius: 12
-                          knob:
-                            # CRITICAL: Hiding the knob turns the slider into a draggable bar
-                            bg_opa: TRANSP 
+                        # Main background (the empty track) styling goes directly on the widget
+                        bg_color: 0x313131
+                        radius: 12
                         
+                        # Indicator (the yellow fill) styling
+                        indicator:
+                          bg_color: 0xE5CA3E
+                          radius: 12
+                          
+                        # Knob styling (hidden to make it look like a flat bar)
+                        knob:
+                          bg_opa: TRANSP
                         # Dispatch to Home Assistant ONLY when the finger is lifted
                         on_release:
                           - homeassistant.service:
