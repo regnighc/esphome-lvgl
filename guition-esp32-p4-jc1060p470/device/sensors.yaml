@@ -1,9 +1,19 @@
+#sensor:
+#  - platform: homeassistant
+#    id: input_button_hallway_group_on
+#    entity_id: input_button.hallway_group_on
+#    internal: true
+#  - platform: homeassistant
+#    id: input_button_hallway_group_off
+#    entity_id: input_button.hallway_group_off
+#    internal: true
+
 sensor:
   - platform: homeassistant
-    id: input_button_hallway_group_on
-    entity_id: input_button.hallway_group_on
-    internal: true
-  - platform: homeassistant
-    id: input_button_hallway_group_off
-    entity_id: input_button.hallway_group_off
-    internal: true
+    id: hallway_light_brightness
+    entity_id: light.hallway_overhead_group
+    attribute: brightness
+    on_value:
+      - lvgl.slider.update:
+          id: hallway_brightness_slider
+          value: !lambda "return x;"

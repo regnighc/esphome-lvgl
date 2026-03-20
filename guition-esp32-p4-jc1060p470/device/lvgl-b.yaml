@@ -145,7 +145,9 @@ lvgl:
                     - obj:
                         width: 100%
                         height: SIZE_CONTENT
-                        bg_opa: TRANSP
+                        bg_color: 0x0B324F  # Sets the background color using a hex code
+                        radius: 15          # Sets the roundness of the corners in pixels
+                        #bg_opa: TRANSP
                         border_width: 0
                         # Shift down ~4x the standard 15px gap
                         pad_top: 40  
@@ -212,6 +214,17 @@ lvgl:
                                     align: center
                                     text: "OFF"
                                     text_color: 0xFFFFFF
+
+                    # HALLWAY BRIGHTNESS SLIDER
+                    - slider:
+                        id: hallway_brightness_slider
+                        #... (keep your existing styling)...
+                        on_value:
+                          - homeassistant.service:
+                              service: light.turn_on
+                              data:
+                                entity_id: light.hallway_overhead_group
+                                brightness: !lambda "return x;"
 
               # --- RIGHT COLUMN (Cameras) ---
               - obj:
