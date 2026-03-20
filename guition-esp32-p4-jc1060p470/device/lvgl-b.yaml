@@ -81,6 +81,7 @@ lvgl:
     # ROOT PAGE: MAIN DASHBOARD
     # =============================================================
     - id: main_page
+      scrollable: false
       layout:
         type: flex
         flex_flow: column
