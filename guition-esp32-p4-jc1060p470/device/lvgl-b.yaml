@@ -7,7 +7,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    #resize: 320x240
+    resize: 320x240
     update_interval: 1min
     buffer_size: 131072
     on_download_finished:
@@ -26,7 +26,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    #resize: 320x240
+    resize: 320x240
     update_interval: 1min
     buffer_size: 131072
     on_download_finished:
@@ -81,7 +81,6 @@ lvgl:
     # ROOT PAGE: MAIN DASHBOARD
     # =============================================================
     - id: main_page
-      # Enforce vertical stacking to separate content from navigation
       layout:
         type: flex
         flex_flow: column
@@ -91,7 +90,7 @@ lvgl:
       pad_all: 0
 
       widgets:
-# ---------------------------------------------------------
+        # ---------------------------------------------------------
         # ZONE 1: SCROLLABLE MAIN CONTENT
         # ---------------------------------------------------------
         - obj:
@@ -102,7 +101,6 @@ lvgl:
             border_width: 0
             pad_all: 20
             scroll_dir: VER
-            # Create a row layout to hold two side-by-side columns
             layout: 
               type: flex
               flex_flow: row
@@ -143,62 +141,77 @@ lvgl:
                         line_width: 3
                         line_color: 0xFFFFFF
 
-                    # HALLWAY ON BUTTON
-                    - button:
-                        id: btn_hall_on
-                        width: 120
-                        height: 120
-                        bg_color: 0xE5CA3E
-                        radius: 12
-                        border_width: 2
-                        border_color: 0xC0A020
-                        shadow_width: 8
-                        shadow_opa: 80%
-                        shadow_color: 0x000000
-                        shadow_ofs_y: 4
-                        clip_corner: true
-                        on_click:
-                          - logger.log: "LVGL: Hallway ON button pressed"
-                          - homeassistant.service:
-                              service: input_button.press
-                              data: { entity_id: input_button.hallway_group_on }
+                    # HALLWAY CONTROLS CONTAINER
+                    - obj:
+                        width: 100%
+                        height: SIZE_CONTENT
+                        bg_opa: TRANSP
+                        border_width: 0
+                        # Shift down ~4x the standard 15px gap
+                        pad_top: 60  
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          # Left-aligns the buttons beneath the line
+                          flex_align_cross: start 
+                          pad_row: 15
                         widgets:
-                          - label:
-                              align: center
-                              text: "ON"
-                              text_color: 0x000000
+                          # HALLWAY ON BUTTON
+                          - button:
+                              id: btn_hall_on
+                              width: 120
+                              height: 120
+                              bg_color: 0xE5CA3E
+                              radius: 12
+                              border_width: 2
+                              border_color: 0xC0A020
+                              shadow_width: 8
+                              shadow_opa: 80%
+                              shadow_color: 0x000000
+                              shadow_ofs_y: 4
+                              clip_corner: true
+                              on_click:
+                                - logger.log: "LVGL: Hallway ON button pressed"
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data: { entity_id: light.hallway }
+                              widgets:
+                                - label:
+                                    align: center
+                                    text: "ON"
+                                    text_color: 0x000000
 
-                    # HALLWAY LABEL
-                    - label:
-                        width: 120
-                        text: "Hallway"
-                        text_color: 0xFFFFFF
-                        text_align: center
-
-                    # HALLWAY OFF BUTTON
-                    - button:
-                        id: btn_hall_off
-                        width: 120
-                        height: 120
-                        bg_color: 0xE5CA3E
-                        radius: 12
-                        border_width: 2
-                        border_color: 0xC0A020
-                        shadow_width: 8
-                        shadow_opa: 80%
-                        shadow_color: 0x000000
-                        shadow_ofs_y: 4
-                        clip_corner: true
-                        on_click:
-                          - logger.log: "LVGL: Hallway OFF button pressed"
-                          - homeassistant.service:
-                              service: input_button.press
-                              data: { entity_id: input_button.hallway_group_off }
-                        widgets:
+                          # HALLWAY LABEL
                           - label:
-                              align: center
-                              text: "OFF"
+                              width: 120
+                              text: "Hallway"
                               text_color: 0xFFFFFF
+                              text_align: center
+
+                          # HALLWAY OFF BUTTON
+                          - button:
+                              id: btn_hall_off
+                              width: 120
+                              height: 120
+                              bg_color: 0xE5CA3E
+                              radius: 12
+                              border_width: 2
+                              border_color: 0xC0A020
+                              shadow_width: 8
+                              shadow_opa: 80%
+                              shadow_color: 0x000000
+                              shadow_ofs_y: 4
+                              clip_corner: true
+                              on_click:
+                                - logger.log: "LVGL: Hallway OFF button pressed"
+                                - homeassistant.service:
+                                    service: light.turn_off
+                                    data: { entity_id: light.hallway }
+                              widgets:
+                                - label:
+                                    align: center
+                                    text: "OFF"
+                                    text_color: 0xFFFFFF
 
               # --- RIGHT COLUMN (Cameras) ---
               - obj:
@@ -227,6 +240,55 @@ lvgl:
                         width: 320
                         height: 240
                         src: online_img_cam_2
+
+        # ---------------------------------------------------------
+        # ZONE 2: FIXED BOTTOM NAVIGATION BAR
+        # ---------------------------------------------------------
+        - obj:
+            id: nav_bar_main
+            width: 100%
+            height: 90
+            scrollable: false
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            border_color: 0x333333
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_evenly 
+              flex_align_cross: center
+            widgets:
+              # Home Button (Active State)
+              - button:
+                  width: 140
+                  height: 70
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label: 
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
+              
+              # Page Title
+              - label:
+                  text: "MAIN DASHBOARD"
+                  width: 300
+                  text_align: center
+                  text_color: 0x888888
+
+              # Test Bed Button
+              - button:
+                  width: 140
+                  height: 70
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: test_page
+                  widgets:
+                    - label: 
+                        text: "TEST"
+                        align: center
+                        text_color: 0xFFFFFF
 
     # =============================================================
     # SECONDARY PAGE: TEST ENVIRONMENT
