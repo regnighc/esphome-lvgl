@@ -222,28 +222,32 @@ lvgl:
                         height: 120
                         min_value: 0
                         max_value: 255
-                        # Shift it into alignment with your other buttons
                         pad_top: 20
-                        # Main background (the empty track) styling goes directly on the widget
+                        
+                        # Main background (the empty track)
                         bg_color: 0x313131
                         radius: 12
                         
-                        # Indicator (the yellow fill) styling
+                        # Indicator (the yellow fill)
                         indicator:
                           bg_color: 0xE5CA3E
                           radius: 12
                           
                         # Knob styling (hidden to make it look like a flat bar)
                         knob:
-                          bg_opa: TRANSP
-                        # Dispatch to Home Assistant ONLY when the finger is lifted
+                          bg_opa: TRANSP 
+                        
+                        # Dispatch ONLY when the finger is lifted
                         on_release:
                           - homeassistant.service:
                               service: light.turn_on
                               data:
                                 entity_id: light.hallway_overhead_group
-                                # Extract the final value via pure LVGL C++ and cast to an integer
-                                brightness: !lambda "return int(x);"
+                              # Safely inject the C++ variable into the Home Assistant payload
+                              data_template:
+                                brightness: '{{ slider_val }}'
+                              variables:
+                                slider_val:!lambda "return (int)x;"
 
               # --- RIGHT COLUMN (Cameras) ---
               - obj:
