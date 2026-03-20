@@ -170,7 +170,7 @@ lvgl:
                               #pad_top: 20
                               
                               # Main background (the empty track)
-                              bg_color: 0x313131
+                              bg_color: 0xFF6B6B6B
                               radius: 12
                               
                               # Indicator (the yellow fill)
@@ -197,38 +197,6 @@ lvgl:
                                     align: center
                                     text: "Hallway"
                                     text_color: 0x000000
-                          # HALLWAY LABEL
-                          - label:
-                              width: 120
-                              text: "Hallway"
-                              text_color: 0xFFFFFF
-                              text_align: center
-
-                          # HALLWAY OFF BUTTON
-                          - button:
-                              id: btn_hall_off
-                              width: 120
-                              height: 120
-                              bg_color: 0xE5CA3E
-                              radius: 12
-                              border_width: 2
-                              border_color: 0xC0A020
-                              shadow_width: 8
-                              shadow_opa: 80%
-                              shadow_color: 0x000000
-                              shadow_ofs_y: 4
-                              clip_corner: true
-                              on_click:
-                                - logger.log: "LVGL: Hallway OFF button pressed"
-                                - homeassistant.service:
-                                    service: input_button.press
-                                    data: { entity_id: input_button.hallway_group_off }
-                              widgets:
-                                - label:
-                                    align: center
-                                    text: "OFF"
-                                    text_color: 0xFFFFFF
-
 
 
               # --- RIGHT COLUMN (Cameras) ---
@@ -270,7 +238,7 @@ lvgl:
             bg_color: 0x1A1A1A
             border_width: 1
             border_side: TOP
-            pad_top: 0        # add this
+            pad_top: 2        # add this
             pad_bottom: 0     # add this
             pad_left: 0       # optional, for consistency
             pad_right: 0      # optional, for consistency
@@ -350,7 +318,7 @@ lvgl:
             bg_color: 0x1A1A1A
             border_width: 1
             border_side: TOP
-            pad_top: 0        # add this
+            pad_top: 2        # add this
             pad_bottom: 0     # add this
             pad_left: 0       # optional, for consistency
             pad_right: 0      # optional, for consistency
