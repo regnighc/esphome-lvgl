@@ -96,6 +96,7 @@ lvgl:
         # ---------------------------------------------------------
         - obj:
             id: main_content_area
+            scrollable: false
             width: 100%
             flex_grow: 1
             bg_opa: TRANSP
@@ -163,7 +164,7 @@ lvgl:
                           # HALLWAY SQUARE BRIGHTNESS SLIDER
                           - slider:
                               id: hallway_brightness_slider
-                              width: 290
+                              width: 298
                               height: 120
                               min_value: 0
                               max_value: 255
