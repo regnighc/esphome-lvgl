@@ -196,7 +196,7 @@ lvgl:
                                 - label:
                                     align: center
                                     text: "HALLWAY OVERHEAD"
-                                    text_color: 0x000000
+                                    text_color: 0xFFFFFF
 
 
               # --- RIGHT COLUMN (Cameras) ---
