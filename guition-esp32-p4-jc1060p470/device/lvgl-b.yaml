@@ -238,16 +238,15 @@ lvgl:
                           bg_opa: TRANSP 
                         
                         # Dispatch ONLY when the finger is lifted
-                        on_release:
+on_release:
                           - homeassistant.service:
                               service: light.turn_on
                               data:
                                 entity_id: light.hallway_overhead_group
-                              # Safely inject the C++ variable into the Home Assistant payload
                               data_template:
-                                brightness: '{{ slider_val }}'
+                                brightness: "{{ slider_val }}"
                               variables:
-                                slider_val:!lambda "return (int)x;"
+                                slider_val: !lambda "return (int)x;"
 
               # --- RIGHT COLUMN (Cameras) ---
               - obj:
