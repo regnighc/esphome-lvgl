@@ -70,10 +70,12 @@ lvgl:
   color_depth: 16
   buffer_size: 100%
   byte_order: little_endian
-  on_finger_down:
-    - lvgl.resume:
-    - switch.turn_on: backlight
-    - script.execute: backlight_timeout
+  on_idle:
+    timeout: 30s
+    then:
+      - switch.turn_off: backlight
+      - lvgl.pause:
+          show_snow: false
   displays:
     - my_display
   touchscreens:

@@ -132,6 +132,13 @@ touchscreen:
       # Mirror parameters depend on factory flex cable bonding
       mirror_x: false
       mirror_y: false
+    on_touch:
+      - if:
+          condition:
+            lvgl.is_paused:
+          then:
+            - lvgl.resume:
+            - switch.turn_on: backlight
 
 # Display
 display:

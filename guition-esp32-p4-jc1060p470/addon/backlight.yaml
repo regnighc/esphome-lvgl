@@ -1,12 +1,3 @@
-script:
-  - id: backlight_timeout
-    mode: restart
-    then:
-      - delay: 30s
-      - switch.turn_off: backlight
-      - lvgl.pause:
-          show_snow: false
-      - logger.log: "Backlight turned off due to inactivity"
 # Backlight
 switch:
   - platform: template
@@ -31,4 +22,4 @@ binary_sensor:
 
     on_release:
       - script.execute: backlight_timeout
-      
+
