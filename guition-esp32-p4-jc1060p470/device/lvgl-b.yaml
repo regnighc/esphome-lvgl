@@ -107,182 +107,182 @@ lvgl:
               flex_align_main: space_between
             widgets:
 
-              # --- LEFT & MIDDLE CLUSTER (The Controls) ---
-              - obj:
-                  width: 720
-                  height: 100%
-                  bg_opa: TRANSP
-                  border_width: 0
-                  pad_all: 0
-                  layout:
-                    type: flex
-                    flex_flow: column
-                    pad_row: 15
-                  widgets:
+            # --- LEFT & MIDDLE CLUSTER (The Controls) ---
+            - obj:
+                width: 720
+                height: 100%
+                bg_opa: TRANSP
+                border_width: 0
+                pad_all: 0
+                layout:
+                  type: flex
+                  flex_flow: column
+                  pad_row: 15
+                widgets:
 
-                    # STEP 1: THE SYNCHRONIZED HEADER
-                    - obj:
-                        width: 100%
-                        height: 140 # Explicit height to match Clock + Date
-                        bg_opa: TRANSP
-                        border_width: 0
-                        layout:
-                          type: flex
-                          flex_flow: row
-                          flex_align_main: space_between
-                          flex_align_cross: center
-                        widgets:
-                          # Clock Block
-                          - obj:
-                              width: 350
-                              bg_opa: TRANSP
-                              border_width: 0
-                              layout: {type: flex, flex_flow: column, flex_align_cross: center}
-                              widgets:
-                                - label:
-                                    id: main_time
-                                    text_font: time_font
-                                    text_color: 0xFFFFFF
-                                    text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-                                - label:
-                                    id: main_date
-                                    text_font: date_font
-                                    text_color: 0xFFFFFF
-                                    text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
-                          
-                          # NEW TOP STUFF (Now height-matched to Clock)
-                          - obj:
-                              width: 350
-                              height: 120 # Slightly shorter than the row for a "inset" look
-                              bg_color: 0xFF2A2D2E
-                              radius: 15
-                              border_width: 0
-                              widgets:
-                                - label: {text: "TOP STATUS / WEATHER", align: center, text_color: 0xAAAAAA}
+                  # STEP 1: THE SYNCHRONIZED HEADER
+                  - obj:
+                      width: 100%
+                      height: 140 # Explicit height to match Clock + Date
+                      bg_opa: TRANSP
+                      border_width: 0
+                      layout:
+                        type: flex
+                        flex_flow: row
+                        flex_align_main: space_between
+                        flex_align_cross: center
+                      widgets:
+                        # Clock Block
+                        - obj:
+                            width: 350
+                            bg_opa: TRANSP
+                            border_width: 0
+                            layout: {type: flex, flex_flow: column, flex_align_cross: center}
+                            widgets:
+                              - label:
+                                  id: main_time
+                                  text_font: time_font
+                                  text_color: 0xFFFFFF
+                                  text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                              - label:
+                                  id: main_date
+                                  text_font: date_font
+                                  text_color: 0xFFFFFF
+                                  text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                        
+                        # NEW TOP STUFF (Now height-matched to Clock)
+                        - obj:
+                            width: 350
+                            height: 120 # Slightly shorter than the row for a "inset" look
+                            bg_color: 0xFF2A2D2E
+                            radius: 15
+                            border_width: 0
+                            widgets:
+                              - label: {text: "TOP STATUS / WEATHER", align: center, text_color: 0xAAAAAA}
 
-                    # STEP 2: THE FULL-WIDTH DIVIDER
-                    - line:
-                        width: 710
-                        height: 3
-                        points: [ {x: 0, y: 0}, {x: 710, y: 0} ]
-                        line_width: 3
-                        line_color: 0xFFFFFF
+                  # STEP 2: THE FULL-WIDTH DIVIDER
+                  - line:
+                      width: 710
+                      height: 3
+                      points: [ {x: 0, y: 0}, {x: 710, y: 0} ]
+                      line_width: 3
+                      line_color: 0xFFFFFF
 
-                    # STEP 3: THE SLIDER GRID (2x2)
-                    - obj:
-                        width: 100%
-                        height: SIZE_CONTENT
-                        bg_opa: TRANSP
-                        border_width: 0
-                        layout:
-                          type: flex
-                          flex_flow: row_wrap # Allows 2 side-by-side, then next 2 below
-                          pad_row: 15
-                          pad_column: 15
-                        widgets:
-                          # 1. Hallway Original
-                          - obj: &slider_box_style
-                              width: 345
-                              height: 150 # Fixed height ensures vertical alignment
-                              bg_color: 0xFF2A2D2E
-                              radius: 15
-                              border_width: 0
-                              layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_row: 15, pad_column: 15}
-                              widgets:
-                                - slider:
-                                    id: hallway_brightness_slider
-                                    width: 315
-                                    height: 120
-                                    bg_color: 0xFF6B6B6B
-                                    radius: 12
-                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
-                                    knob: {bg_opa: TRANSP}
+                  # STEP 3: THE SLIDER GRID (2x2)
+                  - obj:
+                      width: 100%
+                      height: SIZE_CONTENT
+                      bg_opa: TRANSP
+                      border_width: 0
+                      layout:
+                        type: flex
+                        flex_flow: row_wrap # Allows 2 side-by-side, then next 2 below
+                        pad_row: 15
+                        pad_column: 15
+                      widgets:
+                        # 1. Hallway Original
+                        - obj: &slider_box_style
+                            width: 345
+                            height: 150 # Fixed height ensures vertical alignment
+                            bg_color: 0xFF2A2D2E
+                            radius: 15
+                            border_width: 0
+                            layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_row: 15, pad_column: 15}
+                            widgets:
+                              - slider:
+                                  id: hallway_brightness_slider
+                                  width: 315
+                                  height: 120
+                                  bg_color: 0xFF6B6B6B
+                                  radius: 12
+                                  indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                  knob: {bg_opa: TRANSP}
+                                  on_release:
+                                    - homeassistant.service:
+                                        service: light.turn_on
+                                        data:
+                                          entity_id: light.hallway_overhead_group
+                                        data_template:
+                                          brightness: "{{ slider_val }}"
+                                        variables:
+                                          slider_val: !lambda "return (int)x;"
+                                        widgets:
+                                          - label: {align: center, text: "HALLWAY LIGHTS", text_color: 0xFFFFFF}
+
+                        # 2. Hallway New (Right side of Hallway 1)
+                        - obj:
+                            <<: *slider_box_style
+                            widgets:
+                              - slider:
+                                  id: hallway_accent_slider
+                                  width: 315
+                                  height: 120
+                                  bg_color: 0xFF6B6B6B
+                                  radius: 12
+                                  indicator: {bg_color: 0x3EACE5, radius: 12}
+                                  knob: {bg_opa: TRANSP}
+                                  on_release:
+                                    - homeassistant.service:
+                                        service: light.turn_on
+                                        data:
+                                          entity_id: light.hallway_overhead_group
+                                        data_template:
+                                          brightness: "{{ slider_val }}"
+                                        variables:
+                                          slider_val: !lambda "return (int)x;"
+                                  widgets:
+                                    - label: {align: center, text: "HALLWAY ACCENT", text_color: 0xFFFFFF}
+
+                        # 3. Livingroom Original
+                        - obj:
+                            <<: *slider_box_style
+                            widgets:
+                              - slider:
+                                  id: livingroom_brightness_slider
+                                  width: 315
+                                  height: 120
+                                  bg_color: 0xFF6B6B6B
+                                  radius: 12
+                                  indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                  knob: {bg_opa: TRANSP}
+                                  on_release:
+                                    - homeassistant.service:
+                                        service: light.turn_on
+                                        data:
+                                          entity_id: light.living_room
+                                        data_template:
+                                          brightness: "{{ slider_val }}"
+                                        variables:
+                                          slider_val: !lambda "return (int)x;"
+                                  widgets:
+                                    - label: {align: center, text: "LIVING ROOM", text_color: 0xFFFFFF}
+
+                        # 4. Livingroom New (Right side of LR 1)
+                        - obj:
+                            <<: *slider_box_style
+                            widgets:
+                              - slider:
+                                  id: lr_accent_slider
+                                  width: 315
+                                  height: 120
+                                  bg_color: 0xFF6B6B6B
+                                  radius: 12
+                                  indicator: {bg_color: 0x3EACE5, radius: 12}
+                                  knob: {bg_opa: TRANSP}
                                     on_release:
-                                      - homeassistant.service:
-                                          service: light.turn_on
-                                          data:
-                                            entity_id: light.hallway_overhead_group
-                                          data_template:
-                                            brightness: "{{ slider_val }}"
-                                          variables:
-                                            slider_val: !lambda "return (int)x;"
-                                          widgets:
-                                            - label: {align: center, text: "HALLWAY LIGHTS", text_color: 0xFFFFFF}
+                                    - homeassistant.service:
+                                        service: light.turn_on
+                                        data:
+                                          entity_id: light.living_room
+                                        data_template:
+                                          brightness: "{{ slider_val }}"
+                                        variables:
+                                          slider_val: !lambda "return (int)x;"
+                                  widgets:
+                                    - label: {align: center, text: "LR ACCENT", text_color: 0xFFFFFF}
 
-                          # 2. Hallway New (Right side of Hallway 1)
-                          - obj:
-                              <<: *slider_box_style
-                              widgets:
-                                - slider:
-                                    id: hallway_accent_slider
-                                    width: 315
-                                    height: 120
-                                    bg_color: 0xFF6B6B6B
-                                    radius: 12
-                                    indicator: {bg_color: 0x3EACE5, radius: 12}
-                                    knob: {bg_opa: TRANSP}
-                                    on_release:
-                                      - homeassistant.service:
-                                          service: light.turn_on
-                                          data:
-                                            entity_id: light.hallway_overhead_group
-                                          data_template:
-                                            brightness: "{{ slider_val }}"
-                                          variables:
-                                            slider_val: !lambda "return (int)x;"
-                                    widgets:
-                                      - label: {align: center, text: "HALLWAY ACCENT", text_color: 0xFFFFFF}
-
-                          # 3. Livingroom Original
-                          - obj:
-                              <<: *slider_box_style
-                              widgets:
-                                - slider:
-                                    id: livingroom_brightness_slider
-                                    width: 315
-                                    height: 120
-                                    bg_color: 0xFF6B6B6B
-                                    radius: 12
-                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
-                                    knob: {bg_opa: TRANSP}
-                                    on_release:
-                                      - homeassistant.service:
-                                          service: light.turn_on
-                                          data:
-                                            entity_id: light.living_room
-                                          data_template:
-                                            brightness: "{{ slider_val }}"
-                                          variables:
-                                            slider_val: !lambda "return (int)x;"
-                                    widgets:
-                                      - label: {align: center, text: "LIVING ROOM", text_color: 0xFFFFFF}
-
-                          # 4. Livingroom New (Right side of LR 1)
-                          - obj:
-                              <<: *slider_box_style
-                              widgets:
-                                - slider:
-                                    id: lr_accent_slider
-                                    width: 315
-                                    height: 120
-                                    bg_color: 0xFF6B6B6B
-                                    radius: 12
-                                    indicator: {bg_color: 0x3EACE5, radius: 12}
-                                    knob: {bg_opa: TRANSP}
-                                      on_release:
-                                      - homeassistant.service:
-                                          service: light.turn_on
-                                          data:
-                                            entity_id: light.living_room
-                                          data_template:
-                                            brightness: "{{ slider_val }}"
-                                          variables:
-                                            slider_val: !lambda "return (int)x;"
-                                    widgets:
-                                      - label: {align: center, text: "LR ACCENT", text_color: 0xFFFFFF}
-
-              # --- RIGHT COLUMN (Cameras) ---
-              - obj:
+            # --- RIGHT COLUMN (Cameras) ---
+            - obj:
                   width: 350
                   height: 100%
                   bg_opa: TRANSP
