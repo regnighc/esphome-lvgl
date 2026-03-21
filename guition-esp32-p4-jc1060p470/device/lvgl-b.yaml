@@ -199,6 +199,62 @@ lvgl:
                                     text: "HALLWAY OVERHEAD"
                                     text_color: 0xFFFFFF
 
+                    # LIVINGROOM CONTROLS CONTAINER
+                    - obj:
+                        width: 100%
+                        height: SIZE_CONTENT
+                        bg_color: 0xFF2A2D2E # Sets the background color using a hex code
+                        radius: 15          # Sets the roundness of the corners in pixels
+                        #bg_opa: TRANSP
+                        border_width: 0
+                        # Shift down ~4x the standard 15px gap
+                        #pad_top: 40  
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          # Left-aligns the buttons beneath the line
+                          flex_align_cross: start 
+                          pad_row: 15
+                        widgets:
+                          # LR ON BUTTON
+                          # LR SQUARE BRIGHTNESS SLIDER
+                          - slider:
+                              id: livingroom_brightness_slider
+                              width: 297
+                              height: 120
+                              min_value: 0
+                              max_value: 255
+                              #pad_top: 20
+                              
+                              # Main background (the empty track)
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              
+                              # Indicator (the yellow fill)
+                              indicator:
+                                bg_color: 0xE5CA3E
+                                radius: 12
+                                
+                              # Knob styling (hidden to make it look like a flat bar)
+                              knob:
+                                bg_opa: TRANSP 
+                              
+                              # Dispatch ONLY when the finger is lifted
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                              widgets:
+                                - label:
+                                    align: center
+                                    text: "LIVINGROOM OVERHEAD"
+                                    text_color: 0xFFFFFF
+
 
               # --- RIGHT COLUMN (Cameras) ---
               - obj:
