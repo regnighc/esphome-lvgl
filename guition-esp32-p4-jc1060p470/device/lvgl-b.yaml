@@ -77,8 +77,8 @@ lvgl:
     - my_touchscreen
 
   pages:
-# =============================================================
-    # ROOT PAGE: MAIN DASHBOARD (Optimized for JC1060P470)
+    # =============================================================
+    # ROOT PAGE: MAIN DASHBOARD (Alignment & Border Fix)
     # =============================================================
     - id: main_page
       scrollable: false
@@ -92,199 +92,185 @@ lvgl:
 
       widgets:
         # ---------------------------------------------------------
-        # ZONE 1: MAIN CONTENT (3-Column Grid)
+        # ZONE 1: MAIN CONTENT AREA
         # ---------------------------------------------------------
         - obj:
             id: main_content_area
-            scrollable: false
             width: 100%
             flex_grow: 1
             bg_opa: TRANSP
-            border_width: 0
-            pad_all: 5
+            border_width: 0  # FIX 1: Remove default borders
+            pad_all: 10      # Clean gutter around the screen edge
             layout: 
               type: flex
               flex_flow: row
-              flex_align_main: space_between # Distributes the 3 columns across 1280px
+              flex_align_main: space_between
             widgets:
 
-              # --- COLUMN 1: ORIGINAL CONTROLS ---
+              # --- LEFT & MIDDLE CLUSTER (The Controls) ---
               - obj:
-                  width: 350
-                  height: SIZE_CONTENT
+                  width: 720
+                  height: 100%
                   bg_opa: TRANSP
-                  layout: {type: flex, flex_flow: column, flex_align_cross: center, pad_row: 15}
+                  border_width: 0
+                  pad_all: 0
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    pad_row: 15
                   widgets:
-                    # CLOCK & DATE (Original)
-                    - label:
-                        id: main_time
-                        width: 320
-                        text_font: time_font
-                        text_color: 0xFFFFFF
-                        text_align: center
-                        text: !lambda |-
-                          auto now = id(sntp_time).now();
-                          return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";
-                    - label:
-                        id: main_date
-                        width: 320
-                        text_font: date_font
-                        text_color: 0xFFFFFF
-                        text_align: center
-                        text: !lambda |-
-                          auto now = id(sntp_time).now();
-                          return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";
 
-                    - line: # SEPARATOR
-                        width: 301
-                        height: 3
-                        points: [ {x: 0, y: 0}, {x: 301, y: 0} ]
-                        line_width: 3
-                        line_color: 0xFFFFFF
-
-                    # HALLWAY CONTROLS (Original)
+                    # STEP 1: THE SYNCHRONIZED HEADER
                     - obj:
                         width: 100%
-                        height: SIZE_CONTENT
-                        bg_color: 0xFF2A2D2E
-                        radius: 15
-                        layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_row: 15}
+                        height: 140 # Explicit height to match Clock + Date
+                        bg_opa: TRANSP
+                        border_width: 0
+                        layout:
+                          type: flex
+                          flex_flow: row
+                          flex_align_main: space_between
+                          flex_align_cross: center
                         widgets:
-                          - slider:
-                              id: hallway_brightness_slider
-                              width: 297
-                              height: 120
-                              bg_color: 0xFF6B6B6B
-                              radius: 12
-                              indicator: {bg_color: 0xE5CA3E, radius: 12}
-                              knob: {bg_opa: TRANSP}
-                              on_release:
-                                - homeassistant.service:
-                                    service: light.turn_on
-                                    data:
-                                      entity_id: light.hallway_overhead_group
-                                    data_template:
-                                      brightness: "{{ slider_val }}"
-                                    variables:
-                                      slider_val: !lambda "return (int)x;"
+                          # Clock Block
+                          - obj:
+                              width: 350
+                              bg_opa: TRANSP
+                              border_width: 0
+                              layout: {type: flex, flex_flow: column, flex_align_cross: center}
                               widgets:
                                 - label:
-                                    align: center
-                                    text: "HALLWAY OVERHEAD"
+                                    id: main_time
+                                    text_font: time_font
                                     text_color: 0xFFFFFF
-
-                    # LIVINGROOM CONTROLS (Original)
-                    - obj:
-                        width: 100%
-                        height: SIZE_CONTENT
-                        bg_color: 0xFF2A2D2E
-                        radius: 15
-                        layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_row: 15}
-                        widgets:
-                          - slider:
-                              id: livingroom_brightness_slider
-                              width: 297
-                              height: 120
-                              bg_color: 0xFF6B6B6B
-                              radius: 12
-                              indicator: {bg_color: 0xE5CA3E, radius: 12}
-                              knob: {bg_opa: TRANSP}
-                              on_release:
-                                - homeassistant.service:
-                                    service: light.turn_on
-                                    data:
-                                      entity_id: light.living_room
-                                    data_template:
-                                      brightness: "{{ slider_val }}"
-                                    variables:
-                                      slider_val: !lambda "return (int)x;"
+                                    text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                                - label:
+                                    id: main_date
+                                    text_font: date_font
+                                    text_color: 0xFFFFFF
+                                    text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                          
+                          # NEW TOP STUFF (Now height-matched to Clock)
+                          - obj:
+                              width: 350
+                              height: 120 # Slightly shorter than the row for a "inset" look
+                              bg_color: 0xFF2A2D2E
+                              radius: 15
+                              border_width: 0
                               widgets:
-                                - label: {align: center, text: "LIVINGROOM OVERHEAD", text_color: 0xFFFFFF}
+                                - label: {text: "TOP STATUS / WEATHER", align: center, text_color: 0xAAAAAA}
 
-              # --- COLUMN 2: NEW STUFF & ADDITIONAL SLIDERS ---
-              - obj:
-                  width: 350
-                  height: SIZE_CONTENT
-                  bg_opa: TRANSP
-                  layout: {type: flex, flex_flow: column, flex_align_cross: center, pad_row: 15}
-                  widgets:
-                    # NEW TOP STUFF (Aligned with Clock)
-                    - obj:
-                        width: 320
-                        height: 105 # Matches roughly the height of time+date
-                        bg_color: 0xFF2A2D2E
-                        radius: 12
-                        widgets:
-                          - label: {text: "NEW TOP STUFF", align: center, text_color: 0x888888}
-
-                    - line: # MATCHING SEPARATOR
-                        width: 301
+                    # STEP 2: THE FULL-WIDTH DIVIDER
+                    - line:
+                        width: 710
                         height: 3
-                        points: [ {x: 0, y: 0}, {x: 301, y: 0} ]
+                        points: [ {x: 0, y: 0}, {x: 710, y: 0} ]
                         line_width: 3
                         line_color: 0xFFFFFF
 
-                    # NEW HALLWAY (Right Side)
+                    # STEP 3: THE SLIDER GRID (2x2)
                     - obj:
                         width: 100%
                         height: SIZE_CONTENT
-                        bg_color: 0xFF2A2D2E
-                        radius: 15
-                        layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_row: 15}
+                        bg_opa: TRANSP
+                        border_width: 0
+                        layout:
+                          type: flex
+                          flex_flow: row wrap # Allows 2 side-by-side, then next 2 below
+                          pad_row: 15
+                          pad_column: 15
                         widgets:
-                          - slider:
-                              id: hallway_2_brightness_slider
-                              width: 297
-                              height: 120
-                              bg_color: 0xFF6B6B6B
-                              radius: 12
-                              indicator: {bg_color: 0x3EACE5, radius: 12} # Blue for distinction
-                              knob: {bg_opa: TRANSP}
-                              on_release:
-                                - homeassistant.service:
-                                    service: light.turn_on
-                                    data:
-                                      entity_id: light.living_room
-                                    data_template:
-                                      brightness: "{{ slider_val }}"
-                                    variables:
-                                      slider_val: !lambda "return (int)x;"
+                          # 1. Hallway Original
+                          - obj: &slider_box_style
+                              width: 345
+                              height: 150 # Fixed height ensures vertical alignment
+                              bg_color: 0xFF2A2D2E
+                              radius: 15
+                              border_width: 0
+                              layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_all: 15}
                               widgets:
-                                - label: {align: center, text: "PLACEHOLDER", text_color: 0xFFFFFF}
+                                - slider:
+                                    id: hallway_brightness_slider
+                                    width: 315
+                                    height: 120
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          entity_id: light.hallway_overhead_group
+                                          data: { brightness: !lambda "return (int)x;" }
+                                    widgets:
+                                      - label: {align: center, text: "HALLWAY LIGHTS", text_color: 0xFFFFFF}
 
-                    # NEW LIVINGROOM (Right Side)
-                    - obj:
-                        width: 100%
-                        height: SIZE_CONTENT
-                        bg_color: 0xFF2A2D2E
-                        radius: 15
-                        layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_row: 15}
-                        widgets:
-                          - slider:
-                              id: livingroom_2_brightness_slider
-                              width: 297
-                              height: 120
-                              bg_color: 0xFF6B6B6B
-                              radius: 12
-                              indicator: {bg_color: 0x3EACE5, radius: 12}
-                              knob: {bg_opa: TRANSP}
-                              on_release:
-                                - homeassistant.service:
-                                    service: light.turn_on
-                                    data:
-                                      entity_id: light.living_room
-                                    data_template:
-                                      brightness: "{{ slider_val }}"
-                                    variables:
-                                      slider_val: !lambda "return (int)x;"
+                          # 2. Hallway New (Right side of Hallway 1)
+                          - obj:
+                              <<: *slider_box_style
                               widgets:
-                                - label: {align: center, text: "PLACEHOLDER", text_color: 0xFFFFFF}
+                                - slider:
+                                    id: hallway_accent_slider
+                                    width: 315
+                                    height: 120
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0x3EACE5, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          entity_id: light.hallway_accent
+                                          data: { brightness: !lambda "return (int)x;" }
+                                    widgets:
+                                      - label: {align: center, text: "HALLWAY ACCENT", text_color: 0xFFFFFF}
 
-              # --- COLUMN 3: CAMERAS (Original) ---
+                          # 3. Livingroom Original
+                          - obj:
+                              <<: *slider_box_style
+                              widgets:
+                                - slider:
+                                    id: livingroom_brightness_slider
+                                    width: 315
+                                    height: 120
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          entity_id: light.living_room
+                                          data: { brightness: !lambda "return (int)x;" }
+                                    widgets:
+                                      - label: {align: center, text: "LIVING ROOM", text_color: 0xFFFFFF}
+
+                          # 4. Livingroom New (Right side of LR 1)
+                          - obj:
+                              <<: *slider_box_style
+                              widgets:
+                                - slider:
+                                    id: lr_accent_slider
+                                    width: 315
+                                    height: 120
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0x3EACE5, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          entity_id: light.living_room_accent
+                                          data: { brightness: !lambda "return (int)x;" }
+                                    widgets:
+                                      - label: {align: center, text: "LR ACCENT", text_color: 0xFFFFFF}
+
+              # --- RIGHT COLUMN (Cameras) ---
               - obj:
                   width: 350
-                  height: SIZE_CONTENT
+                  height: 100%
                   bg_opa: TRANSP
+                  border_width: 0
                   layout: {type: flex, flex_flow: column, flex_align_cross: center, pad_row: 10}
                   widgets:
                     - image:
@@ -292,13 +278,15 @@ lvgl:
                         width: 320
                         height: 240
                         src: online_img_cam_1
-                        antialias: true
-                        mode: virtual
                     - image:
                         id: w_cam_2
                         width: 320
                         height: 240
                         src: online_img_cam_2
+
+        # ---------------------------------------------------------
+        # ZONE 2: FIXED BOTTOM NAV (Remains unchanged)
+        # ---------------------------------------------------------
 
         # ---------------------------------------------------------
         # ZONE 2: FIXED BOTTOM NAVIGATION BAR
