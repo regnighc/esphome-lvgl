@@ -416,7 +416,7 @@ lvgl:
                         src: online_img_cam_1
                         radius: 15
                         clip_corner: true
-                        zoom: 0.5
+                        zoom: 0.55
                         mode: REAL
                     - image:
                         align: CENTER
@@ -426,7 +426,7 @@ lvgl:
                         src: online_img_cam_2
                         radius: 15
                         clip_corner: true
-                        zoom: 0.5
+                        zoom: 0.55
                         mode: REAL
 
         # ---------------------------------------------------------
