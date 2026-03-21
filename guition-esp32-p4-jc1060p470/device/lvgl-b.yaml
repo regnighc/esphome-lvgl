@@ -206,8 +206,7 @@ lvgl:
                                           brightness: "{{ slider_val }}"
                                         variables:
                                           slider_val: !lambda "return (int)x;"
-                                        widgets:
-                                          - label: {align: center, text: "HALLWAY LIGHTS", text_color: 0xFFFFFF}
+                              - label: {align: center, text: "HALLWAY LIGHTS", text_color: 0xFFFFFF}
 
                         # 2. Hallway New (Right side of Hallway 1)
                         - obj:
@@ -230,8 +229,7 @@ lvgl:
                                           brightness: "{{ slider_val }}"
                                         variables:
                                           slider_val: !lambda "return (int)x;"
-                                  widgets:
-                                    - label: {align: center, text: "HALLWAY ACCENT", text_color: 0xFFFFFF}
+                              - label: {align: center, text: "HALLWAY ACCENT", text_color: 0xFFFFFF}
 
                         # 3. Livingroom Original
                         - obj:
@@ -254,8 +252,7 @@ lvgl:
                                           brightness: "{{ slider_val }}"
                                         variables:
                                           slider_val: !lambda "return (int)x;"
-                                  widgets:
-                                    - label: {align: center, text: "LIVING ROOM", text_color: 0xFFFFFF}
+                              - label: {align: center, text: "LIVING ROOM", text_color: 0xFFFFFF}
 
                         # 4. Livingroom New (Right side of LR 1)
                         - obj:
@@ -278,8 +275,7 @@ lvgl:
                                           brightness: "{{ slider_val }}"
                                         variables:
                                           slider_val: !lambda "return (int)x;"
-                                  widgets:
-                                    - label: {align: center, text: "LR ACCENT", text_color: 0xFFFFFF}
+                              - label: {align: center, text: "LR ACCENT", text_color: 0xFFFFFF}
 
             # --- RIGHT COLUMN (Cameras) ---
             - obj:
