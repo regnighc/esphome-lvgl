@@ -1,3 +1,12 @@
+script:
+  - id: backlight_timeout
+    mode: restart
+    then:
+      - delay: 30s
+      - switch.turn_off: backlight
+      - lvgl.pause:
+          show_snow: false
+      - logger.log: "Backlight turned off due to inactivity"
 # Backlight
 switch:
   - platform: template
@@ -10,18 +19,16 @@ switch:
       - light.turn_off: display_backlight
 
 # Screensaver Presence Trigger (disabled for always-on kiosk behaviour)
-#binary_sensor:
-#  - platform: homeassistant
-#    id: presence
-#    entity_id: binary_sensor.office_presence_group
-#    on_press:
-#      - lvgl.resume:
-#      - delay: 10ms
-#      - switch.turn_on: backlight
-#      - logger.log: "Screensaver is turned off"
-#
-#    on_release:
-#      - switch.turn_off: backlight
-#      - lvgl.pause:
-#          show_snow: true
-#      - logger.log: "Screensaver is turned on"
+binary_sensor:
+  - platform: homeassistant
+    id: presence
+    entity_id: binary_sensor.presence_presence
+    on_press:
+      - lvgl.resume:
+      - delay: 10ms
+      - switch.turn_on: backlight
+      - script.execute: backlight_timeout
+
+    on_release:
+      - script.execute: backlight_timeout
+      

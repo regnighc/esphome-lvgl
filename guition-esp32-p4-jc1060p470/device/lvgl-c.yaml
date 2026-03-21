@@ -7,7 +7,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    resize: 320x240
+    resize: 640x480 #320x240
     update_interval: 1min
     buffer_size: 131072
     on_download_finished:
@@ -26,7 +26,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    resize: 320x240
+    resize: 640x480 #320x240
     update_interval: 1min
     buffer_size: 131072
     on_download_finished:
@@ -70,6 +70,10 @@ lvgl:
   color_depth: 16
   buffer_size: 100%
   byte_order: little_endian
+  on_touch:
+    - lvgl.resume:
+    - switch.turn_on: backlight
+    - script.execute: backlight_timeout
   displays:
     - my_display
   touchscreens:
@@ -174,7 +178,7 @@ lvgl:
                         bg_color: 0xFF2A2D2E
                         radius: 15
                         border_width: 0
-                        pad_top: 20
+                        margin_top: 20
                         layout:
                           type: flex
                           flex_flow: column
@@ -216,7 +220,7 @@ lvgl:
                               height: 110
                               bg_color: 0xFF6B6B6B
                               radius: 12
-                              indicator: {bg_color: 0x3EACE5, radius: 12}
+                              indicator: {bg_color: 0xE5CA3E, radius: 12}
                               knob: {bg_opa: TRANSP}
                               on_release:
                                 - homeassistant.service:
@@ -261,7 +265,7 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: row
-                          flex_align_main: space_around
+                          flex_align_main: center #space_around
                           flex_align_cross: center
                           #pad_all: 8
                         widgets:
@@ -276,7 +280,11 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: column
-                                flex_align_cross: start
+                                flex_align_cross: center
+                                flex_align_main: center
+                                # type: flex
+                                # flex_flow: column
+                                # flex_align_cross: start
                               widgets:
                                 - label:
                                     id: high_temp_label
@@ -341,7 +349,7 @@ lvgl:
                               height: 110
                               bg_color: 0xFF6B6B6B
                               radius: 12
-                              indicator: {bg_color: 0x3EACE5, radius: 12}
+                              indicator: {bg_color: 0xE5CA3E, radius: 12}
                               knob: {bg_opa: TRANSP}
                               on_release:
                                 - homeassistant.service:
@@ -376,17 +384,24 @@ lvgl:
                     pad_row: 10
                   widgets:
                     - image:
+                        mode: REAL
+                        align: CENTER
                         id: w_cam_1
                         width: 320
                         height: 240
                         src: online_img_cam_1
                         radius: 15
+                        clip_corner: true
+                        zoom: 2
                     - image:
+                        align: CENTER
                         id: w_cam_2
                         width: 320
                         height: 240
                         src: online_img_cam_2
                         radius: 15
+                        clip_corner: true
+                        zoom: 2
 
         # ---------------------------------------------------------
         # ZONE 2: FIXED BOTTOM NAVIGATION BAR
