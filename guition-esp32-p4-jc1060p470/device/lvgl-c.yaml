@@ -394,6 +394,7 @@ lvgl:
                         clip_corner: true
                         zoom: 2
                     - image:
+                        mode: REAL
                         align: CENTER
                         id: w_cam_2
                         width: 320
