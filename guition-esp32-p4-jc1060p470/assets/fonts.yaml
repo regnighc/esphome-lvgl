@@ -14,3 +14,14 @@ font:
     id: clockbar_font
     size: 20
     bpp: 8
+    
+  - file: "gfonts://Bitcount Grid Single"
+    id: time_font
+    size: 58
+    weight: 300
+    bpp: 4
+
+  - file: "gfonts://Roboto"
+    id: date_font
+    size: 28
+    bpp: 4
