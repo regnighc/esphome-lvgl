@@ -176,7 +176,7 @@ lvgl:
                         border_width: 0
                         layout:
                           type: flex
-                          flex_flow: row wrap # Allows 2 side-by-side, then next 2 below
+                          flex_flow: row_wrap # Allows 2 side-by-side, then next 2 below
                           pad_row: 15
                           pad_column: 15
                         widgets:
@@ -187,7 +187,7 @@ lvgl:
                               bg_color: 0xFF2A2D2E
                               radius: 15
                               border_width: 0
-                              layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_all: 15}
+                              layout: {type: flex, flex_flow: column, flex_align_cross: start, pad_row: 15, pad_column: 15}
                               widgets:
                                 - slider:
                                     id: hallway_brightness_slider
