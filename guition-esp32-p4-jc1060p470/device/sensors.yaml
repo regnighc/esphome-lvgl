@@ -36,3 +36,32 @@ sensor:
       - lvgl.slider.update:
           id: livingroom_brightness_slider
           value: !lambda "return x;"
+  - platform: homeassistant
+    id: high_temp_ha
+    entity_id: sensor.weather_forecast_day_0_high
+  - platform: homeassistant
+    id: low_temp_ha
+    entity_id: sensor.weather_forecast_day_0_low
+
+text_sensor:
+  - platform: homeassistant
+    id: weather_condition
+    entity_id: weather.forecast_home # Your specific entity
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: weather_icon_label
+            # 'x' is the state coming from HA (e.g., "sunny")
+            text: !lambda |-
+              if (x == "sunny") return "${weather_sunny}";
+              if (x == "clear-night") return "${weather_night}";
+              if (x == "cloudy") return "${weather_partly_cloudy}";
+              if (x == "partlycloudy") return "${weather_partly_cloudy}";
+              if (x == "rainy") return "${weather_rainy}";
+              if (x == "pouring") return "${weather_pouring}";
+              if (x == "snowy") return "${weather_snowy}";
+              if (x == "lightning" || x == "lightning-rainy") return "${weather_partly_lightning}";
+              if (x == "fog") return "${weather_windy_variant}"; // Using windy-variant as a proxy for fog
+              
+              // Fallback if the API returns something unexpected
+              return "${weather_sunny_alert}";
