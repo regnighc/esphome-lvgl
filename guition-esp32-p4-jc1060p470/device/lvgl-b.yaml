@@ -121,19 +121,33 @@ lvgl:
                     flex_align_cross: center
                     pad_row: 15
                   widgets:
-                    # CLOCK / DATE
+                    # CLOCK
                     - label:
-                        id: main_clock
+                        id: main_time
                         width: 320
+                        text_color: 0xFFFFFF
+                        text_align: center
+                        text_font: statistics_font  # Replace with the ID of your larger font
                         text: !lambda |-
                           auto now = id(sntp_time).now();
                           if (!now.is_valid()) {
-                            return "Syncing...\nPlease wait";
+                            return "Syncing...";
                           }
-                          return now.strftime("%H:%M\n%a, %b %d").c_str();
+                          return now.strftime("%H:%M").c_str();
+                    
+                    # DATE
+                    - label:
+                        id: main_date
+                        width: 320
                         text_color: 0xFFFFFF
                         text_align: center
-                        text_font: statistics_font
+                        text_font: statistics_font  # Replace with the ID of your smaller, different font
+                        text: !lambda |-
+                          auto now = id(sntp_time).now();
+                          if (!now.is_valid()) {
+                            return "Please wait";
+                          }
+                          return now.strftime("%a, %b %d").c_str();
 
                     # SEPARATOR LINE
                     - line:
