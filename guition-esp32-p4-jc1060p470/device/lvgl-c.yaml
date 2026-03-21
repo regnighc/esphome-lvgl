@@ -279,17 +279,16 @@ lvgl:
                                 flex_align_cross: start
                               widgets:
                                 - label:
+                                    id: high_temp_label
                                     text_font: date_font
                                     text_color: 0xFFFFFF
-                                    text: !lambda |-
-                                      float v = id(high_temp_ha).state;
-                                      return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+                                    text: "--°C"
+
                                 - label:
+                                    id: low_temp_label
                                     text_font: date_font
                                     text_color: 0xAAAAAA
-                                    text: !lambda |-
-                                      float v = id(low_temp_ha).state;
-                                      return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+                                    text: "--°C"
                           # Right Column: Condition Icon
                           - label:
                               id: weather_icon_label

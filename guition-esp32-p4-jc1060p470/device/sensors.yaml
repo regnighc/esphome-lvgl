@@ -51,13 +51,25 @@ sensor:
           id: livingroom_lamp_brightness_slider
           value: !lambda "return x;"
 
-
   - platform: homeassistant
     id: high_temp_ha
     entity_id: sensor.weather_forecast_day_0_high
+    on_value:
+      - lvgl.label.update:
+          id: high_temp_label
+          text: !lambda |-
+            float v = x;
+            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+
   - platform: homeassistant
     id: low_temp_ha
     entity_id: sensor.weather_forecast_day_0_low
+    on_value:
+      - lvgl.label.update:
+          id: low_temp_label
+          text: !lambda |-
+            float v = x;
+            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
 
 text_sensor:
   - platform: homeassistant

@@ -1,0 +1,1527 @@
+psram:
+
+online_image:
+  - url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
+    id: online_img_cam_2
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_2
+            src: online_img_cam_2
+        - lvgl.image.update:
+            id: w_cam_2_grid
+            src: online_img_cam_2
+        - lvgl.image.update:
+            id: w_cam_2_full
+            src: online_img_cam_2
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_2
+            src: online_img_cam_2
+        - lvgl.image.update:
+            id: w_cam_2_grid
+            src: online_img_cam_2
+        - lvgl.image.update:
+            id: w_cam_2_full
+            src: online_img_cam_2
+
+  - url: "http://192.168.2.127:5566/api/B2C4/person/snapshot.jpg"
+    id: online_img_cam_1
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_1
+            src: online_img_cam_1
+        - lvgl.image.update:
+            id: w_cam_1_grid
+            src: online_img_cam_1
+        - lvgl.image.update:
+            id: w_cam_1_full
+            src: online_img_cam_1
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_1
+            src: online_img_cam_1
+        - lvgl.image.update:
+            id: w_cam_1_grid
+            src: online_img_cam_1
+        - lvgl.image.update:
+            id: w_cam_1_full
+            src: online_img_cam_1
+
+  # --- Placeholder camera feeds (add URLs when available) ---
+  - url: "http://192.168.2.127:5566/api/placeholder_3/snapshot.jpg"
+    id: online_img_cam_3
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_3_grid
+            src: online_img_cam_3
+        - lvgl.image.update:
+            id: w_cam_3_full
+            src: online_img_cam_3
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_3_grid
+            src: online_img_cam_3
+        - lvgl.image.update:
+            id: w_cam_3_full
+            src: online_img_cam_3
+
+  - url: "http://192.168.2.127:5566/api/placeholder_4/snapshot.jpg"
+    id: online_img_cam_4
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_4_grid
+            src: online_img_cam_4
+        - lvgl.image.update:
+            id: w_cam_4_full
+            src: online_img_cam_4
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_4_grid
+            src: online_img_cam_4
+        - lvgl.image.update:
+            id: w_cam_4_full
+            src: online_img_cam_4
+
+  - url: "http://192.168.2.127:5566/api/placeholder_5/snapshot.jpg"
+    id: online_img_cam_5
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_5_grid
+            src: online_img_cam_5
+        - lvgl.image.update:
+            id: w_cam_5_full
+            src: online_img_cam_5
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_5_grid
+            src: online_img_cam_5
+        - lvgl.image.update:
+            id: w_cam_5_full
+            src: online_img_cam_5
+
+  - url: "http://192.168.2.127:5566/api/placeholder_6/snapshot.jpg"
+    id: online_img_cam_6
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_6_grid
+            src: online_img_cam_6
+        - lvgl.image.update:
+            id: w_cam_6_full
+            src: online_img_cam_6
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_6_grid
+            src: online_img_cam_6
+        - lvgl.image.update:
+            id: w_cam_6_full
+            src: online_img_cam_6
+
+
+################################################################################
+# Colours
+################################################################################
+color:
+  - id: lcars_beige
+    hex: "E6CC99"
+  - id: lcars_blue_gray
+    hex: "99B3CC"
+  - id: black
+    hex: "000000"
+  - id: lcars_white
+    hex: "FFFFFF"
+  - id: lcars_orange
+    hex: "ff8800"
+  - id: lcars_lightblue
+    hex: "6c7acc"
+  - id: lcars_red
+    hex: "eb4e4e"
+  - id: lcars_lightorange
+    hex: "ff9c00"
+  - id: lcars_lavender
+    hex: "cc99ff"
+
+
+################################################################################
+# LVGL
+################################################################################
+lvgl:
+  id: my_lvgl
+  color_depth: 16
+  buffer_size: 100%
+  byte_order: little_endian
+  displays:
+    - my_display
+  touchscreens:
+    - my_touchscreen
+
+  pages:
+
+    # =========================================================================
+    # PAGE: MAIN DASHBOARD
+    # =========================================================================
+    - id: main_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF181818
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+
+      widgets:
+        - obj:
+            id: main_content_area
+            width: 100%
+            flex_grow: 1
+            scrollable: false
+            bg_opa: TRANSP
+            border_width: 0
+            pad_all: 8
+            pad_column: 8
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_between
+              flex_align_cross: start
+            widgets:
+
+              # --- COLUMN 1: Clock + Divider + Sliders 1 & 2 ---
+              - obj:
+                  width: 330
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  pad_row: 10
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                  widgets:
+                    - obj:
+                        width: 100%
+                        height: 120
+                        scrollable: false
+                        bg_opa: TRANSP
+                        border_width: 0
+                        pad_all: 0
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          flex_align_main: center
+                          flex_align_cross: center
+                        widgets:
+                          - label:
+                              id: main_time
+                              width: 100%
+                              text_align: center
+                              text_font: time_font
+                              text_color: 0xFFFFFF
+                              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                          - label:
+                              id: main_date
+                              width: 100%
+                              text_align: center
+                              text_font: date_font
+                              text_color: 0xFFFFFF
+                              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                    - line:
+                        width: 310
+                        height: 3
+                        points: [ {x: 0, y: 0}, {x: 310, y: 0} ]
+                        line_width: 3
+                        line_color: 0xFFFFFF
+                    - obj: &slider_box_style
+                        width: 310
+                        height: 150
+                        scrollable: false
+                        bg_color: 0xFF2A2D2E
+                        radius: 15
+                        border_width: 0
+                        pad_all: 8
+                        pad_row: 8
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          flex_align_cross: center
+                          flex_align_main: center
+                        widgets:
+                          - slider:
+                              id: hallway_brightness_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0xE5CA3E, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.hallway_overhead_group
+                                      color_temp: "370"
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "HALLWAY LIGHTS"
+                              text_color: 0xFFFFFF
+                    - obj:
+                        <<: *slider_box_style
+                        widgets:
+                          - slider:
+                              id: hallway_accent_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0x3EACE5, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.hallway_overhead_group
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "HALLWAY ACCENT"
+                              text_color: 0xFFFFFF
+
+              # --- COLUMN 2: Weather + Divider + Sliders 3 & 4 ---
+              - obj:
+                  width: 330
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  pad_row: 10
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                  widgets:
+                    - obj:
+                        width: 100%
+                        height: 120
+                        scrollable: false
+                        bg_color: 0xFF2A2D2E
+                        radius: 15
+                        border_width: 0
+                        pad_all: 8
+                        layout:
+                          type: flex
+                          flex_flow: row
+                          flex_align_main: space_around
+                          flex_align_cross: center
+                        widgets:
+                          - obj:
+                              width: SIZE_CONTENT
+                              height: SIZE_CONTENT
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              layout:
+                                type: flex
+                                flex_flow: column
+                                flex_align_cross: start
+                              widgets:
+                                - label:
+                                    text_font: date_font
+                                    text_color: 0xFFFFFF
+                                    text: !lambda |-
+                                      float v = id(high_temp_ha).state;
+                                      return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+                                - label:
+                                    text_font: date_font
+                                    text_color: 0xAAAAAA
+                                    text: !lambda |-
+                                      float v = id(low_temp_ha).state;
+                                      return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+                          - label:
+                              id: weather_icon_label
+                              text_font: icon_font
+                              text_color: 0xFFFFFF
+                              text: "${weather_sunny}"
+                    - line:
+                        width: 310
+                        height: 3
+                        points: [ {x: 0, y: 0}, {x: 310, y: 0} ]
+                        line_width: 3
+                        line_color: 0xFFFFFF
+                    - obj:
+                        <<: *slider_box_style
+                        widgets:
+                          - slider:
+                              id: livingroom_brightness_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0xE5CA3E, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIVING ROOM"
+                              text_color: 0xFFFFFF
+                    - obj:
+                        <<: *slider_box_style
+                        widgets:
+                          - slider:
+                              id: lr_accent_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0x3EACE5, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LR ACCENT"
+                              text_color: 0xFFFFFF
+
+              # --- COLUMN 3: Cameras ---
+              - obj:
+                  width: 330
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  pad_row: 10
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: start
+                  widgets:
+                    - image:
+                        id: w_cam_1
+                        width: 320
+                        height: 240
+                        src: online_img_cam_1
+                        radius: 5
+                    - image:
+                        id: w_cam_2
+                        width: 320
+                        height: 240
+                        src: online_img_cam_2
+                        radius: 5
+
+        # --- NAV BAR ---
+        - obj:
+            id: nav_bar_main
+            width: 100%
+            height: 80
+            scrollable: false
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            border_color: 0x333333
+            pad_top: 10
+            pad_bottom: 0
+            pad_left: 0
+            pad_right: 0
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_evenly
+              flex_align_cross: center
+            widgets:
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label:
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
+              - label:
+                  text: "MAIN DASHBOARD"
+                  width: 300
+                  text_align: center
+                  text_color: 0xFFFFFF
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: cameras_page
+                  widgets:
+                    - label:
+                        text: "CAMERAS"
+                        align: center
+                        text_color: 0xFFFFFF
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: lighting_page
+                  widgets:
+                    - label:
+                        text: "LIGHTING"
+                        align: center
+                        text_color: 0xFFFFFF
+
+
+    # =========================================================================
+    # PAGE: CAMERAS GRID (2 rows × 3 columns)
+    # Screen 1024×600 minus 80px nav = 520px content height.
+    # Each cell: ~330px wide × ~250px tall with 8px gaps/padding.
+    # =========================================================================
+    - id: cameras_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF181818
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+
+      widgets:
+        - obj:
+            id: cameras_content_area
+            width: 100%
+            flex_grow: 1
+            scrollable: false
+            bg_opa: TRANSP
+            border_width: 0
+            pad_all: 8
+            pad_row: 8
+            pad_column: 8
+            layout:
+              type: flex
+              flex_flow: row_wrap
+              flex_align_main: space_between
+              flex_align_cross: start
+            widgets:
+
+              # Cell 1
+              - obj:
+                  width: 330
+                  height: 248
+                  scrollable: false
+                  bg_color: 0xFF2A2D2E
+                  radius: 8
+                  border_width: 0
+                  pad_all: 4
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: center
+                  on_click:
+                    - lvgl.page.show: cam1_full_page
+                  widgets:
+                    - image:
+                        id: w_cam_1_grid
+                        width: 320
+                        height: 240
+                        src: online_img_cam_1
+                        radius: 5
+
+              # Cell 2
+              - obj:
+                  width: 330
+                  height: 248
+                  scrollable: false
+                  bg_color: 0xFF2A2D2E
+                  radius: 8
+                  border_width: 0
+                  pad_all: 4
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: center
+                  on_click:
+                    - lvgl.page.show: cam2_full_page
+                  widgets:
+                    - image:
+                        id: w_cam_2_grid
+                        width: 320
+                        height: 240
+                        src: online_img_cam_2
+                        radius: 5
+
+              # Cell 3
+              - obj:
+                  width: 330
+                  height: 248
+                  scrollable: false
+                  bg_color: 0xFF2A2D2E
+                  radius: 8
+                  border_width: 0
+                  pad_all: 4
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: center
+                  on_click:
+                    - lvgl.page.show: cam3_full_page
+                  widgets:
+                    - image:
+                        id: w_cam_3_grid
+                        width: 320
+                        height: 240
+                        src: online_img_cam_3
+                        radius: 5
+
+              # Cell 4
+              - obj:
+                  width: 330
+                  height: 248
+                  scrollable: false
+                  bg_color: 0xFF2A2D2E
+                  radius: 8
+                  border_width: 0
+                  pad_all: 4
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: center
+                  on_click:
+                    - lvgl.page.show: cam4_full_page
+                  widgets:
+                    - image:
+                        id: w_cam_4_grid
+                        width: 320
+                        height: 240
+                        src: online_img_cam_4
+                        radius: 5
+
+              # Cell 5
+              - obj:
+                  width: 330
+                  height: 248
+                  scrollable: false
+                  bg_color: 0xFF2A2D2E
+                  radius: 8
+                  border_width: 0
+                  pad_all: 4
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: center
+                  on_click:
+                    - lvgl.page.show: cam5_full_page
+                  widgets:
+                    - image:
+                        id: w_cam_5_grid
+                        width: 320
+                        height: 240
+                        src: online_img_cam_5
+                        radius: 5
+
+              # Cell 6
+              - obj:
+                  width: 330
+                  height: 248
+                  scrollable: false
+                  bg_color: 0xFF2A2D2E
+                  radius: 8
+                  border_width: 0
+                  pad_all: 4
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: center
+                  on_click:
+                    - lvgl.page.show: cam6_full_page
+                  widgets:
+                    - image:
+                        id: w_cam_6_grid
+                        width: 320
+                        height: 240
+                        src: online_img_cam_6
+                        radius: 5
+
+        # --- NAV BAR ---
+        - obj:
+            id: nav_bar_cameras
+            width: 100%
+            height: 80
+            scrollable: false
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            border_color: 0x333333
+            pad_top: 10
+            pad_bottom: 0
+            pad_left: 0
+            pad_right: 0
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_evenly
+              flex_align_cross: center
+            widgets:
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: main_page
+                  widgets:
+                    - label:
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
+              - label:
+                  text: "CAMERAS"
+                  width: 300
+                  text_align: center
+                  text_color: 0xFFFFFF
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label:
+                        text: "CAMERAS"
+                        align: center
+                        text_color: 0xFFFFFF
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: lighting_page
+                  widgets:
+                    - label:
+                        text: "LIGHTING"
+                        align: center
+                        text_color: 0xFFFFFF
+
+
+    # =========================================================================
+    # FULLSCREEN CAMERA PAGES — tap anywhere returns to cameras_page
+    # Image fills the full screen (no nav bar). Resize to 1024x600 for full fill.
+    # =========================================================================
+
+    - id: cam1_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_1_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_1
+            on_click:
+              - lvgl.page.show: cameras_page
+
+    - id: cam2_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_2_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_2
+            on_click:
+              - lvgl.page.show: cameras_page
+
+    - id: cam3_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_3_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_3
+            on_click:
+              - lvgl.page.show: cameras_page
+
+    - id: cam4_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_4_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_4
+            on_click:
+              - lvgl.page.show: cameras_page
+
+    - id: cam5_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_5_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_5
+            on_click:
+              - lvgl.page.show: cameras_page
+
+    - id: cam6_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_6_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_6
+            on_click:
+              - lvgl.page.show: cameras_page
+
+
+    # =========================================================================
+    # PAGE: LIGHTING
+    # Two equal columns. Each column has 4 dual-slider containers.
+    # Each container: brightness slider (left half) + colour_temp slider (right half).
+    # Container auto-fits column width; sliders each take ~50% of container width.
+    # =========================================================================
+    - id: lighting_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF181818
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+
+      widgets:
+        - obj:
+            id: lighting_content_area
+            width: 100%
+            flex_grow: 1
+            scrollable: false
+            bg_opa: TRANSP
+            border_width: 0
+            pad_all: 8
+            pad_column: 8
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_between
+              flex_align_cross: start
+
+            widgets:
+
+              # ---------------------------------------------------------------
+              # LIGHTING COLUMN 1
+              # Column width = (1024 - 16pad - 8gap) / 2 = 500px
+              # Container width = 100% of column = 500px
+              # Each slider = ~50% of inner width (500 - 16pad) / 2 = 242px
+              # ---------------------------------------------------------------
+              - obj:
+                  width: 500
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  pad_row: 10
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                  widgets:
+
+                    # Light Container 1
+                    - obj: &dual_slider_container
+                        width: 100%
+                        height: 160
+                        scrollable: false
+                        bg_color: 0xFF2A2D2E
+                        radius: 15
+                        border_width: 0
+                        pad_all: 8
+                        pad_column: 8
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          flex_align_cross: center
+                          flex_align_main: center
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col1_1_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_1
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col1_1_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_1
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 1"
+                              text_color: 0xFFFFFF
+
+                    # Light Container 2
+                    - obj:
+                        <<: *dual_slider_container
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col1_2_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_2
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col1_2_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_2
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 2"
+                              text_color: 0xFFFFFF
+
+                    # Light Container 3
+                    - obj:
+                        <<: *dual_slider_container
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col1_3_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_3
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col1_3_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_3
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 3"
+                              text_color: 0xFFFFFF
+
+                    # Light Container 4
+                    - obj:
+                        <<: *dual_slider_container
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col1_4_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_4
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col1_4_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_4
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 4"
+                              text_color: 0xFFFFFF
+
+              # ---------------------------------------------------------------
+              # LIGHTING COLUMN 2
+              # ---------------------------------------------------------------
+              - obj:
+                  width: 500
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  pad_row: 10
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                  widgets:
+
+                    # Light Container 5
+                    - obj:
+                        <<: *dual_slider_container
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col2_1_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_5
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col2_1_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_5
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 5"
+                              text_color: 0xFFFFFF
+
+                    # Light Container 6
+                    - obj:
+                        <<: *dual_slider_container
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col2_2_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_6
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col2_2_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_6
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 6"
+                              text_color: 0xFFFFFF
+
+                    # Light Container 7
+                    - obj:
+                        <<: *dual_slider_container
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col2_3_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_7
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col2_3_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_7
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 7"
+                              text_color: 0xFFFFFF
+
+                    # Light Container 8
+                    - obj:
+                        <<: *dual_slider_container
+                        widgets:
+                          - obj:
+                              width: 100%
+                              height: 120
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              pad_column: 8
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_between
+                                flex_align_cross: center
+                              widgets:
+                                - slider:
+                                    id: light_col2_4_brightness
+                                    width: 46%
+                                    height: 110
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xE5CA3E, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_8
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                - slider:
+                                    id: light_col2_4_colortemp
+                                    width: 46%
+                                    height: 110
+                                    min_value: 153
+                                    max_value: 500
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 12
+                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
+                                    knob: {bg_opa: TRANSP}
+                                    on_release:
+                                      - homeassistant.service:
+                                          service: light.turn_on
+                                          data:
+                                            entity_id: light.placeholder_8
+                                          data_template:
+                                            color_temp: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIGHT 8"
+                              text_color: 0xFFFFFF
+
+        # --- NAV BAR ---
+        - obj:
+            id: nav_bar_lighting
+            width: 100%
+            height: 80
+            scrollable: false
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            border_color: 0x333333
+            pad_top: 10
+            pad_bottom: 0
+            pad_left: 0
+            pad_right: 0
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_evenly
+              flex_align_cross: center
+            widgets:
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: main_page
+                  widgets:
+                    - label:
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
+              - label:
+                  text: "LIGHTING"
+                  width: 300
+                  text_align: center
+                  text_color: 0xFFFFFF
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: cameras_page
+                  widgets:
+                    - label:
+                        text: "CAMERAS"
+                        align: center
+                        text_color: 0xFFFFFF
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label:
+                        text: "LIGHTING"
+                        align: center
+                        text_color: 0xFFFFFF
