@@ -161,11 +161,17 @@ lvgl:
                               on_release:
                                 - homeassistant.service:
                                     service: light.turn_on
-                                    entity_id: light.hallway_overhead_group
                                     data:
-                                      brightness: !lambda "return (int)x;"
+                                      entity_id: light.hallway_overhead_group
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
                               widgets:
-                                - label: {align: center, text: "HALLWAY OVERHEAD", text_color: 0xFFFFFF}
+                                - label:
+                                    align: center
+                                    text: "HALLWAY OVERHEAD"
+                                    text_color: 0xFFFFFF
 
                     # LIVINGROOM CONTROLS (Original)
                     - obj:
@@ -186,9 +192,12 @@ lvgl:
                               on_release:
                                 - homeassistant.service:
                                     service: light.turn_on
-                                    entity_id: light.living_room
                                     data:
-                                      brightness: !lambda "return (int)x;"
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
                               widgets:
                                 - label: {align: center, text: "LIVINGROOM OVERHEAD", text_color: 0xFFFFFF}
 
@@ -234,11 +243,14 @@ lvgl:
                               on_release:
                                 - homeassistant.service:
                                     service: light.turn_on
-                                    entity_id: light.hallway_accent # Change to your entity
                                     data:
-                                      brightness: !lambda "return (int)x;"
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
                               widgets:
-                                - label: {align: center, text: "HALLWAY ACCENT", text_color: 0xFFFFFF}
+                                - label: {align: center, text: "PLACEHOLDER", text_color: 0xFFFFFF}
 
                     # NEW LIVINGROOM (Right Side)
                     - obj:
@@ -259,11 +271,14 @@ lvgl:
                               on_release:
                                 - homeassistant.service:
                                     service: light.turn_on
-                                    entity_id: light.living_room_accent # Change to your entity
                                     data:
-                                      brightness: !lambda "return (int)x;"
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
                               widgets:
-                                - label: {align: center, text: "LR ACCENT", text_color: 0xFFFFFF}
+                                - label: {align: center, text: "PLACEHOLDER", text_color: 0xFFFFFF}
 
               # --- COLUMN 3: CAMERAS (Original) ---
               - obj:
