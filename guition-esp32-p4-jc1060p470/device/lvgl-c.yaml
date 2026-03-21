@@ -133,7 +133,7 @@ lvgl:
                     # --- Clock block ---
                     - obj:
                         width: 100%
-                        height: SIZE_CONTENT
+                        height: 120 #SIZE_CONTENT
                         scrollable: false
                         bg_opa: TRANSP
                         border_width: 0
@@ -194,6 +194,7 @@ lvgl:
                                     service: light.turn_on
                                     data:
                                       entity_id: light.hallway_overhead_group
+                                      color_temp: 370
                                     data_template:
                                       brightness: "{{ slider_val }}"
                                     variables:
@@ -251,9 +252,9 @@ lvgl:
                     # --- Weather block (height-matched to clock column header) ---
                     - obj:
                         width: 100%
-                        height: SIZE_CONTENT
+                        height: 120 #SIZE_CONTENT
                         scrollable: false
-                        bg_color: 0xFF2A2D2E
+                        bg_opa: TRANSP #bg_color: 0xFF2A2D2E
                         radius: 15
                         border_width: 0
                         layout:
@@ -270,6 +271,7 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
+                              pad_all: 0
                               layout:
                                 type: flex
                                 flex_flow: column
@@ -278,11 +280,15 @@ lvgl:
                                 - label:
                                     text_font: date_font
                                     text_color: 0xFFFFFF
-                                    text: !lambda 'return str_sprintf("%.0f°C", id(high_temp_ha).state);'
+                                    text: !lambda |-
+                                      float v = id(high_temp_ha).state;
+                                      return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
                                 - label:
                                     text_font: date_font
                                     text_color: 0xAAAAAA
-                                    text: !lambda 'return str_sprintf("%.0f°C", id(low_temp_ha).state);'
+                                    text: !lambda |-
+                                      float v = id(low_temp_ha).state;
+                                      return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
                           # Right Column: Condition Icon
                           - label:
                               id: weather_icon_label
@@ -330,7 +336,7 @@ lvgl:
                         <<: *slider_box_style
                         widgets:
                           - slider:
-                              id: lr_accent_slider
+                              id: livingroom_lamp_brightness_slider
                               width: 100%
                               height: 110
                               bg_color: 0xFF6B6B6B
@@ -341,7 +347,7 @@ lvgl:
                                 - homeassistant.service:
                                     service: light.turn_on
                                     data:
-                                      entity_id: light.living_room
+                                      entity_id: light.livingroom_lamp
                                     data_template:
                                       brightness: "{{ slider_val }}"
                                     variables:
@@ -349,7 +355,7 @@ lvgl:
                           - label:
                               width: 100%
                               text_align: center
-                              text: "LR ACCENT"
+                              text: "LIVING ROOM LAMP"
                               text_color: 0xFFFFFF
 
               # ═══════════════════════════════════════════════════
@@ -374,13 +380,13 @@ lvgl:
                         width: 320
                         height: 240
                         src: online_img_cam_1
-                        radius: 5
+                        radius: 15
                     - image:
                         id: w_cam_2
                         width: 320
                         height: 240
                         src: online_img_cam_2
-                        radius: 5
+                        radius: 15
 
         # ---------------------------------------------------------
         # ZONE 2: FIXED BOTTOM NAVIGATION BAR

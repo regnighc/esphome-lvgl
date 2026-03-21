@@ -36,6 +36,22 @@ sensor:
       - lvgl.slider.update:
           id: livingroom_brightness_slider
           value: !lambda "return x;"
+
+  - platform: homeassistant
+    id: livingroom_lamp_brightness
+    entity_id: light.livingroom_lamp
+    attribute: brightness
+    # Add this filter block to catch the missing attribute when the light is off
+    filters:
+      - clamp:
+          min_value: 0
+          max_value: 255
+    on_value:
+      - lvgl.slider.update:
+          id: livingroom_lamp_brightness_slider
+          value: !lambda "return x;"
+
+
   - platform: homeassistant
     id: high_temp_ha
     entity_id: sensor.weather_forecast_day_0_high
