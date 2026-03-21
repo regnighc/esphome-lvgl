@@ -22,3 +22,17 @@ sensor:
       - lvgl.slider.update:
           id: hallway_brightness_slider
           value: !lambda "return x;"
+
+  - platform: homeassistant
+    id: livingroom_light_brightness
+    entity_id: light.living_room
+    attribute: brightness
+    # Add this filter block to catch the missing attribute when the light is off
+    filters:
+      - clamp:
+          min_value: 0
+          max_value: 255
+    on_value:
+      - lvgl.slider.update:
+          id: livingroom_brightness_slider
+          value: !lambda "return x;"
