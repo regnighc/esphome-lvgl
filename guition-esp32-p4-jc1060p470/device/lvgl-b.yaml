@@ -200,10 +200,14 @@ lvgl:
                                     on_release:
                                       - homeassistant.service:
                                           service: light.turn_on
-                                          entity_id: light.hallway_overhead_group
-                                          data: { brightness: !lambda "return (int)x;" }
-                                    widgets:
-                                      - label: {align: center, text: "HALLWAY LIGHTS", text_color: 0xFFFFFF}
+                                          data:
+                                            entity_id: light.hallway_overhead_group
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
+                                          widgets:
+                                            - label: {align: center, text: "HALLWAY LIGHTS", text_color: 0xFFFFFF}
 
                           # 2. Hallway New (Right side of Hallway 1)
                           - obj:
@@ -220,8 +224,12 @@ lvgl:
                                     on_release:
                                       - homeassistant.service:
                                           service: light.turn_on
-                                          entity_id: light.hallway_accent
-                                          data: { brightness: !lambda "return (int)x;" }
+                                          data:
+                                            entity_id: light.hallway_overhead_group
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
                                     widgets:
                                       - label: {align: center, text: "HALLWAY ACCENT", text_color: 0xFFFFFF}
 
@@ -240,8 +248,12 @@ lvgl:
                                     on_release:
                                       - homeassistant.service:
                                           service: light.turn_on
-                                          entity_id: light.living_room
-                                          data: { brightness: !lambda "return (int)x;" }
+                                          data:
+                                            entity_id: light.living_room
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
                                     widgets:
                                       - label: {align: center, text: "LIVING ROOM", text_color: 0xFFFFFF}
 
@@ -257,11 +269,15 @@ lvgl:
                                     radius: 12
                                     indicator: {bg_color: 0x3EACE5, radius: 12}
                                     knob: {bg_opa: TRANSP}
-                                    on_release:
+                                      on_release:
                                       - homeassistant.service:
                                           service: light.turn_on
-                                          entity_id: light.living_room_accent
-                                          data: { brightness: !lambda "return (int)x;" }
+                                          data:
+                                            entity_id: light.living_room
+                                          data_template:
+                                            brightness: "{{ slider_val }}"
+                                          variables:
+                                            slider_val: !lambda "return (int)x;"
                                     widgets:
                                       - label: {align: center, text: "LR ACCENT", text_color: 0xFFFFFF}
 
@@ -278,15 +294,14 @@ lvgl:
                         width: 320
                         height: 240
                         src: online_img_cam_1
+                        radius: 5
                     - image:
                         id: w_cam_2
                         width: 320
                         height: 240
                         src: online_img_cam_2
+                        radius: 5
 
-        # ---------------------------------------------------------
-        # ZONE 2: FIXED BOTTOM NAV (Remains unchanged)
-        # ---------------------------------------------------------
 
         # ---------------------------------------------------------
         # ZONE 2: FIXED BOTTOM NAVIGATION BAR
