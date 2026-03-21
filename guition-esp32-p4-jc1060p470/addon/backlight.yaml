@@ -16,10 +16,5 @@ binary_sensor:
     entity_id: binary_sensor.presence_presence
     on_press:
       - lvgl.resume:
-      - delay: 10ms
       - switch.turn_on: backlight
-      - script.execute: backlight_timeout
-
-    on_release:
-      - script.execute: backlight_timeout
 
