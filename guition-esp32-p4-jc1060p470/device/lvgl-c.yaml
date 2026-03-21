@@ -70,7 +70,7 @@ lvgl:
   color_depth: 16
   buffer_size: 100%
   byte_order: little_endian
-  on_touch:
+  on_finger_down:
     - lvgl.resume:
     - switch.turn_on: backlight
     - script.execute: backlight_timeout
@@ -170,6 +170,13 @@ lvgl:
                         line_width: 3
                         line_color: 0xFFFFFF
 
+                    # --- Spacer ---
+                    - obj:
+                        width: 1
+                        height: 20
+                        bg_opa: TRANSP
+                        border_width: 0
+
                     # --- Slider 1: Hallway Lights ---
                     - obj: &slider_box_style
                         width: 305
@@ -178,7 +185,6 @@ lvgl:
                         bg_color: 0xFF2A2D2E
                         radius: 15
                         border_width: 0
-                        margin_top: 20
                         layout:
                           type: flex
                           flex_flow: column
@@ -311,6 +317,13 @@ lvgl:
                         points: [ {x: 0, y: 0}, {x: 305, y: 0} ]
                         line_width: 3
                         line_color: 0xFFFFFF
+
+                    # --- Spacer ---
+                    - obj:
+                        width: 1
+                        height: 20
+                        bg_opa: TRANSP
+                        border_width: 0
 
                     # --- Slider 3: Living Room Lights ---
                     - obj:
