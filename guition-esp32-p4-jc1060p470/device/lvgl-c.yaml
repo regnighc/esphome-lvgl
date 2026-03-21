@@ -412,7 +412,6 @@ lvgl:
                     pad_row: 10
                   widgets:
                     - image:
-                        mode: REAL
                         align: CENTER
                         id: w_cam_1
                         width: 320
@@ -420,9 +419,9 @@ lvgl:
                         src: online_img_cam_1
                         radius: 15
                         clip_corner: true
-                        zoom: 2
-                    - image:
+                        zoom: 0.5
                         mode: REAL
+                    - image:
                         align: CENTER
                         id: w_cam_2
                         width: 320
@@ -430,7 +429,8 @@ lvgl:
                         src: online_img_cam_2
                         radius: 15
                         clip_corner: true
-                        zoom: 2
+                        zoom: 0.5
+                        mode: REAL
 
         # ---------------------------------------------------------
         # ZONE 2: FIXED BOTTOM NAVIGATION BAR
