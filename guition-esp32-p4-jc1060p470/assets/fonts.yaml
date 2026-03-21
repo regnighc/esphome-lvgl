@@ -16,7 +16,7 @@ font:
     bpp: 8
     
   - file: "gfonts://Bitcount Grid Single@300"
-    id: date_font
+    id: time_font
     size: 58
     bpp: 4
 
