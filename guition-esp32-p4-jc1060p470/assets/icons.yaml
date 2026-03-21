@@ -22,6 +22,27 @@ font:
       "\U000F089E",  # mdi-battery
       "\U000F07DE",  # mdi-filament
       "\U000F0317",  # mdi-lan
+      "\U000F0594",  # mdi-weather-night
+      "\U000F0F31",  # mdi-weather-night-partly-cloudy
+      "\U000F0595",  # mdi-weather-partly-cloudy
+      "\U000F0F32",  # mdi-weather-partly-lightning
+      "\U000F0F33",  # mdi-weather-partly-rainy
+      "\U000F0F34",  # mdi-weather-partly-snowy
+      "\U000F0F35",  # mdi-weather-partly-snowy-rainy
+      "\U000F0596",  # mdi-weather-pouring
+      "\U000F0597",  # mdi-weather-rainy
+      "\U000F0598",  # mdi-weather-snowy
+      "\U000F0F36",  # mdi-weather-snowy-heavy
+      "\U000F067F",  # mdi-weather-snowy-rainy
+      "\U000F0599",  # mdi-weather-sunny
+      "\U000F0F37",  # mdi-weather-sunny-alert
+      "\U000F14E4",  # mdi-weather-sunny-off
+      "\U000F059A",  # mdi-weather-sunset
+      "\U000F059B",  # mdi-weather-sunset-down
+      "\U000F059C",  # mdi-weather-sunset-up
+      "\U000F0F38",  # mdi-weather-tornado
+      "\U000F059D",  # mdi-weather-windy
+      "\U000F059E",  # mdi-weather-windy-variant     
       ]
 
 # Map icons to names
@@ -42,4 +63,25 @@ substitutions:
   battery:        "\U000F089E"
   filament:       "\U000F07DE"
   lan:            "\U000F0317"
+  weather-night:      "\U000F0594"
+  weather-night-partly-cloudy:      "\U000F0F31"
+  weather-partly-cloudy:      "\U000F0595"
+  weather-partly-lightning:      "\U000F0F32"
+  weather-partly-rainy:      "\U000F0F33"
+  weather-partly-snowy:      "\U000F0F34"
+  weather-partly-snowy-rainy:      "\U000F0F35"
+  weather-pouring:      "\U000F0596"
+  weather-rainy:      "\U000F0597"
+  weather-snowy:      "\U000F0598"
+  weather-snowy-heavy:      "\U000F0F36"
+  weather-snowy-rainy:      "\U000F067F"
+  weather-sunny:      "\U000F0599"
+  weather-sunny-alert:      "\U000F0F37"
+  weather-sunny-off:      "\U000F14E4"
+  weather-sunset:      "\U000F059A"
+  weather-sunset-down:      "\U000F059B"
+  weather-sunset-up:      "\U000F059C"
+  weather-tornado:      "\U000F0F38"
+  weather-windy:      "\U000F059D"
+  weather-windy-variant:      "\U000F059E"
 
