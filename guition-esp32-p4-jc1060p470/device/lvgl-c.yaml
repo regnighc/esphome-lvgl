@@ -15,11 +15,18 @@ online_image:
         - lvgl.image.update:
             id: w_cam_2
             src: online_img_cam_2
+        - lvgl.image.update:
+            id: w_cam_2_full
+            src: online_img_cam_2
     on_error:
       then:
         - lvgl.image.update:
             id: w_cam_2
             src: online_img_cam_2
+        - lvgl.image.update:
+            id: w_cam_2_full
+            src: online_img_cam_2
+
   - url: "http://192.168.2.127:5566/api/B2C4/person/snapshot.jpg"
     id: online_img_cam_1
     type: RGB565
@@ -34,10 +41,16 @@ online_image:
         - lvgl.image.update:
             id: w_cam_1
             src: online_img_cam_1
+        - lvgl.image.update:
+            id: w_cam_1_full
+            src: online_img_cam_1
     on_error:
       then:
         - lvgl.image.update:
             id: w_cam_1
+            src: online_img_cam_1
+        - lvgl.image.update:
+            id: w_cam_1_full
             src: online_img_cam_1
 
 
@@ -551,3 +564,44 @@ lvgl:
                         text: "TEST"
                         align: center
                         text_color: 0xFFFFFF
+
+
+    - id: cam1_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_1_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_1
+            on_click:
+              - lvgl.page.show: main_page
+
+    - id: cam2_full_page
+      scrollable: false
+      width: 100%
+      height: 100%
+      bg_color: 0xFF000000
+      pad_all: 0
+      layout:
+        type: flex
+        flex_flow: column
+        flex_align_main: center
+        flex_align_cross: center
+      widgets:
+        - image:
+            id: w_cam_2_full
+            width: 100%
+            height: 100%
+            src: online_img_cam_2
+            on_click:
+              - lvgl.page.show: main_page
