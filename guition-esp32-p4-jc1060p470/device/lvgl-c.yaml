@@ -418,6 +418,8 @@ lvgl:
                         clip_corner: true
                         zoom: 0.55
                         mode: REAL
+                        on_click:
+                          - lvgl.page.show: cam1_full_page
                     - image:
                         align: CENTER
                         id: w_cam_2
@@ -428,6 +430,8 @@ lvgl:
                         clip_corner: true
                         zoom: 0.55
                         mode: REAL
+                        on_click:
+                          - lvgl.page.show: cam2_full_page
 
         # ---------------------------------------------------------
         # ZONE 2: FIXED BOTTOM NAVIGATION BAR
