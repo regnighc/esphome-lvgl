@@ -179,7 +179,7 @@ lvgl:
                           flex_flow: column
                           flex_align_cross: center
                           pad_row: 8
-                          pad_all: 8
+                          #pad_all: 8
                         widgets:
                           - slider:
                               id: hallway_brightness_slider
@@ -261,7 +261,7 @@ lvgl:
                           flex_flow: row
                           flex_align_main: space_around
                           flex_align_cross: center
-                          pad_all: 8
+                          #pad_all: 8
                         widgets:
                           # Left Column: Temperature Range
                           - obj:
