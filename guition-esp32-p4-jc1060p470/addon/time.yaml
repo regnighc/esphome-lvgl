@@ -12,4 +12,5 @@ time:
         seconds: 0
         then:
           # Re-render the LVGL clock label every minute
-          - lvgl.widget.refresh: main_clock
+          - lvgl.widget.refresh: main_time
+          - lvgl.widget.refresh: main_date
