@@ -127,7 +127,7 @@ lvgl:
                         width: 320
                         text_color: 0xFFFFFF
                         text_align: center
-                        text_font: statistics_font  # Replace with the ID of your larger font
+                        text_font: time_font  # Replace with the ID of your larger font
                         text: !lambda |-
                           auto now = id(sntp_time).now();
                           if (!now.is_valid()) {
@@ -141,7 +141,7 @@ lvgl:
                         width: 320
                         text_color: 0xFFFFFF
                         text_align: center
-                        text_font: statistics_font  # Replace with the ID of your smaller, different font
+                        text_font: date_font  # Replace with the ID of your smaller, different font
                         text: !lambda |-
                           auto now = id(sntp_time).now();
                           if (!now.is_valid()) {
