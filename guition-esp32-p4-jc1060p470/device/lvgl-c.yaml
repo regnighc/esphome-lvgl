@@ -9,7 +9,7 @@ online_image:
     #placeholder: album_art_placeholder
     resize: 640x480 #320x240
     update_interval: 1min
-    buffer_size: 131072
+    buffer_size: 614400
     on_download_finished:
       then:
         - lvgl.image.update:
@@ -35,7 +35,7 @@ online_image:
     #placeholder: album_art_placeholder
     resize: 640x480 #320x240
     update_interval: 1min
-    buffer_size: 131072
+    buffer_size: 614400
     on_download_finished:
       then:
         - lvgl.image.update:
