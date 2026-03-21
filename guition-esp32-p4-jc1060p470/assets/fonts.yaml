@@ -15,12 +15,10 @@ font:
     size: 20
     bpp: 8
     
-  - file:
-    type: gfonts
-    family: "Bitcount Grid Single"
-    weight: 300
-    id: time_font
+  - file: "gfonts://Bitcount Grid Single@300"
+    id: date_font
     size: 58
+    bpp: 4
 
   - file: "gfonts://Roboto"
     id: date_font
