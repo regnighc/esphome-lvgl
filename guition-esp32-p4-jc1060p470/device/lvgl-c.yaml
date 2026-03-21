@@ -293,7 +293,7 @@ lvgl:
                           # Left Column: Temperature Range
                           - obj:
                               width: SIZE_CONTENT
-                              height: SIZE_CONTENT
+                              height: 100%
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
@@ -301,11 +301,8 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: column
-                                flex_align_cross: center
+                                flex_align_cross: start
                                 flex_align_main: center
-                                # type: flex
-                                # flex_flow: column
-                                # flex_align_cross: start
                               widgets:
                                 - label:
                                     id: high_temp_label
