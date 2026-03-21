@@ -1,0 +1,516 @@
+psram:
+
+online_image:
+  - url: "http://192.168.2.127:5566/api/B2C0/person/snapshot.jpg"
+    id: online_img_cam_2
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    #placeholder: album_art_placeholder
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_2
+            src: online_img_cam_2
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_2
+            src: online_img_cam_2
+  - url: "http://192.168.2.127:5566/api/B2C4/person/snapshot.jpg"
+    id: online_img_cam_1
+    type: RGB565
+    byte_order: little_endian
+    format: jpeg
+    #placeholder: album_art_placeholder
+    resize: 320x240
+    update_interval: 1min
+    buffer_size: 131072
+    on_download_finished:
+      then:
+        - lvgl.image.update:
+            id: w_cam_1
+            src: online_img_cam_1
+    on_error:
+      then:
+        - lvgl.image.update:
+            id: w_cam_1
+            src: online_img_cam_1
+
+
+################################################################################
+# Colours
+################################################################################
+color:
+  - id: lcars_beige
+    hex: "E6CC99"
+  - id: lcars_blue_gray
+    hex: "99B3CC"
+  - id: black
+    hex: "000000"
+  - id: lcars_white
+    hex: "FFFFFF"
+  - id: lcars_orange
+    hex: "ff8800"
+  - id: lcars_lightblue
+    hex: "6c7acc"
+  - id: lcars_red
+    hex: "eb4e4e"
+  - id: lcars_lightorange
+    hex: "ff9c00"
+  - id: lcars_lavender
+    hex: "cc99ff"
+
+# LVGL User Interface Paradigm
+lvgl:
+  id: my_lvgl
+  color_depth: 16
+  buffer_size: 100%
+  byte_order: little_endian
+  displays:
+    - my_display
+  touchscreens:
+    - my_touchscreen
+
+  pages:
+    # =============================================================
+    # ROOT PAGE: MAIN DASHBOARD
+    # =============================================================
+    - id: main_page
+      scrollable: false
+      layout:
+        type: flex
+        flex_flow: column
+      width: 100%
+      height: 100%
+      bg_color: 0xFF181818
+      pad_all: 0
+
+      widgets:
+        # ---------------------------------------------------------
+        # ZONE 1: MAIN CONTENT AREA (3 equal columns)
+        # Screen is 1024px wide. pad_all: 8 on each side = 16px total.
+        # 3 columns with 8px gaps between them:
+        #   available = 1024 - 16 - 16 = 992px
+        #   each col  = (992 - 8 - 8) / 3 = 325px  (≈ 325)
+        # Nav bar is 80px; content height = 100% - 80px (via flex_grow: 1)
+        # ---------------------------------------------------------
+        - obj:
+            id: main_content_area
+            width: 100%
+            flex_grow: 1
+            scrollable: false
+            bg_opa: TRANSP
+            border_width: 0
+            pad_all: 8
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_between
+              flex_align_cross: start
+            widgets:
+
+              # ═══════════════════════════════════════════════════
+              # COLUMN 1: Clock + Date → Divider → Slider 1 + 2
+              # ═══════════════════════════════════════════════════
+              - obj:
+                  width: 325
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    pad_row: 10
+                  widgets:
+
+                    # --- Clock block ---
+                    - obj:
+                        width: 100%
+                        height: SIZE_CONTENT
+                        scrollable: false
+                        bg_opa: TRANSP
+                        border_width: 0
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          flex_align_main: center
+                          flex_align_cross: center
+                        widgets:
+                          - label:
+                              id: main_time
+                              width: 100%
+                              text_align: center
+                              text_font: time_font
+                              text_color: 0xFFFFFF
+                              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                          - label:
+                              id: main_date
+                              width: 100%
+                              text_align: center
+                              text_font: date_font
+                              text_color: 0xFFFFFF
+                              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+
+                    # --- Divider ---
+                    - line:
+                        width: 305
+                        height: 3
+                        points: [ {x: 0, y: 0}, {x: 305, y: 0} ]
+                        line_width: 3
+                        line_color: 0xFFFFFF
+
+                    # --- Slider 1: Hallway Lights ---
+                    - obj: &slider_box_style
+                        width: 305
+                        height: 150
+                        scrollable: false
+                        bg_color: 0xFF2A2D2E
+                        radius: 15
+                        border_width: 0
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          flex_align_cross: center
+                          pad_row: 8
+                          pad_all: 8
+                        widgets:
+                          - slider:
+                              id: hallway_brightness_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0xE5CA3E, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.hallway_overhead_group
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "HALLWAY LIGHTS"
+                              text_color: 0xFFFFFF
+
+                    # --- Slider 2: Hallway Accent ---
+                    - obj:
+                        <<: *slider_box_style
+                        widgets:
+                          - slider:
+                              id: hallway_accent_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0x3EACE5, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.hallway_overhead_group
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "HALLWAY ACCENT"
+                              text_color: 0xFFFFFF
+
+              # ═══════════════════════════════════════════════════
+              # COLUMN 2: Weather → Divider → Slider 3 + 4
+              # ═══════════════════════════════════════════════════
+              - obj:
+                  width: 325
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    pad_row: 10
+                  widgets:
+
+                    # --- Weather block (height-matched to clock column header) ---
+                    - obj:
+                        width: 100%
+                        height: SIZE_CONTENT
+                        scrollable: false
+                        bg_color: 0xFF2A2D2E
+                        radius: 15
+                        border_width: 0
+                        layout:
+                          type: flex
+                          flex_flow: row
+                          flex_align_main: space_around
+                          flex_align_cross: center
+                          pad_all: 8
+                        widgets:
+                          # Left Column: Temperature Range
+                          - obj:
+                              width: SIZE_CONTENT
+                              height: SIZE_CONTENT
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              layout:
+                                type: flex
+                                flex_flow: column
+                                flex_align_cross: start
+                              widgets:
+                                - label:
+                                    text_font: date_font
+                                    text_color: 0xFFFFFF
+                                    text: !lambda 'return str_sprintf("%.0f°C", id(high_temp_ha).state);'
+                                - label:
+                                    text_font: date_font
+                                    text_color: 0xAAAAAA
+                                    text: !lambda 'return str_sprintf("%.0f°C", id(low_temp_ha).state);'
+                          # Right Column: Condition Icon
+                          - label:
+                              id: weather_icon_label
+                              text_font: icon_font
+                              text_color: 0xFFFFFF
+                              text: "${weather_sunny}"
+
+                    # --- Divider (aligned with col 1) ---
+                    - line:
+                        width: 305
+                        height: 3
+                        points: [ {x: 0, y: 0}, {x: 305, y: 0} ]
+                        line_width: 3
+                        line_color: 0xFFFFFF
+
+                    # --- Slider 3: Living Room Lights ---
+                    - obj:
+                        <<: *slider_box_style
+                        widgets:
+                          - slider:
+                              id: livingroom_brightness_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0xE5CA3E, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LIVING ROOM"
+                              text_color: 0xFFFFFF
+
+                    # --- Slider 4: LR Accent ---
+                    - obj:
+                        <<: *slider_box_style
+                        widgets:
+                          - slider:
+                              id: lr_accent_slider
+                              width: 100%
+                              height: 110
+                              bg_color: 0xFF6B6B6B
+                              radius: 12
+                              indicator: {bg_color: 0x3EACE5, radius: 12}
+                              knob: {bg_opa: TRANSP}
+                              on_release:
+                                - homeassistant.service:
+                                    service: light.turn_on
+                                    data:
+                                      entity_id: light.living_room
+                                    data_template:
+                                      brightness: "{{ slider_val }}"
+                                    variables:
+                                      slider_val: !lambda "return (int)x;"
+                          - label:
+                              width: 100%
+                              text_align: center
+                              text: "LR ACCENT"
+                              text_color: 0xFFFFFF
+
+              # ═══════════════════════════════════════════════════
+              # COLUMN 3: Camera images stacked
+              # ═══════════════════════════════════════════════════
+              - obj:
+                  width: 325
+                  height: 100%
+                  scrollable: false
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_cross: center
+                    flex_align_main: start
+                    pad_row: 10
+                  widgets:
+                    - image:
+                        id: w_cam_1
+                        width: 320
+                        height: 240
+                        src: online_img_cam_1
+                        radius: 5
+                    - image:
+                        id: w_cam_2
+                        width: 320
+                        height: 240
+                        src: online_img_cam_2
+                        radius: 5
+
+        # ---------------------------------------------------------
+        # ZONE 2: FIXED BOTTOM NAVIGATION BAR
+        # ---------------------------------------------------------
+        - obj:
+            id: nav_bar_main
+            width: 100%
+            height: 80
+            scrollable: false
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            pad_top: 10
+            pad_bottom: 0
+            pad_left: 0
+            pad_right: 0
+            border_color: 0x333333
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_evenly
+              flex_align_cross: center
+            widgets:
+              # Home Button (Active State)
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label:
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
+
+              # Page Title
+              - label:
+                  text: "MAIN DASHBOARD"
+                  width: 300
+                  text_align: center
+                  text_color: 0xFFFFFF
+
+              # Test Bed Button
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: test_page
+                  widgets:
+                    - label:
+                        text: "TEST"
+                        align: center
+                        text_color: 0xFFFFFF
+
+    # =============================================================
+    # SECONDARY PAGE: TEST ENVIRONMENT
+    # =============================================================
+    - id: test_page
+      layout:
+        type: flex
+        flex_flow: column
+      width: 100%
+      height: 100%
+      bg_color: 0x101010
+      pad_all: 0
+
+      widgets:
+        - obj:
+            id: test_content_area
+            width: 100%
+            flex_grow: 1
+            scrollable: false
+            bg_opa: TRANSP
+            border_width: 0
+            layout:
+              type: flex
+              flex_flow: column
+              flex_align_main: center
+              flex_align_cross: center
+            widgets:
+              - label:
+                  text: "Test Bed Experiments"
+                  text_color: 0x00FF00
+                  text_font: label_font
+
+        - obj:
+            id: nav_bar_test
+            width: 100%
+            height: 80
+            scrollable: false
+            bg_color: 0x1A1A1A
+            border_width: 1
+            border_side: TOP
+            pad_top: 10
+            pad_bottom: 0
+            pad_left: 0
+            pad_right: 0
+            border_color: 0x333333
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: space_evenly
+              flex_align_cross: center
+            widgets:
+              # Route Back to Main Page
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2A2A2A
+                  on_click:
+                    - lvgl.page.show: main_page
+                  widgets:
+                    - label:
+                        text: "HOME"
+                        align: center
+                        text_color: 0xFFFFFF
+
+              - label:
+                  text: "TEST ENVIRONMENT"
+                  width: 300
+                  text_align: center
+                  text_color: 0xFFFFFF
+
+              # Active Navigation Button
+              - button:
+                  width: 120
+                  height: 60
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label:
+                        text: "TEST"
+                        align: center
+                        text_color: 0xFFFFFF
