@@ -241,8 +241,8 @@ lvgl:
                               height: 110
                               bg_color: 0xFF6B6B6B
                               radius: 12
-                              indicator: {bg_color: 0xE5CA3E, radius: 12}
-                              knob: {bg_opa: TRANSP}
+                              #indicator: {bg_color: 0xE5CA3E, radius: 12}
+                              #knob: {bg_opa: TRANSP}
                               on_release:
                                 - homeassistant.service:
                                     service: switch.toggle
