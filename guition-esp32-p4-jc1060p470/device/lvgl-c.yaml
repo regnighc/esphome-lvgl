@@ -8,7 +8,7 @@ online_image:
     format: jpeg
     #placeholder: album_art_placeholder
     resize: 640x480 #320x240
-    update_interval: 1min
+    update_interval: 5min
     buffer_size: 524288
     on_download_finished:
       then:
@@ -34,7 +34,7 @@ online_image:
     format: jpeg
     #placeholder: album_art_placeholder
     resize: 640x480 #320x240
-    update_interval: 1min
+    update_interval: 5min
     buffer_size: 524288
     on_download_finished:
       then:
@@ -235,7 +235,7 @@ lvgl:
                     - obj:
                         <<: *slider_box_style
                         widgets:
-                          - slider:
+                          - button:
                               id: hallway_accent_slider
                               width: 100%
                               height: 110
@@ -245,17 +245,13 @@ lvgl:
                               knob: {bg_opa: TRANSP}
                               on_release:
                                 - homeassistant.service:
-                                    service: light.turn_on
+                                    service: switch.toggle
                                     data:
-                                      entity_id: light.hallway_overhead_group
-                                    data_template:
-                                      brightness: "{{ slider_val }}"
-                                    variables:
-                                      slider_val: !lambda "return (int)x;"
+                                      entity_id: switch.hall_lamp
                           - label:
                               width: 100%
                               text_align: center
-                              text: "HALLWAY ACCENT"
+                              text: "HALLWAY LAMP"
                               text_color: 0xFFFFFF
 
               # ═══════════════════════════════════════════════════
@@ -583,6 +579,7 @@ lvgl:
             id: w_cam_1_full
             width: SIZE_CONTENT #100%
             height: SIZE_CONTENT #100%
+            align: CENTER
             src: online_img_cam_1
             on_click:
               - lvgl.page.show: main_page
@@ -603,6 +600,7 @@ lvgl:
             id: w_cam_2_full
             width: SIZE_CONTENT #100%
             height: SIZE_CONTENT #100%
+            align: CENTER
             src: online_img_cam_2
             on_click:
               - lvgl.page.show: main_page
