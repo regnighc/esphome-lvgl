@@ -601,8 +601,8 @@ lvgl:
       widgets:
         - image:
             id: w_cam_2_full
-            width: 100%
-            height: 100%
+            width: auto #100%
+            height: auto #100%
             src: online_img_cam_2
             on_click:
               - lvgl.page.show: main_page
