@@ -798,7 +798,6 @@ lvgl:
             bg_opa: TRANSP
             border_width: 0
             pad_all: 8
-            pad_column: 8
             layout:
               type: flex
               flex_flow: row
@@ -820,11 +819,11 @@ lvgl:
                   bg_opa: TRANSP
                   border_width: 0
                   pad_all: 0
-                  pad_row: 10
                   layout:
                     type: flex
                     flex_flow: column
                     flex_align_cross: center
+                    pad_row: 10
                   widgets:
 
                     # Light Container 1
@@ -836,12 +835,12 @@ lvgl:
                         radius: 15
                         border_width: 0
                         pad_all: 8
-                        pad_column: 8
                         layout:
                           type: flex
                           flex_flow: column
                           flex_align_cross: center
                           flex_align_main: center
+                          pad_column: 8
                         widgets:
                           - obj:
                               width: 100%
@@ -850,12 +849,12 @@ lvgl:
                               bg_opa: TRANSP
                               border_width: 0
                               pad_all: 0
-                              pad_column: 8
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col1_1_brightness
@@ -909,13 +908,13 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_column: 8
+                              pad_all: 0                            
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col1_2_brightness
@@ -969,13 +968,13 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_column: 8
+                              pad_all: 0                              
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col1_3_brightness
@@ -1029,13 +1028,13 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_column: 8
+                              pad_all: 0                              
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col1_4_brightness
@@ -1088,12 +1087,12 @@ lvgl:
                   scrollable: false
                   bg_opa: TRANSP
                   border_width: 0
-                  pad_all: 0
-                  pad_row: 10
+                  pad_all: 0                  
                   layout:
                     type: flex
                     flex_flow: column
                     flex_align_cross: center
+                    pad_row: 10
                   widgets:
 
                     # Light Container 5
@@ -1106,13 +1105,13 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_column: 8
+                              pad_all: 0                              
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col2_1_brightness
@@ -1166,13 +1165,13 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_column: 8
+                              pad_all: 0                              
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col2_2_brightness
@@ -1226,13 +1225,13 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_column: 8
+                              pad_all: 0                              
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col2_3_brightness
@@ -1286,13 +1285,13 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_column: 8
+                              pad_all: 0                              
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: space_between
                                 flex_align_cross: center
+                                pad_column: 8
                               widgets:
                                 - slider:
                                     id: light_col2_4_brightness
