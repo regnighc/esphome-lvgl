@@ -95,11 +95,15 @@ sensor:
   # from Home Assistant.
   ######################################################################################################
 
+sensor:
   - platform: homeassistant
     id: thermostat_target_temp
     entity_id: sensor.thermostat_target_temperature
     on_value:
       then:
+        - globals.set:
+            id: target_temp_val
+            value: !lambda "return x;"
         - lvgl.label.update:
             id: lbl_target_temp
             text: !lambda |

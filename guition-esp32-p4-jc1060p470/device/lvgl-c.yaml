@@ -465,9 +465,9 @@ lvgl:
                                             data:
                                               entity_id: climate.thermostat
                                             data_template:
-                                              temperature: "{{ (current_temp | float) - 0.5 }}"
+                                              temperature: "{{ current_temp }}"
                                             variables:
-                                              current_temp: !lambda "return id(lbl_target_temp).get_text();"
+                                              current_temp: !lambda "return id(target_temp_val) - 0.5f;"
                                     widgets:
                                       - label:
                                           text: "-"
@@ -493,9 +493,9 @@ lvgl:
                                             data:
                                               entity_id: climate.thermostat
                                             data_template:
-                                              temperature: "{{ (current_temp | float) + 0.5 }}"
+                                              temperature: "{{ current_temp }}"
                                             variables:
-                                              current_temp: !lambda "return id(lbl_target_temp).get_text();"
+                                              current_temp: !lambda "return id(target_temp_val) + 0.5f;"
                                     widgets:
                                       - label:
                                           text: "+"

@@ -169,6 +169,10 @@ globals:
     type: uint32_t
     restore_value: false
     initial_value: '0'
+  - id: target_temp_val
+    type: float
+    restore_value: no
+    initial_value: '20.0'
 
 time:
   - platform: homeassistant
