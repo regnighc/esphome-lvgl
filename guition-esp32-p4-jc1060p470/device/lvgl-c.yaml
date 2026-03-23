@@ -595,20 +595,47 @@ lvgl:
         flex_flow: row
         flex_align_main: start
         flex_align_cross: center
+      # widgets:
+      #   - label:
+      #       text: "Tap the camera image to return home"
+      #       text_font: MONTSERRAT_12
+      #       text_color: 0xFF888888
+      #       pad_bottom: 6
+      #   - image:
+      #       id: w_cam_1_full
+      #       width: SIZE_CONTENT
+      #       height: SIZE_CONTENT
+      #       align: CENTER
+      #       src: online_img_cam_1
+      #       on_click:
+      #         - lvgl.page.show: main_page
       widgets:
-        - label:
-            text: "Tap the camera image to return home"
-            text_font: MONTSERRAT_12
-            text_color: 0xFF888888
-            pad_bottom: 6
-        - image:
-            id: w_cam_1_full
+        - obj:
+            align: CENTER
+            bg_opa: 0
+            border_width: 0
+            pad_all: 0
             width: SIZE_CONTENT
             height: SIZE_CONTENT
-            align: CENTER
-            src: online_img_cam_1
-            on_click:
-              - lvgl.page.show: main_page
+            layout:
+              type: flex
+              flex_flow: column
+              flex_align_main: center
+              flex_align_cross: center
+            widgets:
+              - label:
+                  text: "Tap the camera image to return home"
+                  #text_font: MONTSERRAT_12
+                  text_color: 0xFFFFFF
+                  pad_bottom: 6
+
+              - image:
+                  id: w_cam_1_full
+                  width: SIZE_CONTENT
+                  height: SIZE_CONTENT
+                  src: online_img_cam_1
+                  on_click:
+                    - lvgl.page.show: main_page
 
         - obj:
             scrollable: false
