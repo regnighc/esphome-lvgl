@@ -84,7 +84,7 @@ lvgl:
   buffer_size: 100%
   byte_order: little_endian
   on_idle:
-    timeout: 30s
+    timeout: 60s
     then:
       - switch.turn_off: backlight
       - lvgl.pause:
