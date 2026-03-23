@@ -1,14 +1,16 @@
-#sensor:
-#  - platform: homeassistant
-#    id: input_button_hallway_group_on
-#    entity_id: input_button.hallway_group_on
-#    internal: true
-#  - platform: homeassistant
-#    id: input_button_hallway_group_off
-#    entity_id: input_button.hallway_group_off
-#    internal: true
+############################################################################################################
+# Sensors blocks
+# Contains Home Assistant sensors that update various labels on the display
+############################################################################################################
+
+
 
 sensor:
+  ######################################################################################################
+  # Hallway Overhead Light Group
+  # Brightness sensor that updates the corresponding slider on the display,
+  # with a clamp filter to handle the case when the light is off and brightness attribute is missing
+  ######################################################################################################
   - platform: homeassistant
     id: hallway_light_brightness
     entity_id: light.hallway_overhead_group
@@ -23,6 +25,12 @@ sensor:
           id: hallway_brightness_slider
           value: !lambda "return x;"
 
+
+  ######################################################################################################
+  # Livingroom Overhead Light
+  # Brightness sensor that updates the corresponding slider on the display,
+  # with a clamp filter to handle the case when the light is off and brightness attribute is missing
+  ######################################################################################################
   - platform: homeassistant
     id: livingroom_light_brightness
     entity_id: light.living_room
@@ -37,6 +45,11 @@ sensor:
           id: livingroom_brightness_slider
           value: !lambda "return x;"
 
+  ######################################################################################################
+  # Livingroom Lamp Light
+  # Brightness sensor that updates the corresponding slider on the display,
+  # with a clamp filter to handle the case when the light is off and brightness attribute is missing
+  ######################################################################################################
   - platform: homeassistant
     id: livingroom_lamp_brightness
     entity_id: light.livingroom_lamp
@@ -51,6 +64,11 @@ sensor:
           id: livingroom_lamp_brightness_slider
           value: !lambda "return x;"
 
+  ######################################################################################################
+  # Weather Temperature Forecast High and Low
+  # Sensors that update the corresponding labels on the display with the high and low temperature
+  # forecast from Home Assistant.
+  ######################################################################################################
   - platform: homeassistant
     id: high_temp_ha
     entity_id: sensor.weather_forecast_day_0_high
@@ -71,7 +89,13 @@ sensor:
             float v = x;
             return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
 
+
+
 text_sensor:
+  ############################################################################################################
+  # Weather Condition
+  # Updates the weather icon label on the display based on the current weather condition from Home Assistant
+  ############################################################################################################
   - platform: homeassistant
     id: weather_condition
     entity_id: weather.forecast_home # Your specific entity
@@ -93,3 +117,45 @@ text_sensor:
               
               // Fallback if the API returns something unexpected
               return "${weather_sunny_alert}";
+
+  ####################################################################################################
+  # Block 2 Camera 4
+  # Last person detection time and "time ago" sensors, updating corresponding labels on the display
+  ####################################################################################################
+  - platform: homeassistant
+    id: b2c4_last_person_detection
+    entity_id: sensor.b2c4_last_person_detection
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_b2c4_last_person_detection
+            text: !lambda return x.c_str();
+  - platform: homeassistant
+    id: b2c4_last_person_detection_ago
+    entity_id: sensor.b2c4_last_person_detection_ago
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_b2c4_last_person_detection_ago
+            text: !lambda return x.c_str();
+
+  ####################################################################################################
+  # Block 2 Camera 0
+  # Last person detection time and "time ago" sensors, updating corresponding labels on the display
+  ####################################################################################################
+  - platform: homeassistant
+    id: b2c0_last_person_detection
+    entity_id: sensor.b2c0_last_person_detection
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_b2c0_last_person_detection
+            text: !lambda return x.c_str();
+  - platform: homeassistant
+    id: b2c0_last_person_detection_ago
+    entity_id: sensor.b2c0_last_person_detection_ago
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_b2c0_last_person_detection_ago
+            text: !lambda return x.c_str();
