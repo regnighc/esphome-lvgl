@@ -364,7 +364,7 @@ lvgl:
                           - label:
                               id: lbl_target_temp
                               text: "--°C"
-                              text_font: MONTSERRAT_48
+                              text_font: climate_font
                               text_color: 0xFFFFFFFF
                               width: 100%
                               text_align: center
@@ -462,9 +462,9 @@ lvgl:
                                 pad_column: 10
                               widgets:
                                 - button:
-                                    width: 44
-                                    height: 44
-                                    radius: 22
+                                    width: 88
+                                    height: 88
+                                    radius: 44
                                     bg_color: 0xFF6B6B6B
                                     on_click:
                                       then:
@@ -490,9 +490,9 @@ lvgl:
                                     text_color: 0xFFAAAAAA
 
                                 - button:
-                                    width: 44
-                                    height: 44
-                                    radius: 22
+                                    width: 88
+                                    height: 88
+                                    radius: 44
                                     bg_color: 0xFF6B6B6B
                                     on_click:
                                       then:
