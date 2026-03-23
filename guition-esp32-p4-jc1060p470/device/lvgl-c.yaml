@@ -1376,10 +1376,10 @@ lvgl:
                   height: 60
                   bg_color: 0x2A2A2A
                   on_click:
-                    - lvgl.page.show: cameras_page
+                    - lvgl.page.show: lighting_page
                   widgets:
                     - label:
-                        text: "CAMERAS"
+                        text: "lighting2"
                         align: center
                         text_color: 0xFFFFFF
               - button:
