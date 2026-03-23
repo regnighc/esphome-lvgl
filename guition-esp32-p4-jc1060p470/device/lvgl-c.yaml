@@ -231,7 +231,7 @@ lvgl:
                               text: "HALLWAY LIGHTS"
                               text_color: 0xFFFFFF
 
-                    # --- Slider 2: Hallway Accent ---
+                    # --- Hallway Lamp Button ---
                     - obj:
                         <<: *slider_box_style
                         widgets:

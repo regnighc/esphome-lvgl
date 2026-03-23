@@ -89,7 +89,19 @@ sensor:
             float v = x;
             return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
 
-
+binary_sensor:
+  ######################################################################################################
+  # Hallway Lamp State
+  # Binary sensor that updates the corresponding slider on the display
+  ######################################################################################################
+  - platform: homeassistant
+    id: hall_lamp_state
+    entity_id: switch.hall_lamp
+    on_value:
+      then:
+        - lvgl.widget.update:
+            id: hallway_accent_slider
+            bg_color: !lambda "return x ? 0xE5CA3E : 0xFF6B6B6B;"
 
 text_sensor:
   ############################################################################################################
