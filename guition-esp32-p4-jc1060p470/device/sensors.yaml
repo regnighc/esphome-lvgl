@@ -127,11 +127,16 @@ binary_sensor:
   - platform: homeassistant
     id: hall_lamp_state
     entity_id: switch.hall_lamp
-    on_value:
+    on_press:
       then:
         - lvgl.widget.update:
             id: hallway_accent_slider
-            bg_color: !lambda "return x ? 0xE5CA3E : 0xFF6B6B6B;"
+            bg_color: 0xE5CA3E
+    on_release:
+      then:
+        - lvgl.widget.update:
+            id: hallway_accent_slider
+            bg_color: 0xFF6B6B6B
 
   ######################################################################################################
   # Climate Control Boost Mode
@@ -140,11 +145,16 @@ binary_sensor:
   - platform: homeassistant
     id: thermostat_boost
     entity_id: binary_sensor.thermostat_boost
-    on_value:
+    on_press:
       then:
         - lvgl.widget.update:
             id: btn_boost
-            bg_color: !lambda "return x ? 0xFFFF6B00 : 0xFF6B6B6B;"
+            bg_color: 0xFFFF6B00
+    on_release:
+      then:
+        - lvgl.widget.update:
+            id: btn_boost
+            bg_color: 0xFF6B6B6B
 
 text_sensor:
   ############################################################################################################
