@@ -94,8 +94,6 @@ sensor:
   # Sensors that update the corresponding labels on the display with the target and current temperature
   # from Home Assistant.
   ######################################################################################################
-
-sensor:
   - platform: homeassistant
     id: thermostat_target_temp
     entity_id: sensor.thermostat_target_temperature
