@@ -333,59 +333,184 @@ lvgl:
                         bg_opa: TRANSP
                         border_width: 0
 
-                    # --- Slider 3: Living Room Lights ---
+                    # # --- Climate Panel ---
+                    # - obj:
+                    #     <<: *slider_box_style
+                    #     widgets:
+                    #       - obj:
+                    #           width: 100%
+                    #           height: 220
+                    #           bg_color: 0xFF6B6B6B
+                    #           radius: 12
+                    #       - label:
+                    #           width: 100%
+                    #           text_align: center
+                    #           text: "Climate Control"
+                    #           text_color: 0xFFFFFF
+# --- Climate Panel ---
                     - obj:
                         <<: *slider_box_style
+                        height: 220
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          flex_align_main: center
+                          flex_align_cross: center
+                          pad_row: 4
                         widgets:
-                          - slider:
-                              id: livingroom_brightness_slider
-                              width: 100%
-                              height: 110
-                              bg_color: 0xFF6B6B6B
-                              radius: 12
-                              indicator: {bg_color: 0xE5CA3E, radius: 12}
-                              knob: {bg_opa: TRANSP}
-                              on_release:
-                                - homeassistant.service:
-                                    service: light.turn_on
-                                    data:
-                                      entity_id: light.living_room
-                                    data_template:
-                                      brightness: "{{ slider_val }}"
-                                    variables:
-                                      slider_val: !lambda "return (int)x;"
-                          - label:
-                              width: 100%
-                              text_align: center
-                              text: "LIVING ROOM"
-                              text_color: 0xFFFFFF
 
-                    # --- Slider 4: LR Accent ---
-                    - obj:
-                        <<: *slider_box_style
-                        widgets:
-                          - slider:
-                              id: livingroom_lamp_brightness_slider
+                          # --- Temperatures Row ---
+                          - obj:
                               width: 100%
-                              height: 110
-                              bg_color: 0xFF6B6B6B
-                              radius: 12
-                              indicator: {bg_color: 0xE5CA3E, radius: 12}
-                              knob: {bg_opa: TRANSP}
-                              on_release:
-                                - homeassistant.service:
-                                    service: light.turn_on
-                                    data:
-                                      entity_id: light.livingroom_lamp
-                                    data_template:
-                                      brightness: "{{ slider_val }}"
-                                    variables:
-                                      slider_val: !lambda "return (int)x;"
+                              height: SIZE_CONTENT
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: center
+                                flex_align_cross: center
+                                pad_column: 8
+                              widgets:
+                                - label:
+                                    id: lbl_target_temp
+                                    text: "--°C"
+                                    text_font: MONTSERRAT_36
+                                    text_color: 0xFFFFFFFF
+                                - label:
+                                    id: lbl_current_temp
+                                    text: "--°C"
+                                    text_font: MONTSERRAT_16
+                                    text_color: 0xFF2196F3
+
+                          # --- Mode and Boost Row ---
+                          - obj:
+                              width: 100%
+                              height: SIZE_CONTENT
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: center
+                                flex_align_cross: center
+                                pad_column: 8
+                              widgets:
+                                - dropdown:
+                                    id: hvac_mode_dropdown
+                                    width: 120
+                                    options:
+                                      - "auto"
+                                      - "heat"
+                                      - "off"
+                                    on_value:
+                                      then:
+                                        - homeassistant.service:
+                                            service: climate.set_hvac_mode
+                                            data:
+                                              entity_id: climate.thermostat
+                                            data_template:
+                                              hvac_mode: "{{ mode }}"
+                                            variables:
+                                              mode: !lambda |
+                                                if (x == 0) return std::string("auto");
+                                                if (x == 1) return std::string("heat");
+                                                return std::string("off");
+
+                                - button:
+                                    id: btn_boost
+                                    width: 80
+                                    height: 36
+                                    bg_color: 0xFF6B6B6B
+                                    radius: 8
+                                    on_click:
+                                      then:
+                                        - homeassistant.service:
+                                            service: climate.set_preset_mode
+                                            data:
+                                              entity_id: climate.thermostat
+                                              preset_mode: boost
+                                    widgets:
+                                      - label:
+                                          text: "BOOST"
+                                          align: center
+                                          text_color: 0xFFFFFFFF
+                                          text_font: MONTSERRAT_12
+
+                          # --- Action + +/- Row ---
+                          - obj:
+                              width: 100%
+                              height: SIZE_CONTENT
+                              bg_opa: TRANSP
+                              border_width: 0
+                              pad_all: 0
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: center
+                                flex_align_cross: center
+                                pad_column: 10
+                              widgets:
+                                - button:
+                                    width: 44
+                                    height: 44
+                                    radius: 22
+                                    bg_color: 0xFF6B6B6B
+                                    on_click:
+                                      then:
+                                        - homeassistant.service:
+                                            service: climate.set_temperature
+                                            data:
+                                              entity_id: climate.thermostat
+                                            data_template:
+                                              temperature: "{{ (current_temp | float) - 0.5 }}"
+                                            variables:
+                                              current_temp: !lambda "return id(lbl_target_temp).get_text();"
+                                    widgets:
+                                      - label:
+                                          text: "-"
+                                          align: center
+                                          text_font: MONTSERRAT_24
+                                          text_color: 0xFFFFFFFF
+
+                                - label:
+                                    id: lbl_hvac_action
+                                    text: "Idle"
+                                    text_font: MONTSERRAT_12
+                                    text_color: 0xFFAAAAAA
+
+                                - button:
+                                    width: 44
+                                    height: 44
+                                    radius: 22
+                                    bg_color: 0xFF6B6B6B
+                                    on_click:
+                                      then:
+                                        - homeassistant.service:
+                                            service: climate.set_temperature
+                                            data:
+                                              entity_id: climate.thermostat
+                                            data_template:
+                                              temperature: "{{ (current_temp | float) + 0.5 }}"
+                                            variables:
+                                              current_temp: !lambda "return id(lbl_target_temp).get_text();"
+                                    widgets:
+                                      - label:
+                                          text: "+"
+                                          align: center
+                                          text_font: MONTSERRAT_24
+                                          text_color: 0xFFFFFFFF
+
+                          # --- Panel Title ---
                           - label:
                               width: 100%
                               text_align: center
-                              text: "LIVING ROOM LAMP"
-                              text_color: 0xFFFFFF
+                              text: "CLIMATE CONTROL"
+                              text_color: 0xFFAAAAAA
+                              text_font: MONTSERRAT_12
+
 
               # ═══════════════════════════════════════════════════
               # COLUMN 3: Camera images stacked
@@ -435,7 +560,7 @@ lvgl:
         - obj:
             id: nav_bar_main
             width: 100%
-            height: 80
+            height: 85
             scrollable: false
             bg_color: 0x1A1A1A
             border_width: 1
@@ -454,13 +579,14 @@ lvgl:
               # Home Button (Active State)
               - button:
                   width: 120
-                  height: 60
+                  height: 70
                   bg_color: 0x2196F3
                   widgets:
                     - label:
                         text: "HOME"
                         align: center
                         text_color: 0xFFFFFF
+                        
 
               # Page Title
               - label:
@@ -472,7 +598,7 @@ lvgl:
               # Test Bed Button
               - button:
                   width: 120
-                  height: 60
+                  height: 70
                   bg_color: 0x2A2A2A
                   on_click:
                     - lvgl.page.show: lighting_page #test_page
@@ -1114,8 +1240,8 @@ lvgl:
                                 pad_column: 8
                               widgets:
                                 - slider:
-                                    id: light_col2_1_brightness
-                                    width: 46%
+                                    id: livingroom_brightness_slider
+                                    width: 100%
                                     height: 110
                                     bg_color: 0xFF6B6B6B
                                     radius: 12
@@ -1125,34 +1251,15 @@ lvgl:
                                       - homeassistant.service:
                                           service: light.turn_on
                                           data:
-                                            entity_id: light.placeholder_5
+                                            entity_id: light.living_room
                                           data_template:
                                             brightness: "{{ slider_val }}"
-                                          variables:
-                                            slider_val: !lambda "return (int)x;"
-                                - slider:
-                                    id: light_col2_1_colortemp
-                                    width: 46%
-                                    height: 110
-                                    min_value: 153
-                                    max_value: 500
-                                    bg_color: 0xFF6B6B6B
-                                    radius: 12
-                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
-                                    knob: {bg_opa: TRANSP}
-                                    on_release:
-                                      - homeassistant.service:
-                                          service: light.turn_on
-                                          data:
-                                            entity_id: light.placeholder_5
-                                          data_template:
-                                            color_temp: "{{ slider_val }}"
                                           variables:
                                             slider_val: !lambda "return (int)x;"
                           - label:
                               width: 100%
                               text_align: center
-                              text: "LIGHT 5"
+                              text: "LIVING ROOM"
                               text_color: 0xFFFFFF
 
                     # Light Container 6
@@ -1174,7 +1281,7 @@ lvgl:
                                 pad_column: 8
                               widgets:
                                 - slider:
-                                    id: light_col2_2_brightness
+                                    id: livingroom_lamp_brightness_slider
                                     width: 46%
                                     height: 110
                                     bg_color: 0xFF6B6B6B
@@ -1185,13 +1292,13 @@ lvgl:
                                       - homeassistant.service:
                                           service: light.turn_on
                                           data:
-                                            entity_id: light.placeholder_6
+                                            entity_id: light.livingroom_lamp
                                           data_template:
                                             brightness: "{{ slider_val }}"
                                           variables:
                                             slider_val: !lambda "return (int)x;"
                                 - slider:
-                                    id: light_col2_2_colortemp
+                                    id: livingroom_lamp_colortemp
                                     width: 46%
                                     height: 110
                                     min_value: 153
@@ -1212,7 +1319,7 @@ lvgl:
                           - label:
                               width: 100%
                               text_align: center
-                              text: "LIGHT 6"
+                              text: "LIVING ROOM LAMP"
                               text_color: 0xFFFFFF
 
                     # Light Container 7

@@ -89,6 +89,36 @@ sensor:
             float v = x;
             return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
 
+  ######################################################################################################
+  # Climate Control Target and Current Temperature
+  # Sensors that update the corresponding labels on the display with the target and current temperature
+  # from Home Assistant.
+  ######################################################################################################
+
+  - platform: homeassistant
+    id: thermostat_target_temp
+    entity_id: sensor.thermostat_target_temperature
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_target_temp
+            text: !lambda |
+              char buf[8];
+              snprintf(buf, sizeof(buf), "%.1f", x);
+              return std::string(buf);
+
+  - platform: homeassistant
+    id: thermostat_current_temp
+    entity_id: sensor.thermostat_current_temperature
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_current_temp
+            text: !lambda |
+              char buf[12];
+              snprintf(buf, sizeof(buf), "%.1f °C", x);
+              return std::string(buf);
+
 binary_sensor:
   ######################################################################################################
   # Hallway Lamp State
@@ -102,6 +132,19 @@ binary_sensor:
         - lvgl.widget.update:
             id: hallway_accent_slider
             bg_color: !lambda "return x ? 0xE5CA3E : 0xFF6B6B6B;"
+
+  ######################################################################################################
+  # Climate Control Boost Mode
+  # Binary sensor that updates the corresponding button on the display based on whether boost mode is active
+  ######################################################################################################
+  - platform: homeassistant
+    id: thermostat_boost
+    entity_id: binary_sensor.thermostat_boost
+    on_value:
+      then:
+        - lvgl.widget.update:
+            id: btn_boost
+            bg_color: !lambda "return x ? 0xFFFF6B00 : 0xFF6B6B6B;"
 
 text_sensor:
   ############################################################################################################
@@ -170,4 +213,31 @@ text_sensor:
       then:
         - lvgl.label.update:
             id: lbl_b2c0_last_person_detection_ago
+            text: !lambda return x.c_str();
+
+ ####################################################################################################
+  # Climate Control HVAC Mode and Action
+  # Sensors that update the corresponding dropdown and label on the display with the current HVAC mode and action from Home Assistant.
+  ####################################################################################################
+  - platform: homeassistant
+    id: thermostat_hvac_mode
+    entity_id: climate.thermostat
+    attribute: hvac_mode
+    on_value:
+      then:
+        - lvgl.dropdown.update:
+            id: hvac_mode_dropdown
+            selected_index: !lambda |
+              if (x == "auto") return 0;
+              if (x == "heat") return 1;
+              return 2;
+
+  - platform: homeassistant
+    id: thermostat_action
+    entity_id: climate.thermostat
+    attribute: hvac_action
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_hvac_action
             text: !lambda return x.c_str();
