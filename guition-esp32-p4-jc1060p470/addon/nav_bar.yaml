@@ -27,11 +27,10 @@ obj:
     flex_align_main: space_evenly
     flex_align_cross: center
   widgets:
-    # Home Button
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? lv_color_hex(0x2196F3) : lv_color_hex(0x2A2A2A);'
         on_click:
           - lvgl.page.show: main_page
         widgets:
@@ -40,11 +39,10 @@ obj:
               align: center
               text_color: 0xFFFFFF
 
-    # Lighting Button
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "lighting") == 0) ? lv_color_hex(0x2196F3) : lv_color_hex(0x2A2A2A);'
         on_click:
           - lvgl.page.show: lighting_page
         widgets:
@@ -53,18 +51,16 @@ obj:
               align: center
               text_color: 0xFFFFFF
 
-    # Page Title
     - label:
         text: "${page_title}"
         width: 300
         text_align: center
         text_color: 0xFFFFFF
 
-    # Birdseye Button
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "birdseye") == 0) ? lv_color_hex(0x2196F3) : lv_color_hex(0x2A2A2A);'
         on_click:
           - lvgl.page.show: birdseye_page
         widgets:
@@ -73,11 +69,10 @@ obj:
               align: center
               text_color: 0xFFFFFF
 
-    # Placeholder Button
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "place1") == 0) ? lv_color_hex(0x2196F3) : lv_color_hex(0x2A2A2A);'
         on_click:
           - lvgl.page.show: placeholder_page_1
         widgets:
