@@ -109,7 +109,7 @@ i2c:
     sda: GPIO07
     scl: GPIO08
     frequency: 400kHz
-    scan: true
+
 
 
 # # Enable Web Server to view the stream
