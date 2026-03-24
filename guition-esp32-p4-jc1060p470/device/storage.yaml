@@ -27,7 +27,7 @@ webdav_server:
 http_file_browser:
   storage_id: storage_id
   url_prefix: "/files"
-  root_path: "/sdcard"
+  root_path: "/"
   auth_enabled: true
   username: "admin"
   password: "123456"
