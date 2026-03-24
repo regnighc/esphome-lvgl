@@ -161,7 +161,7 @@ lvgl:
                           flex_flow: column
                           flex_align_main: center
                           flex_align_cross: center
-                          #pad_row: 1
+                          #pad_row: 5
                         widgets:
                           - label:
                               id: main_time
@@ -285,7 +285,7 @@ lvgl:
                           flex_flow: row
                           flex_align_main: center #space_around
                           flex_align_cross: center
-                          #pad_all: 8
+                          pad_all: 8
                         widgets:
                           # Left Column: Temperature Range
                           - obj:
