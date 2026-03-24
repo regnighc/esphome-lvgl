@@ -5,8 +5,8 @@
 # - !include
 #     file: ../addon/nav_bar.yaml
 #     vars:
-#       active_page: '"home"'  # Must be one of: "home", "lighting", "button3", "button4"
-#       page_title: '"YOUR PAGE TITLE"' # The title to display
+#       active_page: home  # Must be one of: home, lighting, birdseye, place1
+#       page_title: YOUR PAGE TITLE
 #
 obj:
   id: ${nav_bar_id}
@@ -31,9 +31,9 @@ obj:
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(active_page, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp("${active_page}", "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
-          - lvgl.page.show: main_page # Assumes your home page is named 'main_dashboard_page'. Change if needed.
+          - lvgl.page.show: main_page
         widgets:
           - label:
               text: "HOME"
@@ -44,7 +44,7 @@ obj:
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(active_page, "lighting") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp("${active_page}", "lighting") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
           - lvgl.page.show: lighting_page
         widgets:
@@ -55,16 +55,16 @@ obj:
 
     # Page Title
     - label:
-        text: !lambda 'return page_title;'
+        text: "${page_title}"
         width: 300
         text_align: center
         text_color: 0xFFFFFF
 
-    # Button 3
+    # Birdseye Button
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(active_page, "birdseye") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp("${active_page}", "birdseye") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
           - lvgl.page.show: birdseye_page
         widgets:
@@ -72,11 +72,12 @@ obj:
               text: "Birdseye"
               align: center
               text_color: 0xFFFFFF
-    # Button 4
+
+    # Placeholder Button
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp(active_page, "place1") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp("${active_page}", "place1") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
           - lvgl.page.show: placeholder_page_1
         widgets:

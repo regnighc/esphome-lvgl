@@ -243,6 +243,10 @@ globals:
     type: float
     restore_value: no
     initial_value: '20.0'
+  - id: active_page
+    type: std::string
+    restore_value: false
+    initial_value: '"home"'
 
 time:
   - platform: homeassistant
