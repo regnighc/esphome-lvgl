@@ -23,7 +23,6 @@ webdav_server:
   port: 81
   username: "admin"
   password: !secret web_server_password
-  auth_enabled: true
 
 
 http_file_browser:
