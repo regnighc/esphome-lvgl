@@ -333,32 +333,28 @@ lvgl:
                         bg_opa: TRANSP
                         border_width: 0
 
-                    # # --- Climate Panel ---
-                    # - obj:
-                    #     <<: *slider_box_style
-                    #     widgets:
-                    #       - obj:
-                    #           width: 100%
-                    #           height: 220
-                    #           bg_color: 0xFF6B6B6B
-                    #           radius: 12
-                    #       - label:
-                    #           width: 100%
-                    #           text_align: center
-                    #           text: "Climate Control"
-                    #           text_color: 0xFFFFFF
-
                     # --- Climate Panel ---
                     - obj:
                         <<: *slider_box_style
-                        height: 420
+                        id: climate_panel
+                        height: 300
                         layout:
                           type: flex
                           flex_flow: column
                           flex_align_main: space_evenly
                           flex_align_cross: center
                           pad_row: 0
+                        overflow: hidden
+                        #flex_grow: 0
                         widgets:
+
+                          # --- Obj Height Debug ---
+                          - label:
+                              text_sensor: height_debug
+                              text_align: right
+                              text: "obj height loading..."
+                              text_font: MONTSERRAT_12
+                              text_color: 0xFFAAAAAA
 
                           # --- Target Temperature ---
                           - label:
@@ -372,7 +368,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 10
+                              height: 5
                               bg_opa: TRANSP
                               border_width: 0
 
@@ -388,7 +384,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 15
+                              height: 10
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Mode and Boost Row ---
@@ -397,7 +393,7 @@ lvgl:
                               height: SIZE_CONTENT
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 8
+                              pad_all: 3
                               layout:
                                 type: flex
                                 flex_flow: row
@@ -449,7 +445,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 100%
-                              height: 20
+                              height: 10
                               bg_opa: TRANSP
                               border_width: 0
                               pad_all: 0
@@ -460,18 +456,18 @@ lvgl:
                               height: SIZE_CONTENT
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 8
+                              pad_all: 3
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: center
                                 flex_align_cross: center
-                                pad_column: 10
+                                pad_column: 20
                               widgets:
                                 - button:
-                                    width: 88
-                                    height: 88
-                                    radius: 44
+                                    width: 66
+                                    height: 66
+                                    radius: 33
                                     bg_color: 0xFF6B6B6B
                                     on_click:
                                       then:
@@ -487,7 +483,7 @@ lvgl:
                                       - label:
                                           text: "-"
                                           align: center
-                                          text_font: MONTSERRAT_24
+                                          text_font: MONTSERRAT_36
                                           text_color: 0xFFFFFFFF
 
                                 - label:
@@ -497,9 +493,9 @@ lvgl:
                                     text_color: 0xFFAAAAAA
 
                                 - button:
-                                    width: 88
-                                    height: 88
-                                    radius: 44
+                                    width: 66
+                                    height: 66
+                                    radius: 33
                                     bg_color: 0xFF6B6B6B
                                     on_click:
                                       then:
@@ -520,7 +516,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 20
+                              height: 10
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Panel Title ---
@@ -530,170 +526,6 @@ lvgl:
                               text: "CLIMATE CONTROL"
                               text_color: 0xFFAAAAAA
                               text_font: MONTSERRAT_12
-# # --- Climate Panel ---
-#                     - obj:
-#                         <<: *slider_box_style
-#                         height: 220
-#                         layout:
-#                           type: flex
-#                           flex_flow: column
-#                           flex_align_main: center
-#                           flex_align_cross: center
-#                           pad_row: 4
-#                         widgets:
-
-#                           # --- Temperatures Row ---
-#                           - obj:
-#                               width: 100%
-#                               height: SIZE_CONTENT
-#                               bg_opa: TRANSP
-#                               border_width: 0
-#                               pad_all: 0
-#                               layout:
-#                                 type: flex
-#                                 flex_flow: row
-#                                 flex_align_main: center
-#                                 flex_align_cross: center
-#                                 pad_column: 8
-#                               widgets:
-#                                 - label:
-#                                     id: lbl_target_temp
-#                                     text: "--°C"
-#                                     text_font: MONTSERRAT_36
-#                                     text_color: 0xFFFFFFFF
-#                                 - label:
-#                                     id: lbl_current_temp
-#                                     text: "--°C"
-#                                     text_font: MONTSERRAT_16
-#                                     text_color: 0xFF2196F3
-
-#                           # --- Mode and Boost Row ---
-#                           - obj:
-#                               width: 100%
-#                               height: SIZE_CONTENT
-#                               bg_opa: TRANSP
-#                               border_width: 0
-#                               pad_all: 0
-#                               layout:
-#                                 type: flex
-#                                 flex_flow: row
-#                                 flex_align_main: center
-#                                 flex_align_cross: center
-#                                 pad_column: 8
-#                               widgets:
-#                                 - dropdown:
-#                                     id: hvac_mode_dropdown
-#                                     width: 120
-#                                     options:
-#                                       - "auto"
-#                                       - "heat"
-#                                       - "off"
-#                                     on_value:
-#                                       then:
-#                                         - homeassistant.service:
-#                                             service: climate.set_hvac_mode
-#                                             data:
-#                                               entity_id: climate.thermostat
-#                                             data_template:
-#                                               hvac_mode: "{{ mode }}"
-#                                             variables:
-#                                               mode: !lambda |
-#                                                 if (x == 0) return std::string("auto");
-#                                                 if (x == 1) return std::string("heat");
-#                                                 return std::string("off");
-
-#                                 - button:
-#                                     id: btn_boost
-#                                     width: 80
-#                                     height: 36
-#                                     bg_color: 0xFF6B6B6B
-#                                     radius: 8
-#                                     on_click:
-#                                       then:
-#                                         - homeassistant.service:
-#                                             service: climate.set_preset_mode
-#                                             data:
-#                                               entity_id: climate.thermostat
-#                                               preset_mode: boost
-#                                     widgets:
-#                                       - label:
-#                                           text: "BOOST"
-#                                           align: center
-#                                           text_color: 0xFFFFFFFF
-#                                           text_font: MONTSERRAT_12
-
-#                           # --- Action + +/- Row ---
-#                           - obj:
-#                               width: 100%
-#                               height: SIZE_CONTENT
-#                               bg_opa: TRANSP
-#                               border_width: 0
-#                               pad_all: 0
-#                               layout:
-#                                 type: flex
-#                                 flex_flow: row
-#                                 flex_align_main: center
-#                                 flex_align_cross: center
-#                                 pad_column: 10
-#                               widgets:
-#                                 - button:
-#                                     width: 44
-#                                     height: 44
-#                                     radius: 22
-#                                     bg_color: 0xFF6B6B6B
-#                                     on_click:
-#                                       then:
-#                                         - homeassistant.service:
-#                                             service: climate.set_temperature
-#                                             data:
-#                                               entity_id: climate.thermostat
-#                                             data_template:
-#                                               temperature: "{{ current_temp }}"
-#                                             variables:
-#                                               current_temp: !lambda "return id(target_temp_val) - 0.5f;"
-#                                     widgets:
-#                                       - label:
-#                                           text: "-"
-#                                           align: center
-#                                           text_font: MONTSERRAT_24
-#                                           text_color: 0xFFFFFFFF
-
-#                                 - label:
-#                                     id: lbl_hvac_action
-#                                     text: "Idle"
-#                                     text_font: MONTSERRAT_12
-#                                     text_color: 0xFFAAAAAA
-
-#                                 - button:
-#                                     width: 44
-#                                     height: 44
-#                                     radius: 22
-#                                     bg_color: 0xFF6B6B6B
-#                                     on_click:
-#                                       then:
-#                                         - homeassistant.service:
-#                                             service: climate.set_temperature
-#                                             data:
-#                                               entity_id: climate.thermostat
-#                                             data_template:
-#                                               temperature: "{{ current_temp }}"
-#                                             variables:
-#                                               current_temp: !lambda "return id(target_temp_val) + 0.5f;"
-#                                     widgets:
-#                                       - label:
-#                                           text: "+"
-#                                           align: center
-#                                           text_font: MONTSERRAT_24
-#                                           text_color: 0xFFFFFFFF
-
-#                           # --- Panel Title ---
-#                           - label:
-#                               width: 100%
-#                               text_align: center
-#                               text: "CLIMATE CONTROL"
-#                               text_color: 0xFFAAAAAA
-#                               text_font: MONTSERRAT_12
-
 
               # ═══════════════════════════════════════════════════
               # COLUMN 3: Camera images stacked
