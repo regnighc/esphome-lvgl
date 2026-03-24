@@ -93,7 +93,7 @@ output:
   - platform: ledc
     pin: GPIO23
     id: gpio_backlight_pwm
-
+    frequency: 4882Hz #9765Hz
 light:
   - platform: monochromatic
     output: gpio_backlight_pwm
