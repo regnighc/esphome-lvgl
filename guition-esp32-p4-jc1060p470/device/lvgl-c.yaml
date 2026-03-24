@@ -372,7 +372,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 40
+                              height: 20
                               bg_opa: TRANSP
                               border_width: 0
 
@@ -388,7 +388,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 80
+                              height: 30
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Mode and Boost Row ---
@@ -769,15 +769,8 @@ lvgl:
                         text: "HOME"
                         align: center
                         text_color: 0xFFFFFF
+
                         
-
-              # Page Title
-              - label:
-                  text: "MAIN DASHBOARD"
-                  width: 300
-                  text_align: center
-                  text_color: 0xFFFFFF
-
               # Test Bed Button
               - button:
                   width: 120
@@ -787,9 +780,38 @@ lvgl:
                     - lvgl.page.show: lighting_page #test_page
                   widgets:
                     - label:
-                        text: "Lighting Test"
+                        text: "Lighting"
                         align: center
                         text_color: 0xFFFFFF
+                        
+
+              # Page Title
+              - label:
+                  text: "MAIN DASHBOARD"
+                  width: 300
+                  text_align: center
+                  text_color: 0xFFFFFF
+
+              - button:
+                  width: 120
+                  height: 70
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label:
+                        text: "Button 3"
+                        align: center
+                        text_color: 0xFFFFFF
+              - button:
+                  width: 120
+                  height: 70
+                  bg_color: 0x2196F3
+                  widgets:
+                    - label:
+                        text: "Button 4"
+                        align: center
+                        text_color: 0xFFFFFF
+
+
 
     # =============================================================
     # SECONDARY PAGE: TEST ENVIRONMENT
