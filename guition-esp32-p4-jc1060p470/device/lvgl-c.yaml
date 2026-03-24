@@ -344,13 +344,12 @@ lvgl:
                           flex_align_main: space_evenly
                           flex_align_cross: center
                           pad_row: 0
-                        overflow: hidden
-                        #flex_grow: 0
+                        overflow_visible: false
                         widgets:
 
                           # --- Obj Height Debug ---
                           - label:
-                              text_sensor: height_debug
+                              id: height_debug
                               text_align: right
                               text: "obj height loading..."
                               text_font: MONTSERRAT_12
