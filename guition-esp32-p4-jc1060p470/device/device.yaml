@@ -68,6 +68,21 @@ api:
         - component.update: online_img_cam_1
         - component.update: online_img_cam_2
 
+    - service: navigate_to_page
+      variables:
+        page: string
+      then:
+        - if:
+            condition:
+              lambda: 'return page == "main";'
+            then:
+              - lvgl.page.show: main_page
+        - if:
+            condition:
+              lambda: 'return page == "b2c0";'
+            then:
+              - lvgl.page.show: cam2_full_page
+
 web_server:
   port: 80
   version: 3

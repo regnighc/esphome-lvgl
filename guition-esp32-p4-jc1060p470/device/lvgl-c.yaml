@@ -508,7 +508,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 15
+                              height: 20
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Panel Title ---
@@ -926,7 +926,45 @@ lvgl:
                   text_font: MONTSERRAT_14
                   text_color: 0xFFFFFFFF
                   width: 100%
-
+              - obj:
+                  height: 20
+                  width: 100%
+                  bg_opa: TRANSP
+                  border_width: 0
+                  pad_all: 0
+              - button:
+                  id: btn_buzz_door
+                  width: 180
+                  height: 180
+                  radius: 90
+                  bg_color: 0xFFFF9999
+                  border_width: 0
+                  shadow_width: 0
+                  align: CENTER
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    flex_align_main: center
+                    flex_align_cross: center
+                  on_click:
+                    - homeassistant.service:
+                        service: switch.turn_on
+                        data:
+                          entity_id: switch.doorbell_door_entry_relay
+                  widgets:
+                    - label:
+                        text: "BUZZ DOOR OPEN"
+                        text_font: MONTSERRAT_14
+                        text_color: 0xFF000000
+                        text_align: CENTER
+                        width: 160
+                        long_mode: wrap
+                    - label:
+                        text: "tap for 3s buzz"
+                        text_font: MONTSERRAT_12
+                        text_color: 0xFF000000
+                        text_align: CENTER
+                        width: 160
 
     # =========================================================================
     # PAGE: LIGHTING
