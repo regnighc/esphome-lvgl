@@ -161,6 +161,7 @@ lvgl:
                           flex_flow: column
                           flex_align_main: center
                           flex_align_cross: center
+                          pad_row: 5
                         widgets:
                           - label:
                               id: main_time
@@ -175,11 +176,6 @@ lvgl:
                               text_align: center
                               text_font: date_font
                               text_color: 0xFFFFFF
-                              layout:
-                                type: flex
-                                flex_flow: column
-                                flex_align_cross: center
-                                pad_row: 5
                               text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
 
                     # --- Divider ---
@@ -948,8 +944,8 @@ lvgl:
                   height: 180
                   radius: 90
                   bg_color: 0xFFFF9999
-                  border_width: 0
-                  shadow_width: 0
+                  border_width: 1
+                  shadow_width: 2
                   align: CENTER
                   layout:
                     type: flex
@@ -963,14 +959,14 @@ lvgl:
                           entity_id: switch.doorbell_door_entry_relay
                   widgets:
                     - label:
-                        text: "BUZZ DOOR OPEN"
-                        text_font: MONTSERRAT_14
+                        text: "BUZZ DOOR"
+                        text_font: MONTSERRAT_24
                         text_color: 0xFF000000
                         text_align: CENTER
                         width: 160
-                        long_mode: wrap
+                        #long_mode: wrap
                     - label:
-                        text: "tap for 3s buzz"
+                        text: "TAP ONCE"
                         text_font: MONTSERRAT_12
                         text_color: 0xFF000000
                         text_align: CENTER

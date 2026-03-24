@@ -7,7 +7,7 @@ font:
 
   - file: "gfonts://Roboto"
     id: climate_font
-    size: 72 #82
+    size: 64 #72 #82
     bpp: 4
 
   - file: "gfonts://Roboto"
