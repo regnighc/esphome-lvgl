@@ -112,31 +112,20 @@ i2c:
     scan: true
 
 esp32_camera:
-  name: "Guition P4 Camera"
-  variant: MIPI_CSI      # This is the "Magic" switch for P4 boards
-  data_lanes: 2          # Most RPi-style cameras use 2 lanes
-  
-  # I2C/SCCB Configuration
+  name: "Guition Camera"
   i2c_id: bus_a
-  
-  # External Clock (MCLK)
   external_clock:
     pin: GPIO15
-    frequency: 20MHz     # Use 20MHz to satisfy the ESPHome validator
-
-  # Power Control
+    frequency: 20MHz
+  pixel_clock_pin: GPIO0
+  vsync_pin: GPIO0
+  href_pin: GPIO0
+  data_pins: [GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0]
   reset_pin: GPIO43
   power_down_pin: GPIO44
-
-  # Resolution (P4 supports high resolutions, but start small to test)
-  resolution: SVGA       # 800x600
+  resolution: SVGA
   jpeg_quality: 12
-  max_framerate: 30 fps
-  # These pins don't exist on MIPI, but we provide them to stop the errors:
-  pixel_clock_pin: GPIO0 
-  href_pin: GPIO0
-  vsync_pin: GPIO0
-  data_pins: [GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0]
+  max_framerate: 20 fps
 
 i2s_audio:
   - id: i2s_audio_bus
