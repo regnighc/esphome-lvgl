@@ -31,7 +31,7 @@ obj:
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp("${active_page}", "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
           - lvgl.page.show: main_page
         widgets:
@@ -44,7 +44,7 @@ obj:
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp("${active_page}", "lighting") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
           - lvgl.page.show: lighting_page
         widgets:
@@ -64,7 +64,7 @@ obj:
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp("${active_page}", "birdseye") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
           - lvgl.page.show: birdseye_page
         widgets:
@@ -77,7 +77,7 @@ obj:
     - button:
         width: 120
         height: 70
-        bg_color: !lambda 'return (strcmp("${active_page}", "place1") == 0) ? 0x2196F3 : 0x2A2A2A;'
+        bg_color: !lambda 'return (strcmp(${active_page}, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
         on_click:
           - lvgl.page.show: placeholder_page_1
         widgets:
