@@ -285,7 +285,7 @@ lvgl:
                           flex_flow: row
                           flex_align_main: center #space_around
                           flex_align_cross: center
-                          pad_all: 8
+                          #pad_all: 8
                         widgets:
                           # Left Column: Temperature Range
                           - obj:
