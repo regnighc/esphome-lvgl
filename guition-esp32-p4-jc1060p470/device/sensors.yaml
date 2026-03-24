@@ -186,19 +186,7 @@ text_sensor:
               return "${weather_sunny_alert}";
 
 
-  ############################################################################################################
-  # Debugging
-  # Shows the height of the climate control panel object, to help with layout adjustments
-  ############################################################################################################
-              
-  - platform: template
-    id: height_debug
-    update_interval: 500ms
-    lambda: |-
-      lv_obj_update_layout(id(height_debug_label));
-      char buf[32];
-      snprintf(buf, sizeof(buf), "h: %d", lv_obj_get_height(id(climate_panel)));
-      return std::string(buf);
+
 
   ####################################################################################################
   # Block 2 Camera 4
