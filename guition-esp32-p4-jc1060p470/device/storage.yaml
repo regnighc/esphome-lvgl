@@ -18,11 +18,13 @@ storage:
 webdav_server:
   id: webdav_sdcard
   storage_id: storage_id
-  root_path: "/"
+  root_path: "/sd_card"
   url_prefix: "/"
   port: 81
   username: "admin"
-  password: "123456"
+  password: !secret web_server_password
+  auth_enabled: true
+
 
 http_file_browser:
   storage_id: storage_id
@@ -30,7 +32,7 @@ http_file_browser:
   root_path: "/sd_card"
   auth_enabled: true
   username: "admin"
-  password: "123456"
+  password: !secret web_server_password
   enable_upload: true
   enable_download: true
   enable_deletion: true
