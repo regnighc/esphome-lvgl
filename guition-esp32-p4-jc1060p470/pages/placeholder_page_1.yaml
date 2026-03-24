@@ -17,11 +17,7 @@
           bg_opa: TRANSP
           border_width: 0
           pad_all: 8
-          layout:
-            type: flex
-            flex_flow: row
-            flex_align_main: space_between
-            flex_align_cross: start
+
 
 
       - !include
