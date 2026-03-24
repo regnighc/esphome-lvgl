@@ -29,9 +29,10 @@ esphome:
 external_components:
   - source: github://p1ngb4ck/esphome@dev
     components: [audio, binary_storage, http_file_browser, nfs_client, picture_viewer, uart, usb_host, usb_uart, usb_storage, sd_storage, smb_client, storage, transcoder, video_player, webdav_server]
-    refresh: 0s
+    refresh: 1day
   - source: github://regnighc/esphome-onlineimage-grayscale-fix@main  #github://jtenniswood/esphome-onlineimage-grayscale-fix@main
     components: [online_image]
+    refresh: 1day
 
 http_request:
   useragent: esphome/device
@@ -108,6 +109,72 @@ i2c:
     sda: GPIO07
     scl: GPIO08
     frequency: 400kHz
+    scan: true
+
+esp32_camera:
+  external_clock:
+    pin: GPIO15
+    frequency: 24MHz
+  
+  # MIPI Specific Configuration
+  variant: MIPI_CSI
+  data_lanes: 2
+  lane_settings:
+    - data_rate: 800Mbps  # Standard for OV5647/IMX219
+  
+  # I2C/SCCB pins for sensor config
+  i2c_id: bus_a
+  
+  name: "Guition MIPI Camera"
+  resolution: 1280x720
+  jpeg_quality: 10
+  max_framerate: 30 fps
+
+i2s_audio:
+  - id: i2s_audio_bus
+    i2s_lrclk_pin: GPIO10
+    i2s_bclk_pin: GPIO12
+    i2s_mclk_pin: GPIO13
+
+# --- AUDIO DEVICES ------------------------------------------------------------
+switch:
+  - platform: gpio
+    name: Speaker Enable
+    icon: "mdi:speaker"
+    entity_category: config
+    pin: GPIO11
+    restore_mode: ALWAYS_ON
+
+audio_dac:
+  - platform: es8311
+    id: es8311_dac
+    i2c_id: bus_a
+
+audio_adc:
+  - platform: es7210
+    id: es7210_adc
+    i2c_id: bus_a
+
+microphone:
+  - platform: i2s_audio
+    id:  box_mic
+    i2s_audio_id: i2s_audio_bus
+    i2s_din_pin: GPIO48
+    sample_rate: 16000
+    bits_per_sample: 16bit
+    adc_type: external
+
+speaker:
+  - platform: i2s_audio
+    id: box_speaker
+    i2s_audio_id: i2s_audio_bus
+    i2s_dout_pin: GPIO9
+    audio_dac: es8311_dac
+    dac_type: external
+    channel: mono
+    buffer_duration: 100ms
+    bits_per_sample: 16bit
+    sample_rate: 48000
 
 i2c_device:
   - id: i2cdev1
