@@ -114,20 +114,36 @@ i2c:
 esp32_camera:
   name: "Guition Camera"
   i2c_id: bus_a
-  # Moved the camera clock to GPIO 12 (Free on this board)
+  
+  # --- ACTUAL HARDWARE CONTROL ---
+  # Pin 47 is the dedicated Camera Clock on the P4-EVB architecture
   external_clock:
-    pin: 12
+    pin: 47
     frequency: 20MHz
-  # Power controls moved to the 49/50 block (Reserved for Cam on Guition P4)
-  reset_pin: 48
-  power_down_pin: 49
-  pixel_clock_pin: 1
-  vsync_pin: 2
-  href_pin: 3
-  data_pins: [4, 5, 6, 9, 10, 11, 13, 20]
+
+  # Pins 50 and 51 are high-range GPIOs usually free for Cam Control
+  reset_pin: 50
+  power_down_pin: 51
+
+  # --- UNIQUE DUMMY PINS (The Validator Trick) ---
+  # We use the 20-32 range which are mostly header pins on the P470C.
+  # Every pin here MUST be a different number to stop the "Multiple Places" error.
+  pixel_clock_pin: 20
+  vsync_pin: 21
+  href_pin: 22
+  data_pins: [23, 24, 25, 26, 27, 28, 29, 30]
+
+  # --- IMAGE SETTINGS ---
+  # Start with SVGA (800x600). The P4 can do more, 
+  # but let's confirm the connection first.
   resolution: SVGA
   jpeg_quality: 10
   frame_buffer_location: PSRAM
+
+# Enable Web Server to view the stream
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
 
 i2s_audio:
   - id: i2s_audio_bus
