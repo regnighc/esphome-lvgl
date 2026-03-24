@@ -195,7 +195,7 @@ text_sensor:
     id: height_debug
     update_interval: 500ms
     lambda: |-
-      lv_obj_update_layout(id(my_obj));
+      lv_obj_update_layout(id(height_debug_label));
       char buf[32];
       snprintf(buf, sizeof(buf), "h: %d", lv_obj_get_height(id(climate_panel)));
       return std::string(buf);
