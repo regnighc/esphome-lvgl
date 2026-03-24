@@ -33,9 +33,6 @@ external_components:
   - source: github://regnighc/esphome-onlineimage-grayscale-fix@main  #github://jtenniswood/esphome-onlineimage-grayscale-fix@main
     components: [online_image]
     refresh: 1d
-  - source: github://esphome/esphome@pull/6450 # Standard P4/MIPI PR branch for 2026
-    components: [ esp32_camera ]
-    refresh: 1d
 
 http_request:
   useragent: esphome/device
@@ -115,28 +112,27 @@ i2c:
     scan: true
 
 esp32_camera:
-  name: "Guition MIPI Camera"
-  # Use the MIPI variant which bypasses DVP pin requirements
-  variant: MIPI_CSI
+  name: "Guition P4 Camera"
+  variant: MIPI_CSI      # This is the "Magic" switch for P4 boards
+  data_lanes: 2          # Most RPi-style cameras use 2 lanes
   
-  # MIPI CSI specific pins for P4
-  # These are dedicated pins on the P4, but ESPHome needs the IDs
-  data_lanes: 2
+  # I2C/SCCB Configuration
+  i2c_id: bus_a
   
-  # This fixes your 'external_clock' error
+  # External Clock (MCLK)
   external_clock:
     pin: GPIO15
-    frequency: 20MHz  # Dropped to 20MHz to satisfy validator, 
-                      # or use 'clock_source: crystal' if supported.
+    frequency: 20MHz     # Use 20MHz to satisfy the ESPHome validator
 
-  # Fixing the Resolution Error:
-  # Use 'HD' instead of '1280x720' to match the internal enum
-  resolution: HD 
-  jpeg_quality: 10
+  # Power Control
+  reset_pin: GPIO43
+  power_down_pin: GPIO44
+
+  # Resolution (P4 supports high resolutions, but start small to test)
+  resolution: SVGA       # 800x600
+  jpeg_quality: 12
   max_framerate: 30 fps
-  
-  # Dummy pins to satisfy the old validator if it still complains
-  # (The MIPI branch usually ignores these)
+  # These pins don't exist on MIPI, but we provide them to stop the errors:
   pixel_clock_pin: GPIO0 
   href_pin: GPIO0
   vsync_pin: GPIO0
