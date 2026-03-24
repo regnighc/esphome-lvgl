@@ -570,6 +570,7 @@ lvgl:
             vars:
               active_page: '"home"'  # Must be one of: "home", "lighting", "button3", "button4"
               page_title: '"MAIN DASHBOARD"' # The title to display
+              nav_bar_id: nav_bar_home  # unique per page
         # - obj:
         #     id: nav_bar_main
         #     width: 100%
@@ -1521,6 +1522,7 @@ lvgl:
             vars:
               active_page: '"lighting"'  # Must be one of: "home", "lighting", "button3", "button4"
               page_title: '"LIGHTING"' # The title to display
+              nav_bar_id: nav_bar_lighting  # unique per page
         # - obj:
         #     id: nav_bar_lighting
         #     width: 100%
