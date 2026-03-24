@@ -111,26 +111,6 @@ i2c:
     frequency: 400kHz
     scan: true
 
-esp32_camera:
-  name: "Guition Camera"
-  i2c_id: bus_a
-  
-  # --- ACTUAL HARDWARE CONTROL ---
-  # Pin 47 is the dedicated Camera Clock on the P4-EVB architecture
-  external_clock:
-    pin: 47
-    frequency: 20MHz
-
-  # Pins 50 and 51 are high-range GPIOs usually free for Cam Control
-  reset_pin: 50
-  power_down_pin: 51
-
-  # --- IMAGE SETTINGS ---
-  # Start with SVGA (800x600). The P4 can do more, 
-  # but let's confirm the connection first.
-  resolution: SVGA
-  jpeg_quality: 10
-  frame_buffer_location: PSRAM
 
 # Enable Web Server to view the stream
 esp32_camera_web_server:
