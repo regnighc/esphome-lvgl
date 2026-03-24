@@ -33,7 +33,7 @@
           height: 70
           bg_color: !lambda 'return (strcmp(active_page, "home") == 0) ? 0x2196F3 : 0x2A2A2A;'
           on_click:
-            - lvgl.page.show: main_dashboard_page # Assumes your home page is named 'main_dashboard_page'. Change if needed.
+            - lvgl.page.show: main_page # Assumes your home page is named 'main_dashboard_page'. Change if needed.
           widgets:
             - label:
                 text: "HOME"
@@ -64,23 +64,23 @@
       - button:
           width: 120
           height: 70
-          bg_color: !lambda 'return (strcmp(active_page, "button3") == 0) ? 0x2196F3 : 0x2A2A2A;'
-          # on_click:
-          #   - lvgl.page.show: your_page_id_here
+          bg_color: !lambda 'return (strcmp(active_page, "birdseye") == 0) ? 0x2196F3 : 0x2A2A2A;'
+          on_click:
+            - lvgl.page.show: birdseye_page
           widgets:
             - label:
-                text: "Button 3"
+                text: "Birdseye"
                 align: center
                 text_color: 0xFFFFFF
       # Button 4
       - button:
           width: 120
           height: 70
-          bg_color: !lambda 'return (strcmp(active_page, "button4") == 0) ? 0x2196F3 : 0x2A2A2A;'
-          # on_click:
-          #   - lvgl.page.show: your_page_id_here
+          bg_color: !lambda 'return (strcmp(active_page, "place1") == 0) ? 0x2196F3 : 0x2A2A2A;'
+          on_click:
+            - lvgl.page.show: placeholder_page_1
           widgets:
             - label:
-                text: "Button 4"
+                text: "Placeholder"
                 align: center
                 text_color: 0xFFFFFF
