@@ -346,15 +346,6 @@ lvgl:
                           pad_row: 0
                         overflow_visible: false
                         widgets:
-
-                          # --- Obj Height Debug ---
-                          - label:
-                              id: height_debug_label
-                              text_align: right
-                              text: "obj height loading..."
-                              text_font: MONTSERRAT_12
-                              text_color: 0xFFAAAAAA
-
                           # --- Target Temperature ---
                           - label:
                               id: lbl_target_temp
@@ -383,7 +374,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 10
+                              height: 15
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Mode and Boost Row ---
@@ -488,7 +479,7 @@ lvgl:
                                 - label:
                                     id: lbl_hvac_action
                                     text: "Idle"
-                                    text_font: MONTSERRAT_12
+                                    text_font: MONTSERRAT_18
                                     text_color: 0xFFAAAAAA
 
                                 - button:
@@ -515,7 +506,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 10
+                              height: 15
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Panel Title ---
@@ -523,8 +514,8 @@ lvgl:
                               width: 100%
                               text_align: center
                               text: "CLIMATE CONTROL"
-                              text_color: 0xFFAAAAAA
-                              text_font: MONTSERRAT_12
+                              text_color: 0xFFFFFF
+
 
               # ═══════════════════════════════════════════════════
               # COLUMN 3: Camera images stacked
