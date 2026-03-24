@@ -125,14 +125,6 @@ esp32_camera:
   reset_pin: 50
   power_down_pin: 51
 
-  # --- UNIQUE DUMMY PINS (The Validator Trick) ---
-  # We use the 20-32 range which are mostly header pins on the P470C.
-  # Every pin here MUST be a different number to stop the "Multiple Places" error.
-  pixel_clock_pin: 20
-  vsync_pin: 21
-  href_pin: 22
-  data_pins: [23, 24, 25, 26, 27, 28, 29, 30]
-
   # --- IMAGE SETTINGS ---
   # Start with SVGA (800x600). The P4 can do more, 
   # but let's confirm the connection first.
