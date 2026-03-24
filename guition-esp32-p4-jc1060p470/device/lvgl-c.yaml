@@ -146,7 +146,7 @@ lvgl:
                     type: flex
                     flex_flow: column
                     flex_align_cross: center
-                    pad_row: 10
+                    pad_row: 5
                   widgets:
 
                     # --- Clock block ---
@@ -161,7 +161,7 @@ lvgl:
                           flex_flow: column
                           flex_align_main: center
                           flex_align_cross: center
-                          pad_row: 5
+                          #pad_row: 1
                         widgets:
                           - label:
                               id: main_time
