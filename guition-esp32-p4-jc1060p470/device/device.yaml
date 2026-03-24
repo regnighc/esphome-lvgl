@@ -114,18 +114,20 @@ i2c:
 esp32_camera:
   name: "Guition Camera"
   i2c_id: bus_a
+  # Moved the camera clock to GPIO 12 (Free on this board)
   external_clock:
-    pin: GPIO15
+    pin: 12
     frequency: 20MHz
-  pixel_clock_pin: GPIO0
-  vsync_pin: GPIO0
-  href_pin: GPIO0
-  data_pins: [GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0, GPIO0]
-  reset_pin: GPIO43
-  power_down_pin: GPIO44
+  # Power controls moved to the 49/50 block (Reserved for Cam on Guition P4)
+  reset_pin: 48
+  power_down_pin: 49
+  pixel_clock_pin: 1
+  vsync_pin: 2
+  href_pin: 3
+  data_pins: [4, 5, 6, 9, 10, 11, 13, 20]
   resolution: SVGA
-  jpeg_quality: 12
-  max_framerate: 20 fps
+  jpeg_quality: 10
+  frame_buffer_location: PSRAM
 
 i2s_audio:
   - id: i2s_audio_bus
