@@ -1464,21 +1464,37 @@ lvgl:
                                       - "Nordic Blue"
                                       - "Deep Teal"
                                       - "Midnight Blue"
-                                      
-                                    on_value:
+
+                                    on_change:
                                       then:
                                         - homeassistant.service:
                                             service: light.turn_on
                                             data:
                                               entity_id: light.pc_leds_rgb_led_strip
                                             data_template:
+                                              # We explicitly return a std::string for Home Assistant
                                               rgb_color: !lambda |-
-                                                if (x == 0) return {255, 244, 229}; // Warm White
-                                                if (x == 1) return {144, 172, 144}; // Sage Green
-                                                if (x == 2) return {180, 150, 200}; // Soft Lavender
-                                                if (x == 3) return {135, 206, 235}; // Nordic Blue
-                                                if (x == 4) return {0, 128, 128};   // Deep Teal
-                                                return {25, 25, 112};               // Midnight Blue
+                                                if (x == 0) return std::string("255, 244, 229"); // Warm White
+                                                if (x == 1) return std::string("144, 172, 144"); // Sage Green
+                                                if (x == 2) return std::string("180, 150, 200"); // Soft Lavender
+                                                if (x == 3) return std::string("135, 206, 235"); // Nordic Blue
+                                                if (x == 4) return std::string("0, 128, 128"); // Deep Teal
+                                                return std::string("25, 25, 112"); // Midnight Blue
+                                      
+                                    # on_value:
+                                    #   then:
+                                    #     - homeassistant.service:
+                                    #         service: light.turn_on
+                                    #         data:
+                                    #           entity_id: light.pc_leds_rgb_led_strip
+                                    #         data_template:
+                                    #           rgb_color: !lambda |-
+                                    #             if (x == 0) return {255, 244, 229}; // Warm White
+                                    #             if (x == 1) return {144, 172, 144}; // Sage Green
+                                    #             if (x == 2) return {180, 150, 200}; // Soft Lavender
+                                    #             if (x == 3) return {135, 206, 235}; // Nordic Blue
+                                    #             if (x == 4) return {0, 128, 128};   // Deep Teal
+                                    #             return {25, 25, 112};               // Midnight Blue
                           - label:
                               width: 100%
                               text_align: center
