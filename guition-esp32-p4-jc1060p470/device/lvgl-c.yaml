@@ -398,7 +398,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                        height: 8
+                              height: 8
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Mode and Boost Row ---
