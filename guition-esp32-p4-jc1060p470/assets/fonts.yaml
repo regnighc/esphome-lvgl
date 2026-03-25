@@ -29,3 +29,8 @@ font:
     id: date_font
     size: 18
     bpp: 4
+
+  - file: "gfonts://Roboto"
+    id: high_temp_font
+    size: 58
+    bpp: 8

@@ -320,13 +320,8 @@ lvgl:
                                     widgets:
                                       - label:
                                           id: high_temp_label
-                                          text_font: date_font
+                                          text_font: high_temp_font
                                           text_color: 0xFFFFFF
-                                          text: "--°C"
-                                      - label:
-                                          id: low_temp_label
-                                          text_font: date_font
-                                          text_color: 0xAAAAAA
                                           text: "--°C"
                                 # Right Column: Condition Icon
                                 - label:
@@ -335,12 +330,30 @@ lvgl:
                                     text_color: 0xFFFFFF
                                     text: "${weather_sunny}"
 
-                          # --- Invisible Spacer (Height matched to Date label) ---
+                          # --- Weather Row for Low temperature ---
                           - obj:
                               width: 1
                               height: 25
                               bg_opa: TRANSP
                               border_width: 0
+                              pad_all: 0
+                              pad_right: 40
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: center
+                                flex_align_cross: center
+                              widgets:
+                                - label:
+                                    id: low_temp_label
+                                    text_font: date_font
+                                    text_color: 0xAAAAAA
+                                    text: "--°C"
+                                - label:
+                                    id: weather_spacer_01
+                                    text_font: icon_font
+                                    text_color: 0xFFFFFF
+                                    text: " "
 
                     # --- Divider (aligned with col 1) ---
                     - line:
