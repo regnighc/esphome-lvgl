@@ -152,7 +152,7 @@ lvgl:
                     # --- Clock block ---
                     - obj:
                         width: 100%
-                        height: 120 #SIZE_CONTENT
+                        height: SIZE_CONTENT
                         scrollable: false
                         bg_opa: TRANSP
                         border_width: 0
@@ -161,7 +161,7 @@ lvgl:
                           flex_flow: column
                           flex_align_main: center
                           flex_align_cross: center
-                          pad_row: 5
+                          pad_row: 0
                         widgets:
                           - label:
                               id: main_time
@@ -275,7 +275,7 @@ lvgl:
                     # --- Weather block (height-matched to clock column header) ---
                     - obj:
                         width: 100%
-                        height: 120 #SIZE_CONTENT
+                        height: SIZE_CONTENT
                         scrollable: false
                         bg_opa: TRANSP #bg_color: 0xFF2A2D2E
                         radius: 15
@@ -332,7 +332,7 @@ lvgl:
                     # --- Spacer ---
                     - obj:
                         width: 1
-                        height: 20
+                        height: 15
                         bg_opa: TRANSP
                         border_width: 0
 
@@ -571,78 +571,6 @@ lvgl:
               active_page: '"home"'  # Must be one of: "home", "lighting", "button3", "button4"
               page_title: '"MAIN DASHBOARD"' # The title to display
               nav_bar_id: nav_bar_home  # unique per page
-        # - obj:
-        #     id: nav_bar_main
-        #     width: 100%
-        #     height: 85
-        #     scrollable: false
-        #     bg_color: 0x1A1A1A
-        #     border_width: 1
-        #     border_side: TOP
-        #     pad_top: 10
-        #     pad_bottom: 0
-        #     pad_left: 0
-        #     pad_right: 0
-        #     border_color: 0x333333
-        #     layout:
-        #       type: flex
-        #       flex_flow: row
-        #       flex_align_main: space_evenly
-        #       flex_align_cross: center
-        #     widgets:
-        #       # Home Button (Active State)
-        #       - button:
-        #           width: 120
-        #           height: 70
-        #           bg_color: 0x2196F3
-        #           widgets:
-        #             - label:
-        #                 text: "HOME"
-        #                 align: center
-        #                 text_color: 0xFFFFFF
-
-                        
-        #       # Test Bed Button
-        #       - button:
-        #           width: 120
-        #           height: 70
-        #           bg_color: 0x2A2A2A
-        #           on_click:
-        #             - lvgl.page.show: lighting_page #test_page
-        #           widgets:
-        #             - label:
-        #                 text: "Lighting"
-        #                 align: center
-        #                 text_color: 0xFFFFFF
-                        
-
-        #       # Page Title
-        #       - label:
-        #           text: "MAIN DASHBOARD"
-        #           width: 300
-        #           text_align: center
-        #           text_color: 0xFFFFFF
-
-        #       - button:
-        #           width: 120
-        #           height: 70
-        #           bg_color: 0x2196F3
-        #           widgets:
-        #             - label:
-        #                 text: "Button 3"
-        #                 align: center
-        #                 text_color: 0xFFFFFF
-        #       - button:
-        #           width: 120
-        #           height: 70
-        #           bg_color: 0x2196F3
-        #           widgets:
-        #             - label:
-        #                 text: "Button 4"
-        #                 align: center
-        #                 text_color: 0xFFFFFF
-
-
 
     # =============================================================
     # SECONDARY PAGE: TEST ENVIRONMENT
@@ -1523,62 +1451,6 @@ lvgl:
               active_page: '"lighting"'  # Must be one of: "home", "lighting", "button3", "button4"
               page_title: '"LIGHTING"' # The title to display
               nav_bar_id: nav_bar_lighting  # unique per page
-        # - obj:
-        #     id: nav_bar_lighting
-        #     width: 100%
-        #     height: 80
-        #     scrollable: false
-        #     bg_color: 0x1A1A1A
-        #     border_width: 1
-        #     border_side: TOP
-        #     border_color: 0x333333
-        #     pad_top: 10
-        #     pad_bottom: 0
-        #     pad_left: 0
-        #     pad_right: 0
-        #     layout:
-        #       type: flex
-        #       flex_flow: row
-        #       flex_align_main: space_evenly
-        #       flex_align_cross: center
-        #     widgets:
-        #       - button:
-        #           width: 120
-        #           height: 60
-        #           bg_color: 0x2A2A2A
-        #           on_click:
-        #             - lvgl.page.show: main_page
-        #           widgets:
-        #             - label:
-        #                 text: "HOME"
-        #                 align: center
-        #                 text_color: 0xFFFFFF
-        #       - label:
-        #           text: "LIGHTING"
-        #           width: 300
-        #           text_align: center
-        #           text_color: 0xFFFFFF
-        #       - button:
-        #           width: 120
-        #           height: 60
-        #           bg_color: 0x2A2A2A
-        #           on_click:
-        #             - lvgl.page.show: lighting_page
-        #           widgets:
-        #             - label:
-        #                 text: "lighting2"
-        #                 align: center
-        #                 text_color: 0xFFFFFF
-        #       - button:
-        #           width: 120
-        #           height: 60
-        #           bg_color: 0x2196F3
-        #           widgets:
-        #             - label:
-        #                 text: "LIGHTING"
-        #                 align: center
-        #                 text_color: 0xFFFFFF
-
 
     - !include
         file: ../pages/birdseye_page.yaml
