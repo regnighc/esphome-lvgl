@@ -907,12 +907,34 @@ lvgl:
                   width: 180
                   height: 180
                   radius: 90
-                  bg_color: 0xFFFF9999
-                  border_width: 2
-                  border_color: 0xFFFF9999
-                  shadow_width: 5
-                  shadow_opa: 0.6
                   align: CENTER
+                  
+                  # 1. THE BASE 3D LOOK
+                  # Lightest color at the top
+                  bg_color: 0xFFB2B2 
+                  # Darker color to fade into at the bottom
+                  bg_grad_color: 0xCC7A7A 
+                  bg_grad_dir: VER
+                  
+                  # 2. THE RIM
+                  border_width: 2
+                  border_color: 0xFFB2B2 # Match the top highlight
+                  
+                  # 3. THE SHADOW (Raised effect)
+                  shadow_width: 15
+                  shadow_color: 0x000000
+                  shadow_opa: 130        # LVGL uses 0-255 (130 is ~50%)
+                  shadow_ofs_y: 8       # Pushes the shadow down to make the button look high
+                  shadow_ofs_x: 0
+                  
+                  # 4. THE INTERACTION (The "Press" feel)
+                  # This happens when you touch the button
+                  pressed:
+                    translate_y: 4      # Physically moves the button down 4 pixels
+                    shadow_width: 5     # Shrinks the shadow to look "closer" to the background
+                    shadow_ofs_y: 2
+                    bg_color: 0xCC7A7A  # Darkens slightly when pressed
+                  
                   layout:
                     type: flex
                     flex_flow: column
@@ -927,14 +949,14 @@ lvgl:
                     - label:
                         text: "BUZZ DOOR"
                         text_font: MONTSERRAT_24
-                        text_color: 0xFF000000
+                        text_color: 0x000000
                         text_align: CENTER
                         width: 160
                         #long_mode: wrap
                     - label:
                         text: "TAP ONCE"
                         text_font: MONTSERRAT_12
-                        text_color: 0xFF000000
+                        text_color: 0x333333
                         text_align: CENTER
                         width: 160
 
@@ -1465,6 +1487,7 @@ lvgl:
                                     align: CENTER
                                     visible_row_count: 3
                                     mode: INFINITE
+                                    anim_time: 100ms
                                     
                                     # Customizing the selection bar to stand out against the grey
                                     selected:
