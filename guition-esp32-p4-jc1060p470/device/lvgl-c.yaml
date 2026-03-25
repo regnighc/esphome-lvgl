@@ -373,7 +373,7 @@ lvgl:
                     - obj:
                         <<: *slider_box_style
                         id: climate_panel
-                        height: 300
+                        height: 305
                         layout:
                           type: flex
                           flex_flow: column
