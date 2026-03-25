@@ -1407,7 +1407,7 @@ lvgl:
                               text: "LIGHT 7"
                               text_color: 0xFFFFFF
 
-                    # Light Container 8
+                    # Light Container 6
                     - obj:
                         <<: *dual_slider_container
                         widgets:
@@ -1426,7 +1426,7 @@ lvgl:
                                 pad_column: 8
                               widgets:
                                 - slider:
-                                    id: light_col2_4_brightness
+                                    id: pcleds_brightness_slider
                                     width: 46%
                                     height: 110
                                     bg_color: 0xFF6B6B6B
@@ -1437,34 +1437,52 @@ lvgl:
                                       - homeassistant.service:
                                           service: light.turn_on
                                           data:
-                                            entity_id: light.placeholder_8
+                                            entity_id: light.pc_leds_rgb_led_strip
                                           data_template:
                                             brightness: "{{ slider_val }}"
                                           variables:
                                             slider_val: !lambda "return (int)x;"
-                                - slider:
-                                    id: light_col2_4_colortemp
+                                - roller:
+                                    id: pcleds_colour_slider
                                     width: 46%
                                     height: 110
-                                    min_value: 153
-                                    max_value: 500
-                                    bg_color: 0xFF6B6B6B
                                     radius: 12
-                                    indicator: {bg_color: 0xFF9C4A, radius: 12}
-                                    knob: {bg_opa: TRANSP}
-                                    on_release:
-                                      - homeassistant.service:
-                                          service: light.turn_on
-                                          data:
-                                            entity_id: light.placeholder_8
-                                          data_template:
-                                            color_temp: "{{ slider_val }}"
-                                          variables:
-                                            slider_val: !lambda "return (int)x;"
+                                    bg_color: 0x6B6B6B  # Using the grey color you specified
+                                    align: CENTER
+                                    visible_row_count: 3
+                                    mode: INFINITE
+                                    
+                                    # Customizing the selection bar to stand out against the grey
+                                    selected:
+                                      bg_color: 0x4A4A4A # Slightly darker grey for the selection bar
+                                      text_color: 0xFFFFFF # White text for better contrast
+                                      
+                                    options:
+                                      - "Warm White"
+                                      - "Sage Green"
+                                      - "Soft Lavender"
+                                      - "Nordic Blue"
+                                      - "Deep Teal"
+                                      - "Midnight Blue"
+                                      
+                                    on_value:
+                                      then:
+                                        - homeassistant.service:
+                                            service: light.turn_on
+                                            data:
+                                              entity_id: light.pc_leds_rgb_led_strip
+                                            data_template:
+                                              rgb_color: !lambda |-
+                                                if (x == 0) return {255, 244, 229}; // Warm White
+                                                if (x == 1) return {144, 172, 144}; // Sage Green
+                                                if (x == 2) return {180, 150, 200}; // Soft Lavender
+                                                if (x == 3) return {135, 206, 235}; // Nordic Blue
+                                                if (x == 4) return {0, 128, 128};   // Deep Teal
+                                                return {25, 25, 112};               // Midnight Blue
                           - label:
                               width: 100%
                               text_align: center
-                              text: "LIGHT 8"
+                              text: "PC LEDS"
                               text_color: 0xFFFFFF
 
         # --- NAV BAR ---

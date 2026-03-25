@@ -64,6 +64,21 @@ sensor:
           id: livingroom_lamp_brightness_slider
           value: !lambda "return x;"
 
+
+  - platform: homeassistant
+    id: pcleds_brightness
+    entity_id: light.pc_leds_rgb_led_strip
+    attribute: brightness
+    # Add this filter block to catch the missing attribute when the light is off
+    filters:
+      - clamp:
+          min_value: 0
+          max_value: 255
+    on_value:
+      - lvgl.slider.update:
+          id: pcleds_brightness_slider
+          value: !lambda "return x;"
+
   ######################################################################################################
   # Weather Temperature Forecast High and Low
   # Sensors that update the corresponding labels on the display with the high and low temperature
