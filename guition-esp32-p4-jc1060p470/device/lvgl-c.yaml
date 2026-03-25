@@ -362,7 +362,7 @@ lvgl:
                                           text_color: 0xFFFFFF
                                           text: "--°C"
                                 - label:
-                                    id: weather_icon_label
+                                    id: weather_spacer
                                     text_font: icon_font
                                     text_color: 0xFFFFFF
                                     text: " "
