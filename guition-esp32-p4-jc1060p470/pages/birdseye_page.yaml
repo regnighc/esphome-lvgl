@@ -22,5 +22,5 @@
           file: ../addon/nav_bar.yaml
           vars:
             active_page: '"birdseye"'  # Must be one of: "home", "lighting", "button3", "button4"
-            page_title: '"BIRDSEYE"' # The title to display
+            page_title: 'BIRDSEYE' # The title to display
             nav_bar_id: nav_bar_birdseye  # unique per page

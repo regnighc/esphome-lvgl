@@ -24,5 +24,5 @@
           file: ../addon/nav_bar.yaml
           vars:
             active_page: '"place1"'  # Must be one of: "home", "lighting", "button3", "button4"
-            page_title: '"PLACEHOLDER ONE"' # The title to display
+            page_title: 'PLACEHOLDER ONE' # The title to display
             nav_bar_id: nav_bar_placeholder_1  # unique per page
