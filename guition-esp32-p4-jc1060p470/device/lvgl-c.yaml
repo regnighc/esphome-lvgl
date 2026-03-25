@@ -166,6 +166,8 @@ lvgl:
                           - label:
                               id: main_time
                               width: 100%
+                              height: 95
+                              pad_all: 0
                               text_align: center
                               text_font: time_font
                               text_color: 0xFFFFFF
@@ -173,6 +175,8 @@ lvgl:
                           - label:
                               id: main_date
                               width: 100%
+                              height: 25
+                              pad_all: 0
                               text_align: center
                               text_font: date_font
                               text_color: 0xFFFFFF
@@ -282,44 +286,61 @@ lvgl:
                         border_width: 0
                         layout:
                           type: flex
-                          flex_flow: row
-                          flex_align_main: center #space_around
+                          flex_flow: column
+                          flex_align_main: center
                           flex_align_cross: center
-                          #pad_all: 8
+                          pad_row: 0
                         widgets:
-                          # Left Column: Temperature Range
+                          # --- Weather Row (Height matched to Time label) ---
                           - obj:
-                              width: SIZE_CONTENT
-                              height: 100%
-                              scrollable: false
+                              width: 100%
+                              height: 95
                               bg_opa: TRANSP
                               border_width: 0
-                              pad_all: 0
-                              pad_right: 40
                               layout:
                                 type: flex
-                                flex_flow: column
-                                flex_align_cross: start
+                                flex_flow: row
                                 flex_align_main: center
+                                flex_align_cross: center
                               widgets:
+                                # Left Column: Temperature Range
+                                - obj:
+                                    width: SIZE_CONTENT
+                                    height: 100%
+                                    scrollable: false
+                                    bg_opa: TRANSP
+                                    border_width: 0
+                                    pad_all: 0
+                                    pad_right: 40
+                                    layout:
+                                      type: flex
+                                      flex_flow: column
+                                      flex_align_cross: start
+                                      flex_align_main: center
+                                    widgets:
+                                      - label:
+                                          id: high_temp_label
+                                          text_font: date_font
+                                          text_color: 0xFFFFFF
+                                          text: "--°C"
+                                      - label:
+                                          id: low_temp_label
+                                          text_font: date_font
+                                          text_color: 0xAAAAAA
+                                          text: "--°C"
+                                # Right Column: Condition Icon
                                 - label:
-                                    id: high_temp_label
-                                    text_font: date_font
+                                    id: weather_icon_label
+                                    text_font: icon_font
                                     text_color: 0xFFFFFF
-                                    text: "--°C"
+                                    text: "${weather_sunny}"
 
-                                - label:
-                                    id: low_temp_label
-                                    text_font: date_font
-                                    text_color: 0xAAAAAA
-                                    text: "--°C"
-
-                          # Right Column: Condition Icon
-                          - label:
-                              id: weather_icon_label
-                              text_font: icon_font
-                              text_color: 0xFFFFFF
-                              text: "${weather_sunny}"
+                          # --- Invisible Spacer (Height matched to Date label) ---
+                          - obj:
+                              width: 1
+                              height: 25
+                              bg_opa: TRANSP
+                              border_width: 0
 
                     # --- Divider (aligned with col 1) ---
                     - line:
@@ -332,7 +353,7 @@ lvgl:
                     # --- Spacer ---
                     - obj:
                         width: 1
-                        height: 15
+                        height: 8
                         bg_opa: TRANSP
                         border_width: 0
 
@@ -377,7 +398,7 @@ lvgl:
                           # --- Spacer ---
                           - obj:
                               width: 2
-                              height: 15
+                        height: 8
                               bg_opa: TRANSP
                               border_width: 0
                           # --- Mode and Boost Row ---
