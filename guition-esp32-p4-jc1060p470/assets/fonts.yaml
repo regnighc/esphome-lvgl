@@ -22,10 +22,10 @@ font:
     
   - file: "gfonts://Bitcount Grid Single@300"
     id: time_font
-    size: 84 #72
+    size: 92 #72
     bpp: 4
 
   - file: "gfonts://Roboto"
     id: date_font
-    size: 24
+    size: 18
     bpp: 4
