@@ -1438,7 +1438,6 @@ lvgl:
                                     width: 46%
                                     height: 110
                                     radius: 12
-                                    bg_color: 0xFF6B6B6B
                                     border_width: 1
                                     border_color: 0x6B6B6B
                                     bg_color: 0x6B6B6B  # Using the grey color you specified
