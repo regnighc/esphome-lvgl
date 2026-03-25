@@ -193,7 +193,7 @@ lvgl:
                     # --- Spacer ---
                     - obj:
                         width: 1
-                        height: 20
+                        height: 8
                         bg_opa: TRANSP
                         border_width: 0
 
@@ -894,8 +894,10 @@ lvgl:
                   height: 180
                   radius: 90
                   bg_color: 0xFFFF9999
-                  border_width: 1
-                  shadow_width: 2
+                  border_width: 2
+                  border_color: 0xFFFF9999
+                  shadow_width: 5
+                  shadow_opa: 0.6
                   align: CENTER
                   layout:
                     type: flex
