@@ -923,7 +923,7 @@ lvgl:
                   # 3. THE SHADOW (Raised effect)
                   shadow_width: 15
                   shadow_color: 0x000000
-                  shadow_opa: 130        # LVGL uses 0-255 (130 is ~50%)
+                  shadow_opa: 60%        # LVGL uses 0-255 (130 is ~50%)
                   shadow_ofs_y: 8       # Pushes the shadow down to make the button look high
                   shadow_ofs_x: 0
                   
@@ -933,6 +933,7 @@ lvgl:
                     translate_y: 4      # Physically moves the button down 4 pixels
                     shadow_width: 5     # Shrinks the shadow to look "closer" to the background
                     shadow_ofs_y: 2
+                    shadow_opa: 40%  
                     bg_color: 0xCC7A7A  # Darkens slightly when pressed
                   
                   layout:
