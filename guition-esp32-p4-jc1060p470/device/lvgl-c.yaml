@@ -1416,8 +1416,8 @@ lvgl:
                               widgets:
                                 - slider:
                                     id: pcleds_brightness_slider
-                                    range_from: 0
-                                    range_to: 255
+                                    min_value: 0
+                                    max_value: 255
                                     width: 46%
                                     height: 110
                                     bg_color: 0xFF6B6B6B
