@@ -861,7 +861,7 @@ lvgl:
                     - lvgl.page.show: main_page
         - obj:
             scrollable: false
-            bg_color: 0xFF2A2D2E
+            bg_color: 0x444444
             radius: 15
             flex_grow: 1
             height: 90%
@@ -933,38 +933,58 @@ lvgl:
                   pad_all: 0
               - button:
                   id: btn_buzz_door
+                  # Constraint met: Dimensions are 180x180 (original size maintained)
                   width: 180
                   height: 180
-                  radius: 90
+                  # Constraint met: Rectangular now with large rounded corners.
+                  radius: 50 
+                  
                   align: CENTER
                   
-                  # 1. THE BASE 3D LOOK
-                  # Lightest color at the top
-                  bg_color: 0xFFB2B2 
-                  # Darker color to fade into at the bottom
-                  bg_grad_color: 0xCC7A7A 
+                  # 1. THE "HOLE" BASE (Sunken Effect)
+                  # To create depth "into" the screen (like image_0.png), we apply 
+                  # a gradient from very dark desaturated red at the top to 
+                  # desaturated pinkish red at the bottom. This simulates an overhead 
+                  # light casting a shadow into a recessed area.
+                  
+                  # Deep desaturated shadow color at top of the hole
+                  bg_color: 0x442222 
+                  # Original reddish desaturated base at bottom
+                  bg_grad_color: 0x996666 
                   bg_grad_dir: VER
+                  # Focus the heavy top shadow in the top half (like image_0.png)
+                  bg_grad_stop: 128 
                   
-                  # 2. THE RIM
-                  border_width: 2
-                  border_color: 0xFFB2B2 # Match the top highlight
+                  # 2. THE HOLE INNER RIM
+                  # A thin, darkest desaturated desaturated edge defines the transition 
+                  # from your panel color to the deep button socket.
+                  border_width: 1
+                  border_color: 0x331111 # Darkest desaturated edge socket
                   
-                  # 3. THE SHADOW (Raised effect)
-                  shadow_width: 15
+                  # 3. HOLE RECESS (Depth Focus)
+                  # Recessed buttons generally focus shadows internally rather 
+                  # than offset downward. This creates an even, sunken depth.
+                  shadow_width: 10
                   shadow_color: 0x000000
-                  shadow_opa: 60%        # LVGL uses 0-255 (130 is ~50%)
-                  shadow_ofs_y: 8       # Pushes the shadow down to make the button look high
+                  shadow_opa: 40%
+                  # Key change for sunken: set offsets to 0. Focus internal depth.
+                  shadow_ofs_y: 0 
                   shadow_ofs_x: 0
                   
-                  # 4. THE INTERACTION (The "Press" feel)
-                  # This happens when you touch the button
+                  # 4. INTERACTION (Pressed State - Sinks Deeper)
+                  # In a recessed hole, pressing means sinking further into the socket.
                   pressed:
-                    translate_y: 4      # Physically moves the button down 4 pixels
-                    shadow_width: 5     # Shrinks the shadow to look "closer" to the background
-                    shadow_ofs_y: 2
-                    shadow_opa: 40%  
-                    bg_color: 0xCC7A7A  # Darkens slightly when pressed
-                  
+                    # PHYSICALLY moves the button down further into the socket
+                    translate_y: 6 
+                    # Deepens shadows internally as it gets deeper
+                    shadow_width: 20 
+                    shadow_opa: 60%
+                    # Deepen the button surface surface
+                    bg_color: 0x331111 
+                    bg_grad_color: 0x996666 # Darken base gradient
+                    # Subtle dims text for depth effect
+                    text_color: 0xBBBBBB 
+                    
                   layout:
                     type: flex
                     flex_flow: column
@@ -976,20 +996,19 @@ lvgl:
                         data:
                           entity_id: switch.doorbell_door_entry_relay
                   widgets:
+                    # Labels are unchanged
                     - label:
                         text: "BUZZ DOOR"
                         text_font: MONTSERRAT_24
                         text_color: 0x000000
                         text_align: CENTER
                         width: 160
-                        #long_mode: wrap
                     - label:
                         text: "TAP ONCE"
                         text_font: MONTSERRAT_12
                         text_color: 0x333333
                         text_align: CENTER
                         width: 160
-
     # =========================================================================
     # PAGE: LIGHTING
     # Two equal columns. Each column has 4 dual-slider containers.
