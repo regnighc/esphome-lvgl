@@ -60,7 +60,7 @@ online_image:
     format: jpeg
     #placeholder: album_art_placeholder
     resize: 1024x600 #320x240
-    update_interval: 10s
+    update_interval: 5min
     buffer_size: 524288
     on_download_finished:
       then:
