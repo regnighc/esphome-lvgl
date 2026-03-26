@@ -322,6 +322,7 @@ lvgl:
                                 flex_flow: row
                                 flex_align_main: center
                                 flex_align_cross: center
+                                pad_row: 0
                               widgets:
                                 # Left Column: Temperature Range
                                 - obj:
@@ -337,6 +338,7 @@ lvgl:
                                       flex_flow: column
                                       flex_align_cross: start
                                       flex_align_main: center
+                                      pad_row: 0
                                     widgets:
                                       - label:
                                           id: high_temp_label
@@ -355,8 +357,9 @@ lvgl:
                               width: 100%
                               height: 25 # Let the font define the height
                               bg_opa: TRANSP
+                              scrollable: false
                               border_width: 0
-                              pad_right: 55 # Identical gap to ensure vertical alignment
+                              #pad_right: 55 # Identical gap to ensure vertical alignment
                               layout:
                                 type: flex
                                 flex_flow: row
@@ -368,6 +371,11 @@ lvgl:
                                     text_font: date_font
                                     text_color: 0xFFFFFF
                                     text: "--°C"
+                                # --- Spacer ---
+                                - obj:
+                                    width: 10
+                                    bg_opa: TRANSP
+                                    border_width: 0
                                 - label: # New Label for Condition Name
                                     id: weather_icon_name
                                     text_font: date_font # Same size as low temp
