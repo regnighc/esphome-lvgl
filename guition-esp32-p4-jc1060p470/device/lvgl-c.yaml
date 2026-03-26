@@ -375,16 +375,16 @@ lvgl:
                                     text_font: date_font
                                     text_color: 0xFFFFFF
                                     text: "--°C"
-                                # # --- Spacer ---
-                                # - obj:
-                                #     width: 1
-                                #     bg_opa: TRANSP
-                                #     border_width: 0
-                                # - label: # New Label for Condition Name
-                                #     id: weather_icon_name
-                                #     text_font: date_font # Same size as low temp
-                                #     text_color: 0xFFFFFF
-                                #     text: "loading.."
+                                # --- Spacer ---
+                                - obj:
+                                    width: 1
+                                    bg_opa: TRANSP
+                                    border_width: 0
+                                - label: # New Label for Condition Name
+                                    id: weather_icon_name
+                                    text_font: date_font # Same size as low temp
+                                    text_color: 0xFFFFFF
+                                    text: "loading.."
 
 
                     # --- Divider (aligned with col 1) ---
