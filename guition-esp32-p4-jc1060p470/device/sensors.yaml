@@ -200,6 +200,27 @@ text_sensor:
               // Fallback if the API returns something unexpected
               return "${weather_sunny_alert}";
 
+  - platform: homeassistant
+    id: weather_condition_name
+    entity_id: weather.forecast_home # Your specific entity
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: weather_icon_name
+            # 'x' is the state coming from HA (e.g., "sunny")
+            text: !lambda |-
+              if (x == "sunny") return "sunny";
+              if (x == "clear-night") return "clear-night";
+              if (x == "cloudy") return "cloudy";
+              if (x == "partlycloudy") return "partly-cloudy";
+              if (x == "rainy") return "rainy";
+              if (x == "pouring") return "pouring";
+              if (x == "snowy") return "snowy";
+              if (x == "lightning" || x == "lightning-rainy") return "lightning-storm";
+              if (x == "fog") return "foggy";
+              
+              // Fallback if the API returns something unexpected
+              return "loading...";
 
 
 
