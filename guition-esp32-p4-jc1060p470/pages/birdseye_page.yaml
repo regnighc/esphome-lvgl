@@ -10,13 +10,31 @@
 
     widgets:
       - obj:
-          id: birdseye_content_area
-          width: 100%
-          flex_grow: 1
-          scrollable: false
-          bg_opa: TRANSP
+          align: CENTER
+          bg_opa: 0
           border_width: 0
-          pad_all: 8
+          pad_all: 0
+          width: SIZE_CONTENT
+          height: SIZE_CONTENT
+          layout:
+            type: flex
+            flex_flow: column
+            flex_align_main: center
+            flex_align_cross: center
+          widgets:
+            - label:
+                text: "Tap the camera image to return home"
+                #text_font: MONTSERRAT_12
+                text_color: 0xFFFFFF
+                pad_bottom: 6
+
+            - image:
+                id: w_cam_birdseye_full
+                width: SIZE_CONTENT
+                height: SIZE_CONTENT
+                src: online_img_birdseye
+                on_click:
+                  - lvgl.page.show: main_page
 
       - !include
           file: ../addon/nav_bar.yaml
