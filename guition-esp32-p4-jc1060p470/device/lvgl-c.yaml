@@ -294,7 +294,7 @@ lvgl:
                     type: flex
                     flex_flow: column
                     flex_align_cross: center
-                    pad_row: 10
+                    pad_row: 3
                   widgets:
 
                     # --- Weather block (height-matched to clock column header) ---
@@ -373,7 +373,7 @@ lvgl:
                                     text: "--°C"
                                 # --- Spacer ---
                                 - obj:
-                                    width: 2
+                                    width: 1
                                     bg_opa: TRANSP
                                     border_width: 0
                                 - label: # New Label for Condition Name
