@@ -303,7 +303,6 @@ lvgl:
                         height: SIZE_CONTENT
                         scrollable: false
                         bg_opa: TRANSP #bg_color: 0xFF2A2D2E
-                        radius: 15
                         border_width: 0
                         layout:
                           type: flex
@@ -354,30 +353,21 @@ lvgl:
                           # --- ROW 2: Low Temp and Condition Name ---
                           - obj:
                               width: 100%
-                              height: SIZE_CONTENT # Let the font define the height
+                              height: 25 # Let the font define the height
                               bg_opa: TRANSP
+                              border_width: 0
+                              pad_right: 55 # Identical gap to ensure vertical alignment
                               layout:
                                 type: flex
                                 flex_flow: row
                                 flex_align_main: center
                                 flex_align_cross: center
                               widgets:
-                                - obj: # MATCHING Container for Low Temp
-                                    width: SIZE_CONTENT
-                                    height: SIZE_CONTENT
-                                    bg_opa: TRANSP
-                                    pad_right: 40 # Identical gap to ensure vertical alignment
-                                    layout:
-                                      type: flex
-                                      flex_flow: column
-                                      flex_align_cross: start # Aligns Low Temp directly under High Temp
-                                      flex_align_main: center
-                                    widgets:
-                                      - label:
-                                          id: low_temp_label
-                                          text_font: date_font
-                                          text_color: 0xFFFFFF
-                                          text: "--°C"
+                                - label:
+                                    id: low_temp_label
+                                    text_font: date_font
+                                    text_color: 0xFFFFFF
+                                    text: "--°C"
                                 - label: # New Label for Condition Name
                                     id: weather_icon_name
                                     text_font: date_font # Same size as low temp
