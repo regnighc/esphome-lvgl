@@ -365,8 +365,8 @@ lvgl:
                               widgets:
                                 - label:
                                     id: low_temp_label
-                                    width: 80%
-                                    height: 100%
+                                    width: SIZE_CONTENT # Only take up as much room as the text needs
+                                    height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: left
                                     text_font: date_font
