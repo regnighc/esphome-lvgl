@@ -294,7 +294,7 @@ lvgl:
                     type: flex
                     flex_flow: column
                     flex_align_cross: center
-                    pad_row: 3
+                    pad_row: 10
                   widgets:
 
                     # --- Weather block (height-matched to clock column header) ---
@@ -367,20 +367,24 @@ lvgl:
                                 flex_align_cross: center
                               widgets:
                                 - label:
+                                    width: SIZE_CONTENT
+                                    height: 100%
+                                    pad_top: 0
+                                    pad_bottom: 0
                                     id: low_temp_label
                                     text_font: date_font
                                     text_color: 0xFFFFFF
                                     text: "--°C"
-                                # --- Spacer ---
-                                - obj:
-                                    width: 1
-                                    bg_opa: TRANSP
-                                    border_width: 0
-                                - label: # New Label for Condition Name
-                                    id: weather_icon_name
-                                    text_font: date_font # Same size as low temp
-                                    text_color: 0xFFFFFF
-                                    text: "loading.."
+                                # # --- Spacer ---
+                                # - obj:
+                                #     width: 1
+                                #     bg_opa: TRANSP
+                                #     border_width: 0
+                                # - label: # New Label for Condition Name
+                                #     id: weather_icon_name
+                                #     text_font: date_font # Same size as low temp
+                                #     text_color: 0xFFFFFF
+                                #     text: "loading.."
 
 
                     # --- Divider (aligned with col 1) ---
