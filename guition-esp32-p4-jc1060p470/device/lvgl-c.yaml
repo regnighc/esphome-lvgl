@@ -346,7 +346,7 @@ lvgl:
                                     text: "O"
 
                           - obj:
-                              id: weather_row_test     
+                              id: weather_row_test2     
                               width: 100%
                               height: SIZE_CONTENT
                               scrollable: false
