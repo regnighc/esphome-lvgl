@@ -366,7 +366,7 @@ lvgl:
                                     pad_all: 0
                                     text_align: center
                                     text_font: date_font
-                                    text_color: 0xFFFFFF
+                                    text_color: 0xFF2196F3
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
                                     text: "--°C"
                                 - label:
