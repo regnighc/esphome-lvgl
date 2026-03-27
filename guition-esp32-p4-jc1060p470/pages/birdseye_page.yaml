@@ -31,7 +31,8 @@
             - image:
                 id: w_cam_birdseye_full
                 width: SIZE_CONTENT
-                height: SIZE_CONTENT
+                height: 360
+                width: 640
                 src: online_img_birdseye
                 on_click:
                   - lvgl.page.show: main_page
