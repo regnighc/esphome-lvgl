@@ -1045,15 +1045,15 @@ lvgl:
                   shadow_ofs_y: 0 #8
                   shadow_opa: 60%
                   scrollable: false
-                  layout:
-                    type: flex
-                    flex_align_main: center
-                    flex_align_cross: center
+                  # layout:
+                  #   type: flex
+                  #   flex_align_main: center
+                  #   flex_align_cross: center
                   widgets:
                     - button:
                         id: btn_buzz_door
-                        width: 280
-                        height: 80
+                        width: 95%
+                        height: 95%
                         radius: 40 # Rounded bubble look
                         
                         # 1. LIGHTER & SMOOTHER RED GRADIENT
