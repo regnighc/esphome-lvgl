@@ -283,9 +283,6 @@ lvgl:
               # ═══════════════════════════════════════════════════
               # COLUMN 2: Weather → Divider → Slider 3 + 4
               # ═══════════════════════════════════════════════════
-              # ═══════════════════════════════════════════════════
-              # COLUMN 1: Clock + Date → Divider → Slider 1 + 2
-              # ═══════════════════════════════════════════════════
               - obj:
                   width: 325
                   height: 100%
@@ -299,8 +296,6 @@ lvgl:
                     flex_align_cross: center
                     pad_row: 10
                   widgets:
-
-                    # --- Clock block ---
                     - obj:
                         width: 100%
                         height: SIZE_CONTENT
@@ -314,16 +309,30 @@ lvgl:
                           flex_align_cross: center
                           pad_row: 0
                         widgets:
-                          - label:
-                              id: test_1
+                          - obj:
                               width: 100%
-                              height: 95
-                              pad_all: 0
-                              text_align: center
-                              text_font: time_font
-                              text_color: 0xFFFFFF
-                              # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-                              text: !lambda 'return "Weather";'
+                              height: SIZE_CONTENT
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: space_evenly
+                                flex_align_main: center
+                                flex_align_cross: center
+                                pad_column: 1
+                              widgets:
+                                - label:
+                                    id: test_1
+                                    width: 100%
+                                    height: 95
+                                    pad_all: 0
+                                    text_align: center
+                                    text_font: time_font
+                                    text_color: 0xFFFFFF
+                                    # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                                    text: !lambda 'return "100c";'
                           - label:
                               id: test_2
                               width: 100%
@@ -333,7 +342,7 @@ lvgl:
                               text_font: date_font
                               text_color: 0xFFFFFF
                               # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
-                              text: !lambda 'return "Weather 2";'
+                              text: !lambda 'return "50c     Sunny";'
 
               # - obj:
               #     width: 325
