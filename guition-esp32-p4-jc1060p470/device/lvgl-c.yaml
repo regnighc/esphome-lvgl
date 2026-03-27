@@ -344,16 +344,41 @@ lvgl:
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
                                     text: "O"
-                          - label:
-                              id: test_2
+
+                          - obj:
+                              id: weather_row_test     
                               width: 100%
                               height: SIZE_CONTENT
-                              pad_all: 0
-                              text_align: center
-                              text_font: date_font
-                              text_color: 0xFFFFFF
-                              # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
-                              text: "50c     Sunny"
+                              scrollable: false
+                              bg_opa: TRANSP
+                              border_width: 0
+                              layout:
+                                type: flex
+                                flex_flow: row
+                                flex_align_main: center
+                                flex_align_cross: center
+                                pad_column: 0
+                              widgets:
+                                - label:
+                                    id: test_2
+                                    width: 50%
+                                    height: SIZE_CONTENT
+                                    pad_all: 0
+                                    text_align: center
+                                    text_font: date_font
+                                    text_color: 0xFFFFFF
+                                    # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                                    text: "50c"
+                                - label:
+                                    id: test_2
+                                    width: 50%
+                                    height: SIZE_CONTENT
+                                    pad_all: 0
+                                    text_align: center
+                                    text_font: date_font
+                                    text_color: 0xFFFFFF
+                                    # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                                    text: "Sunny"
 
               # - obj:
               #     width: 325
