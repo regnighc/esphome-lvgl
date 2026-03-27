@@ -7,7 +7,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    #update_interval: 1min
+    update_interval: 10min
     buffer_size: 131072
     on_download_finished:
       then:
@@ -32,7 +32,7 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    #update_interval: 1min
+    update_interval: 10min
     buffer_size: 131072
     on_download_finished:
       then:
