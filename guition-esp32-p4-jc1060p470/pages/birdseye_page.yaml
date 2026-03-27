@@ -14,7 +14,7 @@
           bg_opa: 0
           border_width: 0
           pad_all: 0
-          width: SIZE_CONTENT
+          width: 100%
           height: SIZE_CONTENT
           layout:
             type: flex
