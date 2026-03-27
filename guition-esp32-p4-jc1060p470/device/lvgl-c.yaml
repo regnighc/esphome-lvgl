@@ -51,7 +51,7 @@ online_image:
             id: w_cam_1_full
             src: online_img_cam_1
 
-  - url: "http://192.168.2.127:5566/api/birdseye/latest.jpg?height=504"
+  - url: "http://192.168.2.127:5566/api/birdseye/latest.jpg?height=360"
     id: online_img_birdseye
     type: RGB565
     byte_order: little_endian
