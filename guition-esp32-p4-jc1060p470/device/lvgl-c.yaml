@@ -320,7 +320,7 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: row
-                                flex_align_main: space_evenly #center
+                                flex_align_main: center
                                 flex_align_cross: center
                                 pad_column: 0
                               widgets:
@@ -333,7 +333,7 @@ lvgl:
                                     text_font: high_temp_font
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-                                    text: !lambda 'return "100c";'
+                                    text: "100c"
                                 - label:
                                     id: test_1_2
                                     width: 100%
@@ -343,7 +343,7 @@ lvgl:
                                     text_font: high_temp_font
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-                                    text: !lambda 'return "O";'
+                                    text: "O"
                           - label:
                               id: test_2
                               width: 100%
@@ -353,7 +353,7 @@ lvgl:
                               text_font: date_font
                               text_color: 0xFFFFFF
                               # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
-                              text: !lambda 'return "50c     Sunny";'
+                              text: "50c     Sunny"
 
               # - obj:
               #     width: 325
