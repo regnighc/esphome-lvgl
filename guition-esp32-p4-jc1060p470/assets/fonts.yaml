@@ -32,5 +32,5 @@ font:
 
   - file: "gfonts://Roboto"
     id: high_temp_font
-    size: 52
+    size: 92
     bpp: 8
