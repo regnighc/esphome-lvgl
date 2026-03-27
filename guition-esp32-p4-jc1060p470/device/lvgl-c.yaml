@@ -283,6 +283,9 @@ lvgl:
               # ═══════════════════════════════════════════════════
               # COLUMN 2: Weather → Divider → Slider 3 + 4
               # ═══════════════════════════════════════════════════
+              # ═══════════════════════════════════════════════════
+              # COLUMN 1: Clock + Date → Divider → Slider 1 + 2
+              # ═══════════════════════════════════════════════════
               - obj:
                   width: 325
                   height: 100%
@@ -297,12 +300,12 @@ lvgl:
                     pad_row: 10
                   widgets:
 
-                    # --- Weather block (height-matched to clock column header) ---
+                    # --- Clock block ---
                     - obj:
                         width: 100%
-                        height: 95 
+                        height: SIZE_CONTENT
                         scrollable: false
-                        bg_color: 0xe0218a #bg_opa: TRANSP bg_opa: TRANSP #bg_color: 0xFF2A2D2E
+                        bg_opa: TRANSP
                         border_width: 0
                         layout:
                           type: flex
@@ -311,80 +314,129 @@ lvgl:
                           flex_align_cross: center
                           pad_row: 0
                         widgets:
-                          # --- Weather Row (Height matched to Time label) ---
-                          - obj:
+                          - label:
+                              id: test_1
                               width: 100%
-                              height: SIZE_CONTENT
-                              bg_color: 0xffe4e1 #bg_opa: TRANSP
-                              border_width: 0
-                              layout:
-                                type: flex
-                                flex_flow: row
-                                flex_align_main: center
-                                flex_align_cross: center
-                                pad_row: 0
-                              widgets:
-                                # Left Column: Temperature Range
-                                - obj:
-                                    width: SIZE_CONTENT
-                                    height: 100%
-                                    scrollable: false
-                                    bg_opa: TRANSP
-                                    border_width: 0
-                                    pad_all: 0
-                                    pad_right: 40
-                                    layout:
-                                      type: flex
-                                      flex_flow: column
-                                      flex_align_cross: start
-                                      flex_align_main: center
-                                      pad_row: 0
-                                    widgets:
-                                      - label:
-                                          id: high_temp_label
-                                          text_font: high_temp_font
-                                          text_color: 0xFFFFFF
-                                          text: "--°C"
-                                # Right Column: Condition Icon
-                                - label:
-                                    id: weather_icon_label
-                                    text_font: icon_font
-                                    text_color: 0xFFFFFF
-                                    text: "${weather_sunny}"
+                              height: 95
+                              pad_all: 0
+                              text_align: center
+                              text_font: time_font
+                              text_color: 0xFFFFFF
+                              # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                              text: !lambda 'return "Weather";'
+                          - label:
+                              id: test_2
+                              width: 100%
+                              height: 25
+                              pad_all: 0
+                              text_align: center
+                              text_font: date_font
+                              text_color: 0xFFFFFF
+                              # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                              text: !lambda 'return "Weather 2";'
 
-                          # --- ROW 2: Low Temp and Condition Name ---
-                          - obj:
-                              width: 100%
-                              height: 35 #25 # Let the font define the height
-                              bg_color: 0x00ff00 #bg_opa: TRANSP
-                              scrollable: false
-                              border_width: 0
-                              #pad_right: 55 # Identical gap to ensure vertical alignment
-                              layout:
-                                type: flex
-                                flex_flow: row
-                                flex_align_main: center
-                                flex_align_cross: center
-                              widgets:
-                                - label:
-                                    width: SIZE_CONTENT
-                                    height: 100%
-                                    pad_top: 0
-                                    pad_bottom: 0
-                                    id: low_temp_label
-                                    text_font: date_font
-                                    text_color: 0xFFFFFF
-                                    text: "--°C"
-                                # --- Spacer ---
-                                - obj:
-                                    width: 1
-                                    bg_opa: TRANSP
-                                    border_width: 0
-                                - label: # New Label for Condition Name
-                                    id: weather_icon_name
-                                    text_font: date_font # Same size as low temp
-                                    text_color: 0xFFFFFF
-                                    text: "loading.."
+              # - obj:
+              #     width: 325
+              #     height: 100%
+              #     scrollable: false
+              #     bg_opa: TRANSP
+              #     border_width: 0
+              #     pad_all: 0
+              #     layout:
+              #       type: flex
+              #       flex_flow: column
+              #       flex_align_cross: center
+              #       pad_row: 10
+              #     widgets:
+
+              #       # --- Weather block (height-matched to clock column header) ---
+              #       - obj:
+              #           width: 100%
+              #           height: 95 
+              #           scrollable: false
+              #           bg_color: 0xe0218a #bg_opa: TRANSP bg_opa: TRANSP #bg_color: 0xFF2A2D2E
+              #           border_width: 0
+              #           layout:
+              #             type: flex
+              #             flex_flow: column
+              #             flex_align_main: center
+              #             flex_align_cross: center
+              #             pad_row: 0
+              #           widgets:
+              #             # --- Weather Row (Height matched to Time label) ---
+              #             - obj:
+              #                 width: 100%
+              #                 height: SIZE_CONTENT
+              #                 bg_color: 0xffe4e1 #bg_opa: TRANSP
+              #                 border_width: 0
+              #                 layout:
+              #                   type: flex
+              #                   flex_flow: row
+              #                   flex_align_main: center
+              #                   flex_align_cross: center
+              #                   pad_row: 0
+              #                 widgets:
+              #                   # Left Column: Temperature Range
+              #                   - obj:
+              #                       width: SIZE_CONTENT
+              #                       height: 100%
+              #                       scrollable: false
+              #                       bg_opa: TRANSP
+              #                       border_width: 0
+              #                       pad_all: 0
+              #                       pad_right: 40
+              #                       layout:
+              #                         type: flex
+              #                         flex_flow: column
+              #                         flex_align_cross: start
+              #                         flex_align_main: center
+              #                         pad_row: 0
+              #                       widgets:
+              #                         - label:
+              #                             id: high_temp_label
+              #                             text_font: high_temp_font
+              #                             text_color: 0xFFFFFF
+              #                             text: "--°C"
+              #                   # Right Column: Condition Icon
+              #                   - label:
+              #                       id: weather_icon_label
+              #                       text_font: icon_font
+              #                       text_color: 0xFFFFFF
+              #                       text: "${weather_sunny}"
+
+              #             # --- ROW 2: Low Temp and Condition Name ---
+              #             - obj:
+              #                 width: 100%
+              #                 height: 35 #25 # Let the font define the height
+              #                 bg_color: 0x00ff00 #bg_opa: TRANSP
+              #                 scrollable: false
+              #                 border_width: 0
+              #                 #pad_right: 55 # Identical gap to ensure vertical alignment
+              #                 layout:
+              #                   type: flex
+              #                   flex_flow: row
+              #                   flex_align_main: center
+              #                   flex_align_cross: center
+              #                 widgets:
+              #                   - label:
+              #                       width: SIZE_CONTENT
+              #                       height: 100%
+              #                       pad_top: 0
+              #                       pad_bottom: 0
+              #                       id: low_temp_label
+              #                       text_font: date_font
+              #                       text_color: 0xFFFFFF
+              #                       text: "--°C"
+              #                   # --- Spacer ---
+              #                   - obj:
+              #                       width: 1
+              #                       bg_opa: TRANSP
+              #                       border_width: 0
+              #                   - label: # New Label for Condition Name
+              #                       id: weather_icon_name
+              #                       text_font: date_font # Same size as low temp
+              #                       text_color: 0xFFFFFF
+              #                       text: "loading.."
 
 
                     # --- Divider (aligned with col 1) ---
