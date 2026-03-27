@@ -84,25 +84,25 @@ sensor:
   # Sensors that update the corresponding labels on the display with the high and low temperature
   # forecast from Home Assistant.
   ######################################################################################################
-  - platform: homeassistant
-    id: high_temp_ha
-    entity_id: sensor.weather_forecast_day_0_high
-    on_value:
-      - lvgl.label.update:
-          id: high_temp_label
-          text: !lambda |-
-            float v = x;
-            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+  # - platform: homeassistant
+  #   id: high_temp_ha
+  #   entity_id: sensor.weather_forecast_day_0_high
+  #   on_value:
+  #     - lvgl.label.update:
+  #         id: high_temp_label
+  #         text: !lambda |-
+  #           float v = x;
+  #           return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
 
-  - platform: homeassistant
-    id: low_temp_ha
-    entity_id: sensor.weather_forecast_day_0_low
-    on_value:
-      - lvgl.label.update:
-          id: low_temp_label
-          text: !lambda |-
-            float v = x;
-            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+  # - platform: homeassistant
+  #   id: low_temp_ha
+  #   entity_id: sensor.weather_forecast_day_0_low
+  #   on_value:
+  #     - lvgl.label.update:
+  #         id: low_temp_label
+  #         text: !lambda |-
+  #           float v = x;
+  #           return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
 
   ######################################################################################################
   # Climate Control Target and Current Temperature
@@ -178,49 +178,49 @@ text_sensor:
   # Weather Condition
   # Updates the weather icon label on the display based on the current weather condition from Home Assistant
   ############################################################################################################
-  - platform: homeassistant
-    id: weather_condition
-    entity_id: weather.forecast_home # Your specific entity
-    on_value:
-      then:
-        - lvgl.label.update:
-            id: weather_icon_label
-            # 'x' is the state coming from HA (e.g., "sunny")
-            text: !lambda |-
-              if (x == "sunny") return "${weather_sunny}";
-              if (x == "clear-night") return "${weather_night}";
-              if (x == "cloudy") return "${weather_partly_cloudy}";
-              if (x == "partlycloudy") return "${weather_partly_cloudy}";
-              if (x == "rainy") return "${weather_rainy}";
-              if (x == "pouring") return "${weather_pouring}";
-              if (x == "snowy") return "${weather_snowy}";
-              if (x == "lightning" || x == "lightning-rainy") return "${weather_partly_lightning}";
-              if (x == "fog") return "${weather_windy_variant}"; // Using windy-variant as a proxy for fog
+  # - platform: homeassistant
+  #   id: weather_condition
+  #   entity_id: weather.forecast_home # Your specific entity
+  #   on_value:
+  #     then:
+  #       - lvgl.label.update:
+  #           id: weather_icon_label
+  #           # 'x' is the state coming from HA (e.g., "sunny")
+  #           text: !lambda |-
+  #             if (x == "sunny") return "${weather_sunny}";
+  #             if (x == "clear-night") return "${weather_night}";
+  #             if (x == "cloudy") return "${weather_partly_cloudy}";
+  #             if (x == "partlycloudy") return "${weather_partly_cloudy}";
+  #             if (x == "rainy") return "${weather_rainy}";
+  #             if (x == "pouring") return "${weather_pouring}";
+  #             if (x == "snowy") return "${weather_snowy}";
+  #             if (x == "lightning" || x == "lightning-rainy") return "${weather_partly_lightning}";
+  #             if (x == "fog") return "${weather_windy_variant}"; // Using windy-variant as a proxy for fog
               
-              // Fallback if the API returns something unexpected
-              return "${weather_sunny_alert}";
+  #             // Fallback if the API returns something unexpected
+  #             return "${weather_sunny_alert}";
 
-  - platform: homeassistant
-    id: weather_condition_name
-    entity_id: weather.forecast_home # Your specific entity
-    on_value:
-      then:
-        - lvgl.label.update:
-            id: weather_icon_name
-            # 'x' is the state coming from HA (e.g., "sunny")
-            text: !lambda |-
-              if (x == "sunny") return "sunny";
-              if (x == "clear-night") return "clear-night";
-              if (x == "cloudy") return "cloudy";
-              if (x == "partlycloudy") return "partly-cloudy";
-              if (x == "rainy") return "rainy";
-              if (x == "pouring") return "pouring";
-              if (x == "snowy") return "snowy";
-              if (x == "lightning" || x == "lightning-rainy") return "lightning-storm";
-              if (x == "fog") return "foggy";
+  # - platform: homeassistant
+  #   id: weather_condition_name
+  #   entity_id: weather.forecast_home # Your specific entity
+  #   on_value:
+  #     then:
+  #       - lvgl.label.update:
+  #           id: weather_icon_name
+  #           # 'x' is the state coming from HA (e.g., "sunny")
+  #           text: !lambda |-
+  #             if (x == "sunny") return "sunny";
+  #             if (x == "clear-night") return "clear-night";
+  #             if (x == "cloudy") return "cloudy";
+  #             if (x == "partlycloudy") return "partly-cloudy";
+  #             if (x == "rainy") return "rainy";
+  #             if (x == "pouring") return "pouring";
+  #             if (x == "snowy") return "snowy";
+  #             if (x == "lightning" || x == "lightning-rainy") return "lightning-storm";
+  #             if (x == "fog") return "foggy";
               
-              // Fallback if the API returns something unexpected
-              return "loading...";
+  #             // Fallback if the API returns something unexpected
+  #             return "loading...";
 
 
 
