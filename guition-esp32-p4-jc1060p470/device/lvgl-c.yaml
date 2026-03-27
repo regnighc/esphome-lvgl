@@ -314,6 +314,7 @@ lvgl:
                               scrollable: false
                               bg_opa: TRANSP
                               border_width: 0
+                              pad_all: 0
                               layout:
                                 type: flex
                                 flex_flow: row
@@ -331,12 +332,14 @@ lvgl:
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
                                     text: "--°C"
+                                    align: CENTER # <--- ADDITIONAL: Forces alignment relative to parent
                                 - label:
                                     id: weather_row_1_label_2
                                     width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
+                                    align: CENTER # <--- ADDITIONAL: Forces alignment relative to parent
                                     text_font: icon_font
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
@@ -1033,6 +1036,7 @@ lvgl:
                   height: 90 # Slightly taller than the button
                   radius: 60  # High radius for the "bubble" look
                   bg_color: 0x444444 # Matches your background
+                  pad_all: 0  # <--- CRITICAL: Removes hidden default padding
                   border_width: 0
                   border_color: 0x555555 # Subtle light edge on top/left
                   shadow_width: 20
@@ -1040,6 +1044,7 @@ lvgl:
                   shadow_ofs_x: 0 #8
                   shadow_ofs_y: 0 #8
                   shadow_opa: 60%
+                  scrollable: false
                   layout:
                     type: flex
                     flex_align_main: center
@@ -1068,7 +1073,7 @@ lvgl:
                         shadow_color: 0x000000
                         shadow_opa: 30%
                         shadow_ofs_y: 0 # Central shadow for "recessed" feel
-                        
+                        align: CENTER # <--- ADDITIONAL: Forces alignment relative to parent
                         # 3. FIX LABEL CENTERING
                         layout:
                           type: flex
