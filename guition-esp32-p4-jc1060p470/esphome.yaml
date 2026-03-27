@@ -12,8 +12,10 @@ wifi:
     - logger.log: "WiFi connected, refreshing Frigate snapshots"
     - component.update: online_img_cam_1
     - component.update: online_img_cam_2
+    - component.update: online_img_birdseye
+  power_save_mode: none # Ensures the radio is always ready for big image data
 
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
+# Enable fallback hotspot (captive portal) in case wifi connection fails
 ap:
   ssid: "${device_wifi_name} Hotspot"
   password: !secret wifi_ap_password
