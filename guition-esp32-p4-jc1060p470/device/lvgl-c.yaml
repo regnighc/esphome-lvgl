@@ -1058,7 +1058,7 @@ lvgl:
                         bg_grad_dir: VER
                         # Removed bg_grad_stop to allow the full height for blending
 
-                        dither: err_diff # Dithering can add unwanted noise to gradients, especially on low-res displays
+                        bg_dither_mode: err_diff # Dithering can add unwanted noise to gradients, especially on low-res displays
                         
                         # 2. THE "SEATED" LOOK (Inner Shadow)
                         # This makes the button look like it's inside the bump
