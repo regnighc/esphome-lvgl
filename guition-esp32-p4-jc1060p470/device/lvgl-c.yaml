@@ -312,7 +312,7 @@ lvgl:
                         widgets:
                           - obj:
                               id: weather_row_test     
-                              width: 90%
+                              width: 100%
                               height: SIZE_CONTENT
                               scrollable: false
                               bg_opa: TRANSP
@@ -326,7 +326,7 @@ lvgl:
                               widgets:
                                 - label:
                                     id: test_1
-                                    width: 100%
+                                    width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
@@ -336,7 +336,7 @@ lvgl:
                                     text: "100c"
                                 - label:
                                     id: test_1_2
-                                    width: 100%
+                                    width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
