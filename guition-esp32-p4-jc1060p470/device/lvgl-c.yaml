@@ -370,7 +370,7 @@ lvgl:
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
                                     text: "50c"
                                 - label:
-                                    id: test_2
+                                    id: test_2_2
                                     width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
