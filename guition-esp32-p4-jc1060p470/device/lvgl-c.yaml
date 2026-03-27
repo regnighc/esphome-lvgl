@@ -318,8 +318,7 @@ lvgl:
                               layout:
                                 type: flex
                                 flex_flow: row
-                                flex_align_main: space_evenly
-                                flex_align_main: center
+                                flex_align_main: space_evenly #center
                                 flex_align_cross: center
                                 pad_column: 1
                               widgets:
