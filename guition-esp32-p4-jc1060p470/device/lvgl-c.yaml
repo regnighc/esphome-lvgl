@@ -7,9 +7,8 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    resize: 640x480 #320x240
-    update_interval: 5min
-    buffer_size: 524288
+    update_interval: 1min
+    buffer_size: 131072
     on_download_finished:
       then:
         - lvgl.image.update:
@@ -33,9 +32,8 @@ online_image:
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    resize: 640x480 #320x240
-    update_interval: 5min
-    buffer_size: 524288
+    update_interval: 1min
+    buffer_size: 131072
     on_download_finished:
       then:
         - lvgl.image.update:
@@ -53,15 +51,14 @@ online_image:
             id: w_cam_1_full
             src: online_img_cam_1
 
-  - url: "http://192.168.2.127:5566/api/birdseye/latest.jpg?h=600"
+  - url: "http://192.168.2.127:5566/api/birdseye/latest.jpg?height=497"
     id: online_img_birdseye
     type: RGB565
     byte_order: little_endian
     format: jpeg
     #placeholder: album_art_placeholder
-    resize: 1024x600 #320x240
-    update_interval: 5min
-    buffer_size: 524288
+    update_interval: 10s
+    buffer_size: 131072
     on_download_finished:
       then:
         - lvgl.image.update:
@@ -1025,89 +1022,155 @@ lvgl:
                   text_color: 0xFFFFFFFF
                   width: 100%
               - obj:
-                  height: 20
+                  height: 40
                   width: 100%
                   bg_opa: TRANSP
                   border_width: 0
                   pad_all: 0
-              - button:
-                  id: btn_buzz_door
-                  # Constraint met: Dimensions are 180x180 (original size maintained)
-                  width: 180
-                  height: 180
-                  # Constraint met: Rectangular now with large rounded corners.
-                  radius: 50 
-                  
-                  align: CENTER
-                  
-                  # 1. THE "HOLE" BASE (Sunken Effect)
-                  # To create depth "into" the screen (like image_0.png), we apply 
-                  # a gradient from very dark desaturated red at the top to 
-                  # desaturated pinkish red at the bottom. This simulates an overhead 
-                  # light casting a shadow into a recessed area.
-                  
-                  # Deep desaturated shadow color at top of the hole
-                  bg_color: 0x442222 
-                  # Original reddish desaturated base at bottom
-                  bg_grad_color: 0x996666 
-                  bg_grad_dir: VER
-                  # Focus the heavy top shadow in the top half (like image_0.png)
-                  bg_grad_stop: 128 
-                  
-                  # 2. THE HOLE INNER RIM
-                  # A thin, darkest desaturated desaturated edge defines the transition 
-                  # from your panel color to the deep button socket.
-                  border_width: 1
-                  border_color: 0x331111 # Darkest desaturated edge socket
-                  
-                  # 3. HOLE RECESS (Depth Focus)
-                  # Recessed buttons generally focus shadows internally rather 
-                  # than offset downward. This creates an even, sunken depth.
-                  shadow_width: 10
-                  shadow_color: 0x000000
-                  shadow_opa: 40%
-                  # Key change for sunken: set offsets to 0. Focus internal depth.
-                  shadow_ofs_y: 0 
-                  shadow_ofs_x: 0
-                  
-                  # 4. INTERACTION (Pressed State - Sinks Deeper)
-                  # In a recessed hole, pressing means sinking further into the socket.
-                  pressed:
-                    # PHYSICALLY moves the button down further into the socket
-                    translate_y: 6 
-                    # Deepens shadows internally as it gets deeper
-                    shadow_width: 20 
-                    shadow_opa: 60%
-                    # Deepen the button surface surface
-                    bg_color: 0x331111 
-                    bg_grad_color: 0x996666 # Darken base gradient
-                    # Subtle dims text for depth effect
-                    text_color: 0xBBBBBB 
-                    
+
+              - obj: # This is the "Raised Bump" container
+                  width: 320  # Slightly wider than the button
+                  height: 120 # Slightly taller than the button
+                  radius: 60  # High radius for the "bubble" look
+                  bg_color: 0x444444 # Matches your background
+                  border_width: 2
+                  border_color: 0x555555 # Subtle light edge on top/left
+                  shadow_width: 20
+                  shadow_color: 0x222222 # Dark shadow pushes the bump "up"
+                  shadow_ofs_x: 8
+                  shadow_ofs_y: 8
+                  shadow_opa: 50%
                   layout:
                     type: flex
-                    flex_flow: column
                     flex_align_main: center
                     flex_align_cross: center
-                  on_click:
-                    - homeassistant.service:
-                        service: switch.turn_on
-                        data:
-                          entity_id: switch.doorbell_door_entry_relay
                   widgets:
-                    # Labels are unchanged
-                    - label:
-                        text: "BUZZ DOOR"
-                        text_font: MONTSERRAT_24
-                        text_color: 0x000000
-                        text_align: CENTER
-                        width: 160
-                    - label:
-                        text: "TAP ONCE"
-                        text_font: MONTSERRAT_12
-                        text_color: 0x333333
-                        text_align: CENTER
-                        width: 160
+                    - button:
+                        id: btn_buzz_door
+                        width: 280
+                        height: 80
+                        radius: 40 # Rounded bubble look
+                        
+                        # 1. LIGHTER & SMOOTHER RED GRADIENT
+                        # Using a vibrant red to a deep rich red (prevents banding)
+                        bg_color: 0xFF5555 
+                        bg_grad_color: 0xCC0000 
+                        bg_grad_dir: VER
+                        # Removed bg_grad_stop to allow the full height for blending
+                        
+                        # 2. THE "SEATED" LOOK (Inner Shadow)
+                        # This makes the button look like it's inside the bump
+                        border_width: 1
+                        border_color: 0x880000 # Dark rim to define the button edge
+                        shadow_width: 5
+                        shadow_color: 0x000000
+                        shadow_opa: 30%
+                        shadow_ofs_y: 0 # Central shadow for "recessed" feel
+                        
+                        # 3. FIX LABEL CENTERING
+                        layout:
+                          type: flex
+                          flex_flow: column
+                          flex_align_main: center
+                          flex_align_cross: center
+                        
+                        on_click:
+                          - homeassistant.service:
+                              service: switch.turn_on
+                              data:
+                                entity_id: switch.doorbell_door_entry_relay
+                        
+                        widgets:
+                          - label:
+                              text: "BUZZ DOOR"
+                              text_font: MONTSERRAT_24
+                              text_color: 0xFFFFFF # White looks cleaner on vibrant red
+                              text_align: CENTER   # Crucial for centering
+                              width: 100%          # Stretch to button width
+                          - label:
+                              text: "TAP ONCE"
+                              text_font: MONTSERRAT_12
+                              text_color: 0xFFFFFF
+                              text_opa: 70%        # Subtle transparency instead of grey
+                              text_align: CENTER   # Crucial for centering
+                              width: 100%
+              # - button:
+              #     id: btn_buzz_door
+              #     # Constraint met: Dimensions are 180x180 (original size maintained)
+              #     width: 300
+              #     height: 100
+              #     # Constraint met: Rectangular now with large rounded corners.
+              #     radius: 50 
+              #     align: CENTER
+                  
+              #     # 1. THE "HOLE" BASE (Sunken Effect)
+              #     # To create depth "into" the screen (like image_0.png), we apply 
+              #     # a gradient from very dark desaturated red at the top to 
+              #     # desaturated pinkish red at the bottom. This simulates an overhead 
+              #     # light casting a shadow into a recessed area.
+                  
+              #     # Deep desaturated shadow color at top of the hole
+              #     bg_color: 0x442222 
+              #     # Original reddish desaturated base at bottom
+              #     bg_grad_color: 0x996666 
+              #     bg_grad_dir: VER
+              #     # Focus the heavy top shadow in the top half (like image_0.png)
+              #     bg_grad_stop: 128 
+                  
+              #     # 2. THE HOLE INNER RIM
+              #     # A thin, darkest desaturated desaturated edge defines the transition 
+              #     # from your panel color to the deep button socket.
+              #     border_width: 1
+              #     border_color: 0x331111 # Darkest desaturated edge socket
+                  
+              #     # 3. HOLE RECESS (Depth Focus)
+              #     # Recessed buttons generally focus shadows internally rather 
+              #     # than offset downward. This creates an even, sunken depth.
+              #     shadow_width: 10
+              #     shadow_color: 0x000000
+              #     shadow_opa: 40%
+              #     # Key change for sunken: set offsets to 0. Focus internal depth.
+              #     shadow_ofs_y: 0 
+              #     shadow_ofs_x: 0
+                  
+              #     # 4. INTERACTION (Pressed State - Sinks Deeper)
+              #     # In a recessed hole, pressing means sinking further into the socket.
+              #     pressed:
+              #       # PHYSICALLY moves the button down further into the socket
+              #       translate_y: 6 
+              #       # Deepens shadows internally as it gets deeper
+              #       shadow_width: 20 
+              #       shadow_opa: 60%
+              #       # Deepen the button surface surface
+              #       bg_color: 0x331111 
+              #       bg_grad_color: 0x996666 # Darken base gradient
+              #       # Subtle dims text for depth effect
+              #       text_color: 0xBBBBBB 
+                    
+              #     layout:
+              #       type: flex
+              #       flex_flow: column
+              #       flex_align_main: center
+              #       flex_align_cross: center
+              #     on_click:
+              #       - homeassistant.service:
+              #           service: switch.turn_on
+              #           data:
+              #             entity_id: switch.doorbell_door_entry_relay
+              #     widgets:
+              #       # Labels are unchanged
+              #       - label:
+              #           text: "BUZZ DOOR"
+              #           text_font: MONTSERRAT_24
+              #           text_color: 0x000000
+              #           text_align: CENTER
+              #           width: 160
+              #       - label:
+              #           text: "TAP ONCE"
+              #           text_font: MONTSERRAT_12
+              #           text_color: 0x333333
+              #           text_align: CENTER
+              #           width: 160
     # =========================================================================
     # PAGE: LIGHTING
     # Two equal columns. Each column has 4 dual-slider containers.
