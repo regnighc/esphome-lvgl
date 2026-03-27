@@ -28,6 +28,14 @@ esphome:
   platformio_options:
     build_flags:
       - -DCONFIG_ESP_TASK_WDT_TIMEOUT_S=15 # Increase to 15 seconds
+    on_boot:
+      - priority: 100
+        then:
+          - component.update: online_img_cam_2
+          - delay: 3s
+          - component.update: online_img_cam_1
+          - delay: 3s
+          - component.update: online_img_birdseye
 
 
 # External components
