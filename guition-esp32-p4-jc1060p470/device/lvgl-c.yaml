@@ -1029,17 +1029,17 @@ lvgl:
                   pad_all: 0
 
               - obj: # This is the "Raised Bump" container
-                  width: 320  # Slightly wider than the button
-                  height: 120 # Slightly taller than the button
+                  width: 290  # Slightly wider than the button
+                  height: 90 # Slightly taller than the button
                   radius: 60  # High radius for the "bubble" look
                   bg_color: 0x444444 # Matches your background
-                  border_width: 2
+                  border_width: 0
                   border_color: 0x555555 # Subtle light edge on top/left
                   shadow_width: 20
                   shadow_color: 0x222222 # Dark shadow pushes the bump "up"
-                  shadow_ofs_x: 8
-                  shadow_ofs_y: 8
-                  shadow_opa: 50%
+                  shadow_ofs_x: 0 #8
+                  shadow_ofs_y: 0 #8
+                  shadow_opa: 60%
                   layout:
                     type: flex
                     flex_align_main: center
@@ -1057,6 +1057,8 @@ lvgl:
                         bg_grad_color: 0xCC0000 
                         bg_grad_dir: VER
                         # Removed bg_grad_stop to allow the full height for blending
+
+                        dither: err_diff # Dithering can add unwanted noise to gradients, especially on low-res displays
                         
                         # 2. THE "SEATED" LOOK (Inner Shadow)
                         # This makes the button look like it's inside the bump
@@ -1091,7 +1093,7 @@ lvgl:
                               text: "TAP ONCE"
                               text_font: MONTSERRAT_12
                               text_color: 0xFFFFFF
-                              text_opa: 70%        # Subtle transparency instead of grey
+                              text_opa: 90%        # Subtle transparency instead of grey
                               text_align: CENTER   # Crucial for centering
                               width: 100%
               # - button:
