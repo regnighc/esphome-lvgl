@@ -299,7 +299,7 @@ lvgl:
                   widgets:
                     - obj:
                         width: 100%
-                        height: 120 # Matches total height of Clock (95) + Date (25)
+                        height: 130 # Matches total height of Clock (95) + Date (25)
                         scrollable: false
                         bg_opa: TRANSP
                         border_width: 0
@@ -312,7 +312,7 @@ lvgl:
                         widgets:
                           - obj:
                               id: weather_row_test     
-                              width: 100%
+                              width: 90%
                               height: SIZE_CONTENT
                               scrollable: false
                               bg_opa: TRANSP
