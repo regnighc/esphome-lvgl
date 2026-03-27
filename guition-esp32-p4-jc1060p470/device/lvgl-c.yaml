@@ -299,7 +299,7 @@ lvgl:
                   widgets:
                     - obj:
                         width: 100%
-                        height: 146 # Matches total height of Clock (95) + Date (25)
+                        height: 146
                         scrollable: false
                         bg_opa: TRANSP
                         border_width: 0
@@ -311,7 +311,7 @@ lvgl:
                           pad_row: 0
                         widgets:
                           - obj:
-                              id: weather_row_test     
+                              id: weather_row_1     
                               width: 100%
                               height: SIZE_CONTENT
                               scrollable: false
@@ -325,7 +325,7 @@ lvgl:
                                 pad_column: 0
                               widgets:
                                 - label:
-                                    id: test_1
+                                    id: weather_row_1_label_1
                                     width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
@@ -333,20 +333,20 @@ lvgl:
                                     text_font: high_temp_font
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-                                    text: "100c"
+                                    text: "--°C"
                                 - label:
-                                    id: test_1_2
+                                    id: weather_row_1_label_2
                                     width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
-                                    text_font: high_temp_font
+                                    text_font: icon_font
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-                                    text: "O"
+                                    text: "${weather_sunny}"
 
                           - obj:
-                              id: weather_row_test2     
+                              id: weather_row_2    
                               width: 100%
                               height: SIZE_CONTENT
                               scrollable: false
@@ -360,17 +360,17 @@ lvgl:
                                 pad_column: 0
                               widgets:
                                 - label:
-                                    id: test_2
+                                    id: weather_row_2_label_1
                                     width: 50%
-                                    height: SIZE_CONTENT
+                                    height: 80%
                                     pad_all: 0
                                     text_align: center
                                     text_font: date_font
                                     text_color: 0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
-                                    text: "50c"
+                                    text: "--°C"
                                 - label:
-                                    id: test_2_2
+                                    id: weather_row_2_label_2
                                     width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
