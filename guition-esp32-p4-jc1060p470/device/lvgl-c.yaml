@@ -189,7 +189,8 @@ lvgl:
                               text_align: center
                               text_font: time_font
                               text_color: 0xFFFFFF
-                              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                              #text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+                              text: "--:--"
                           - label:
                               id: main_date
                               width: 100%
@@ -198,7 +199,8 @@ lvgl:
                               text_align: center
                               text_font: date_font
                               text_color: 0xFFFFFF
-                              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                              #text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                              text: "Loading date..."
 
                     # --- Divider ---
                     - line:

@@ -7,10 +7,21 @@ time:
       - 0.pool.ntp.org
       - 1.pool.ntp.org
       - 2.pool.ntp.org
+    on_time_sync:
+      then:
+        - lvgl.label.update:
+            id: main_time
+            text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+        - lvgl.label.update:
+            id: main_date
+            text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%A, %d %B").c_str() : "";'
     on_time:
       - minutes: '*'
         seconds: 0
         then:
-          # Re-render the LVGL clock label every minute
-          - lvgl.widget.refresh: main_time
-          - lvgl.widget.refresh: main_date
+          - lvgl.label.update:
+              id: main_time
+              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
+          - lvgl.label.update:
+              id: main_date
+              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%A, %d %B").c_str() : "";'
