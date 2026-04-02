@@ -16,6 +16,12 @@ esp32:
       CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15" # This is the "proper" way for IDF
       # Add this one line for the screenshot feature (enables LV_USE_SNAPSHOT in lv_conf.h)
       CONFIG_LV_USE_SNAPSHOT: "y"
+      # recommended for the PNG screenshot feature, but not required (enables LV_USE_PNG in lv_conf.h)
+      CONFIG_SPIRAM: "y"
+      CONFIG_SPIRAM_BOOT_INIT: "y"
+      CONFIG_SPIRAM_USE_MALLOC: "y"
+      CONFIG_SPIRAM_MEMTEST: "y"
+      CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL: "16384"
 
 
 # Video memory
