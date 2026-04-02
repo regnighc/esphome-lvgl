@@ -47,7 +47,7 @@ external_components:
   - source: github://regnighc/esphome-onlineimage-grayscale-fix@main  #github://jtenniswood/esphome-onlineimage-grayscale-fix@main
     components: [online_image]
     refresh: 7d
-  - source: github.com/regnighc/esphome-lvgl-screenshot
+  - source: github://regnighc/esphome-lvgl-screenshot
     components: [ lvgl_screenshot ]
     refresh: 7d
 
