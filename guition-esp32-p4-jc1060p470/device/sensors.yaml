@@ -293,3 +293,7 @@ text_sensor:
             id: lbl_hvac_action
             text: !lambda return x.c_str();
 
+  - platform: template
+    name: "Current Time"
+    id: web_time
+    icon: "mdi:clock-outline"

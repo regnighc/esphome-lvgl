@@ -15,6 +15,14 @@ time:
         - lvgl.label.update:
             id: main_date
             text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%A, %d %B").c_str() : "";'
+        # This updates your LVGL screen (existing code)
+        - lvgl.label.update:
+            id: main_time
+            text: !lambda 'return id(sntp_time).now().strftime("%H:%M");'        
+        # This updates the web browser API
+        - text_sensor.template.publish:
+            id: web_time
+            state: !lambda 'return id(sntp_time).now().strftime("%H:%M");'
     on_time:
       - minutes: '*'
         seconds: 0
@@ -25,3 +33,11 @@ time:
           - lvgl.label.update:
               id: main_date
               text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%A, %d %B").c_str() : "";'
+          # This updates your LVGL screen (existing code)
+          - lvgl.label.update:
+              id: main_time
+              text: !lambda 'return id(sntp_time).now().strftime("%H:%M");'        
+          # This updates the web browser API
+          - text_sensor.template.publish:
+              id: web_time
+              state: !lambda 'return id(sntp_time).now().strftime("%H:%M");'
