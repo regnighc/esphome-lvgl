@@ -21,6 +21,9 @@ psram:
   mode: hex
   speed: 200MHz
 
+lvgl_screenshot:
+  id: my_png_tool
+
 # Esphome
 esphome:
   name: ${name}
@@ -43,6 +46,9 @@ external_components:
     refresh: 7d
   - source: github://regnighc/esphome-onlineimage-grayscale-fix@main  #github://jtenniswood/esphome-onlineimage-grayscale-fix@main
     components: [online_image]
+    refresh: 7d
+  - source: github.com/regnighc/esphome-lvgl-screenshot
+    components: [ lvgl_screenshot ]
     refresh: 7d
 
 http_request:

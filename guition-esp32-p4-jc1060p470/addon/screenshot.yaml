@@ -1,0 +1,10 @@
+button:
+  - platform: template
+    name: "Take PNG Screenshot"
+    on_press:
+      lambda: |-
+        // Creates a name like "snap_2024-05-20_14-30-05.png"
+        char str[64];
+        time_t now = id(my_time).now().timestamp;
+        strftime(str, sizeof(str), "snap_%Y-%m-%d_%H-%M-%S.png", localtime(&now));
+        id(my_png_tool).save_png(str);
