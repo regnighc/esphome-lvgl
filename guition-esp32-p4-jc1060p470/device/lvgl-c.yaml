@@ -110,8 +110,7 @@ lvgl:
     - my_display
   touchscreens:
     - my_touchscreen
-  defines:
-      LV_USE_SNAPSHOT: "1"
+
   pages:
     # =============================================================
     # ROOT PAGE: MAIN DASHBOARD

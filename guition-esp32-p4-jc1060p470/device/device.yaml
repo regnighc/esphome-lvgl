@@ -49,7 +49,7 @@ external_components:
     refresh: 7d
   - source: github://regnighc/esphome-lvgl-screenshot@main
     components: [ lvgl_screenshot ]
-    refresh: 1d
+    refresh: 1min
 
 http_request:
   useragent: esphome/device
