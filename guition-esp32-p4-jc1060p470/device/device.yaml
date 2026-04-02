@@ -10,10 +10,10 @@ esp32:
       enable_idf_experimental_features: true
     sdkconfig_options:
       # Route LVGL heap entirely into PSRAM
-      CONFIG_LV_MEM_CUSTOM: "y"
-      CONFIG_LV_MEM_ADR: "0x48000000"
+      #CONFIG_LV_MEM_CUSTOM: "y"
+      #CONFIG_LV_MEM_ADR: "0x48000000"
       CONFIG_SPIRAM_XIP_FROM_PSRAM: "y"
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "15" # This is the "proper" way for IDF
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "30" # This is the "proper" way for IDF
       # Add this one line for the screenshot feature (enables LV_USE_SNAPSHOT in lv_conf.h)
       CONFIG_LV_USE_SNAPSHOT: "y"
       # recommended for the PNG screenshot feature, but not required (enables LV_USE_PNG in lv_conf.h)

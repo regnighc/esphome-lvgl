@@ -171,7 +171,7 @@ binary_sensor:
       then:
         - lvgl.widget.update:
             id: btn_boost
-            bg_color: 0xFF6B6B6B
+            bg_color: 0xFF3F51A6 #0xFF6B6B6B
 
 text_sensor:
   ############################################################################################################

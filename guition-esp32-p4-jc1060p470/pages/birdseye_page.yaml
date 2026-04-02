@@ -2,7 +2,7 @@
     scrollable: false
     width: 100%
     height: 100%
-    bg_color: 0xFF181818
+    bg_color: 0xFF0F1015
     pad_all: 0
     layout:
       type: flex
