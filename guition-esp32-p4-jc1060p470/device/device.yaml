@@ -276,76 +276,76 @@ time:
   - platform: homeassistant
     id: ha_time
     
-script:
-  - id: change_page_to
-    parameters:
-      target_page: int
-    then:
-      - lambda: |-
-          int pages_count = 1;
-          int target = target_page;
-          while (target < 0) target += pages_count;
-          target %= pages_count;
+# script:
+#   - id: change_page_to
+#     parameters:
+#       target_page: int
+#     then:
+#       - lambda: |-
+#           int pages_count = 1;
+#           int target = target_page;
+#           while (target < 0) target += pages_count;
+#           target %= pages_count;
 
-          // Debounce: Ignore page changes within 500ms of last change
-          // (adjusted for LCD display update time)
-          uint32_t now = millis();
-          if (now - id(last_page_switch_time) < 500) {
-            ESP_LOGD("display", "Page change ignored (debounce), last switch was %d ms ago", now - id(last_page_switch_time));
-            return;
-          }
+#           // Debounce: Ignore page changes within 500ms of last change
+#           // (adjusted for LCD display update time)
+#           uint32_t now = millis();
+#           if (now - id(last_page_switch_time) < 500) {
+#             ESP_LOGD("display", "Page change ignored (debounce), last switch was %d ms ago", now - id(last_page_switch_time));
+#             return;
+#           }
 
-          if (id(display_page) != target) {
-            // Set debounce time BEFORE display update (update takes ~1.6s)
-            id(last_page_switch_time) = now;
-            id(display_page) = target;
-            id(my_display).update();
-            ESP_LOGI("display", "Switched to page %d", target);
-            // Restart refresh logic
-            if (id(manage_run_and_sleep).is_running()) id(manage_run_and_sleep).stop();
-            id(manage_run_and_sleep).execute();
-          }
+#           if (id(display_page) != target) {
+#             // Set debounce time BEFORE display update (update takes ~1.6s)
+#             id(last_page_switch_time) = now;
+#             id(display_page) = target;
+#             id(my_display).update();
+#             ESP_LOGI("display", "Switched to page %d", target);
+#             // Restart refresh logic
+#             if (id(manage_run_and_sleep).is_running()) id(manage_run_and_sleep).stop();
+#             id(manage_run_and_sleep).execute();
+#           }
 
-  - id: manage_run_and_sleep
-    mode: restart
-    then:
-      - logger.log: "Waiting for sync..."
-      - wait_until:
-          condition:
-            lambda: 'return id(sntp_time).now().is_valid() && api_is_connected();'
-          timeout: 120s
-      - delay: 5s
-      - lambda: |-
-          int p = id(display_page);
-          int interval = id(page_refresh_default_s);
-          bool is_sleep_time = false;
-          auto time = id(sntp_time).now();
-          if (time.is_valid()) {
-             int hour = time.hour;
-             int minute = time.minute;
-             int curr_min = hour * 60 + minute;
-             int start = 0;
-             int end = 5;
-             if (start < end) {
-                 if (hour >= start && hour < end) is_sleep_time = true;
-             } else if (start > end) {
-                 if (hour >= start || hour < end) is_sleep_time = true;
-             }
+#   - id: manage_run_and_sleep
+#     mode: restart
+#     then:
+#       - logger.log: "Waiting for sync..."
+#       - wait_until:
+#           condition:
+#             lambda: 'return id(sntp_time).now().is_valid() && api_is_connected();'
+#           timeout: 120s
+#       - delay: 5s
+#       - lambda: |-
+#           int p = id(display_page);
+#           int interval = id(page_refresh_default_s);
+#           bool is_sleep_time = false;
+#           auto time = id(sntp_time).now();
+#           if (time.is_valid()) {
+#              int hour = time.hour;
+#              int minute = time.minute;
+#              int curr_min = hour * 60 + minute;
+#              int start = 0;
+#              int end = 5;
+#              if (start < end) {
+#                  if (hour >= start && hour < end) is_sleep_time = true;
+#              } else if (start > end) {
+#                  if (hour >= start || hour < end) is_sleep_time = true;
+#              }
 
-             // Visibility Logic: Find best page for current time
-             int best_page = -1;
-             if (best_page == -1) best_page = 0;
+#              // Visibility Logic: Find best page for current time
+#              int best_page = -1;
+#              if (best_page == -1) best_page = 0;
 
-             // If current page is invisible OR another should be shown, switch
-             if (best_page != -1 && best_page != p) {
-                 ESP_LOGI("display", "Auto-switching to scheduled page %d", best_page);
-                 id(change_page_to).execute(best_page);
-                 return;
-             }
-          }
-          if (!is_sleep_time) {
-          }
-          id(page_refresh_current_s) = interval;
+#              // If current page is invisible OR another should be shown, switch
+#              if (best_page != -1 && best_page != p) {
+#                  ESP_LOGI("display", "Auto-switching to scheduled page %d", best_page);
+#                  id(change_page_to).execute(best_page);
+#                  return;
+#              }
+#           }
+#           if (!is_sleep_time) {
+#           }
+#           id(page_refresh_current_s) = interval;
       # - component.update: my_display
       # - delay: !lambda 'return id(page_refresh_current_s) * 1000;'
       # - script.execute: manage_run_and_sleep
