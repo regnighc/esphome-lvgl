@@ -2,8 +2,8 @@
 time:
   - platform: sntp
     id: sntp_time
-    #timezone: "GMT0BST,M3.5.0/1,M10.5.0"   # bad?
-    timezone: "GMT0BST-1,M3.5.0/1,M10.5.0"  # good?
+    timezone: "GMT0BST,M3.5.0/1,M10.5.0"   # bad?
+    #timezone: "GMT0BST-1,M3.5.0/1,M10.5.0"  # good?
     servers:
       - 0.pool.ntp.org
       - 1.pool.ntp.org
