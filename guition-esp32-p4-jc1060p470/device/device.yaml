@@ -346,6 +346,6 @@ script:
           if (!is_sleep_time) {
           }
           id(page_refresh_current_s) = interval;
-      - component.update: my_display
-      - delay: !lambda 'return id(page_refresh_current_s) * 1000;'
-      - script.execute: manage_run_and_sleep
+      # - component.update: my_display
+      # - delay: !lambda 'return id(page_refresh_current_s) * 1000;'
+      # - script.execute: manage_run_and_sleep
