@@ -247,22 +247,22 @@ display:
 
 
 globals:
-  - id: display_page
-    type: int
-    restore_value: false
-    initial_value: '0'
-  - id: page_refresh_default_s
-    type: int
-    restore_value: true
-    initial_value: '600'
-  - id: page_refresh_current_s
-    type: int
-    restore_value: false
-    initial_value: '60'
-  - id: last_page_switch_time
-    type: uint32_t
-    restore_value: false
-    initial_value: '0'
+  # - id: display_page
+  #   type: int
+  #   restore_value: false
+  #   initial_value: '0'
+  # - id: page_refresh_default_s
+  #   type: int
+  #   restore_value: true
+  #   initial_value: '600'
+  # - id: page_refresh_current_s
+  #   type: int
+  #   restore_value: false
+  #   initial_value: '60'
+  # - id: last_page_switch_time
+  #   type: uint32_t
+  #   restore_value: false
+  #   initial_value: '0'
   - id: target_temp_val
     type: float
     restore_value: no
