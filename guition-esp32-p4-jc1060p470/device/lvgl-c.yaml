@@ -168,7 +168,7 @@ lvgl:
                     - obj:
                         id: clock_time
                         width: 100%
-                        height: SIZE_CONTENT
+                        height: 146 #height: SIZE_CONTENT
                         scrollable: false
                         bg_opa: TRANSP
                         border_width: 0
