@@ -232,6 +232,8 @@ lvgl:
                         widgets:
                           - slider:
                               id: hallway_brightness_slider
+                              min_value: 0
+                              max_value: 255  
                               width: 100%
                               height: 110
                               bg_color: 0xFF6B6B6B
