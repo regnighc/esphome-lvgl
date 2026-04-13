@@ -104,8 +104,6 @@ lvgl:
     timeout: 120s
     then:
       - switch.turn_off: backlight
-      - lvgl.pause:
-          show_snow: false
   displays:
     - my_display
   touchscreens:
