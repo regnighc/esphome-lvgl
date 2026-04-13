@@ -104,6 +104,9 @@ lvgl:
     timeout: 120s
     then:
       - switch.turn_off: backlight
+  on_touch:
+    then:
+      - switch.turn_on: backlight
   displays:
     - my_display
   touchscreens:
