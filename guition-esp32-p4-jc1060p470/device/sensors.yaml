@@ -92,7 +92,7 @@ sensor:
           id: weather_row_2_label_3
           text: !lambda |-
             float v = x;
-            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+            return std::isnan(v) ? std::string("H: --°C") : str_sprintf("H: %.0f°C", v);
 
   - platform: homeassistant
     id: low_temp_ha
@@ -102,7 +102,7 @@ sensor:
           id: weather_row_2_label_1
           text: !lambda |-
             float v = x;
-            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+            return std::isnan(v) ? std::string("L: --°C") : str_sprintf("L: %.0f°C", v);
 
   - platform: homeassistant
     id: current_temp_ha

@@ -367,7 +367,7 @@ lvgl:
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
-                                    text_font: date_font
+                                    text_font: highlowtemp_font
                                     text_color: 0xFF3E4254 #0xFF2196F3
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
                                     text: "--°C"
@@ -377,7 +377,7 @@ lvgl:
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
-                                    text_font: date_font
+                                    text_font: highlowtemp_font
                                     text_color: 0xFF3E4254 #0xFF2196F3
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
                                     text: "--°C"
@@ -387,7 +387,7 @@ lvgl:
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
-                                    text_font: date_font
+                                    text_font: highlowtemp_font
                                     text_color: 0xFF3E4254 #0xFFFFFF
                                     # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
                                     text: "Sunny"

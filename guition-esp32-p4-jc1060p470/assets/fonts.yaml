@@ -31,6 +31,11 @@ font:
     bpp: 4
 
   - file: "gfonts://Roboto"
+    id: highlowtemp_font
+    size: 22
+    bpp: 4
+
+  - file: "gfonts://Roboto"
     id: high_temp_font
     size: 58
     bpp: 8
