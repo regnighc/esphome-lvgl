@@ -325,7 +325,7 @@ lvgl:
                                 pad_column: 0
                               widgets:
                                 - label:
-                                    id: weather_row_1_label_1
+                                    id: weather_current_temp_label #weather_row_1_label_1
                                     width: 50%
                                     height: SIZE_CONTENT
                                     pad_all: 0
@@ -363,7 +363,17 @@ lvgl:
                               widgets:
                                 - label:
                                     id: weather_row_2_label_1
-                                    width: 50%
+                                    width: 33%
+                                    height: SIZE_CONTENT
+                                    pad_all: 0
+                                    text_align: center
+                                    text_font: date_font
+                                    text_color: 0xFF3E4254 #0xFF2196F3
+                                    # text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%a, %b %d").c_str() : "Please wait";'
+                                    text: "--°C"
+                                - label:
+                                    id: weather_row_2_label_3
+                                    width: 33%
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center
@@ -373,7 +383,7 @@ lvgl:
                                     text: "--°C"
                                 - label:
                                     id: weather_row_2_label_2
-                                    width: 50%
+                                    width: 33%
                                     height: SIZE_CONTENT
                                     pad_all: 0
                                     text_align: center

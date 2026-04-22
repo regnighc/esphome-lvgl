@@ -89,7 +89,7 @@ sensor:
     entity_id: sensor.weather_forecast_day_0_high
     on_value:
       - lvgl.label.update:
-          id: weather_row_1_label_1
+          id: weather_row_2_label_3
           text: !lambda |-
             float v = x;
             return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
@@ -100,6 +100,16 @@ sensor:
     on_value:
       - lvgl.label.update:
           id: weather_row_2_label_1
+          text: !lambda |-
+            float v = x;
+            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+
+  - platform: homeassistant
+    id: current_temp_ha
+    entity_id: sensor.camden_kerbside_united_kingdom_temperature
+    on_value:
+      - lvgl.label.update:
+          id: weather_current_temp_label
           text: !lambda |-
             float v = x;
             return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
