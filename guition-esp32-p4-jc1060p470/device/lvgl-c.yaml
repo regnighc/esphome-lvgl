@@ -248,8 +248,9 @@ lvgl:
                                       # light.hallway_overhead_group (WiZ RGBW tunable group) only reports
                                       # color_temp_kelvin, not the legacy mireds "color_temp" key — sending
                                       # the old key gets the whole turn_on call rejected by HA, silently
-                                      # dropping brightness too. Use the Kelvin key instead (int, not string).
-                                      color_temp_kelvin: 2700
+                                      # dropping brightness too. Use the Kelvin key instead. Static `data:`
+                                      # values must be quoted strings (ESPHome requirement), not raw ints.
+                                      color_temp_kelvin: "2700"
                                     data_template:
                                       brightness: "{{ slider_val }}"
                                     variables:
