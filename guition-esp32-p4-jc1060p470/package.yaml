@@ -1,6 +1,12 @@
 packages:
   device: !include device/device.yaml
-  storage: !include device/storage.yaml
+  # Disabled: storage.yaml pulls in sd_storage from the p1ngb4ck/esphome@dev external
+  # component, which currently fails to compile —
+  #   ImportError: cannot import name 'VARIANT_ESP32S31' from 'esphome.components.esp32.const'
+  # The @dev branch has drifted ahead of (or is otherwise incompatible with) this
+  # ESPHome core version, so any config that references sd_storage fails to build at all.
+  # Re-enable once the external component is fixed/pinned to a compatible version.
+  # storage: !include device/storage.yaml
   sensors: !include device/sensors.yaml
   #lvgl: !include device/lvgl.yaml
   #lvgl: !include device/lvgl-b.yaml
