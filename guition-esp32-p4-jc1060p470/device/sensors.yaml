@@ -1,309 +1,328 @@
 ############################################################################################################
-# Sensors blocks
-# Contains Home Assistant sensors that update various labels on the display
+# Home Assistant state -> display
+# Each light has: a state text sensor, a brightness sensor, and one refresh script
+# that repaints every widget showing that light (Home tile and Lights row).
 ############################################################################################################
 
-
-
 sensor:
-  ######################################################################################################
-  # Hallway Overhead Light Group
-  # Brightness sensor that updates the corresponding slider on the display,
-  # with a clamp filter to handle the case when the light is off and brightness attribute is missing
-  ######################################################################################################
+  # ---- Light brightness (0-255, attribute is absent while the light is off) ----
   - platform: homeassistant
-    id: hallway_light_brightness
+    id: hall_bri
     entity_id: light.hallway_overhead_group
     attribute: brightness
-    # Add this filter block to catch the missing attribute when the light is off
-    filters:
-      - clamp:
-          min_value: 0
-          max_value: 255
     on_value:
-      - lvgl.slider.update:
-          id: hallway_brightness_slider
-          value: !lambda "return x;"
-
-
-  ######################################################################################################
-  # Livingroom Overhead Light
-  # Brightness sensor that updates the corresponding slider on the display,
-  # with a clamp filter to handle the case when the light is off and brightness attribute is missing
-  ######################################################################################################
+      - script.execute: refresh_hall
   - platform: homeassistant
-    id: livingroom_light_brightness
+    id: hall_kelvin
+    entity_id: light.hallway_overhead_group
+    attribute: color_temp_kelvin
+    on_value:
+      - if:
+          condition:
+            lambda: 'return !std::isnan(x);'
+          then:
+            - lvgl.slider.update:
+                id: lights_hall_temp
+                value: !lambda 'return x;'
+  - platform: homeassistant
+    id: living_bri
     entity_id: light.living_room
     attribute: brightness
-    # Add this filter block to catch the missing attribute when the light is off
-    filters:
-      - clamp:
-          min_value: 0
-          max_value: 255
     on_value:
-      - lvgl.slider.update:
-          id: livingroom_brightness_slider
-          value: !lambda "return x;"
-
-  ######################################################################################################
-  # Livingroom Lamp Light
-  # Brightness sensor that updates the corresponding slider on the display,
-  # with a clamp filter to handle the case when the light is off and brightness attribute is missing
-  ######################################################################################################
+      - script.execute: refresh_living
   - platform: homeassistant
-    id: livingroom_lamp_brightness
+    id: livlamp_bri
     entity_id: light.livingroom_lamp
     attribute: brightness
-    # Add this filter block to catch the missing attribute when the light is off
-    filters:
-      - clamp:
-          min_value: 0
-          max_value: 255
     on_value:
-      - lvgl.slider.update:
-          id: livingroom_lamp_brightness_slider
-          value: !lambda "return x;"
-
-
+      - script.execute: refresh_livlamp
   - platform: homeassistant
-    id: pcleds_brightness
+    id: pcleds_bri
     entity_id: light.pc_leds_rgb_led_strip
     attribute: brightness
-    # Add this filter block to catch the missing attribute when the light is off
-    filters:
-      - clamp:
-          min_value: 0
-          max_value: 255
     on_value:
-      - lvgl.slider.update:
-          id: pcleds_brightness_slider
-          value: !lambda "return x;"
+      - script.execute: refresh_pcleds
 
-  ######################################################################################################
-  # Weather Temperature Forecast High and Low
-  # Sensors that update the corresponding labels on the display with the high and low temperature
-  # forecast from Home Assistant.
-  ######################################################################################################
+  # ---- Weather ----
   - platform: homeassistant
     id: high_temp_ha
     entity_id: sensor.weather_forecast_day_0_high
     on_value:
-      - lvgl.label.update:
-          id: weather_row_2_label_3
-          text: !lambda |-
-            float v = x;
-            return std::isnan(v) ? std::string("H: --°C") : str_sprintf("H: %.0f°C", v);
-
+      - script.execute: refresh_hilo
   - platform: homeassistant
     id: low_temp_ha
     entity_id: sensor.weather_forecast_day_0_low
     on_value:
-      - lvgl.label.update:
-          id: weather_row_2_label_1
-          text: !lambda |-
-            float v = x;
-            return std::isnan(v) ? std::string("L: --°C") : str_sprintf("L: %.0f°C", v);
-
+      - script.execute: refresh_hilo
   - platform: homeassistant
     id: current_temp_ha
     entity_id: sensor.camden_kerbside_united_kingdom_temperature
     on_value:
       - lvgl.label.update:
-          id: weather_current_temp_label
-          text: !lambda |-
-            float v = x;
-            return std::isnan(v) ? std::string("--°C") : str_sprintf("%.0f°C", v);
+          id: weather_temp
+          text: !lambda 'return std::isnan(x) ? std::string("--°") : str_sprintf("%.0f°", x);'
 
-  ######################################################################################################
-  # Climate Control Target and Current Temperature
-  # Sensors that update the corresponding labels on the display with the target and current temperature
-  # from Home Assistant.
-  ######################################################################################################
+  # ---- Heating ----
   - platform: homeassistant
     id: thermostat_target_temp
     entity_id: sensor.thermostat_target_temperature
     on_value:
-      then:
-        - globals.set:
-            id: target_temp_val
-            value: !lambda "return x;"
-        - lvgl.label.update:
-            id: lbl_target_temp
-            text: !lambda |
-              char buf[8];
-              snprintf(buf, sizeof(buf), "%.1f", x);
-              return std::string(buf);
-
+      # Ignore HA echoes while the user is still tapping +/-.
+      - if:
+          condition:
+            not:
+              script.is_running: hvac_commit
+          then:
+            - globals.set:
+                id: target_temp_val
+                value: !lambda 'return x;'
+            - script.execute: hvac_show_target
   - platform: homeassistant
     id: thermostat_current_temp
     entity_id: sensor.thermostat_current_temperature
     on_value:
-      then:
-        - lvgl.label.update:
-            id: lbl_current_temp
-            text: !lambda |
-              char buf[12];
-              snprintf(buf, sizeof(buf), "%.1f °C", x);
-              return std::string(buf);
+      - lvgl.label.update:
+          id: lbl_current_temp
+          text: !lambda 'return std::isnan(x) ? std::string("Now --°") : str_sprintf("Now %.1f°", x);'
 
 binary_sensor:
-  ######################################################################################################
-  # Hallway Lamp State
-  # Binary sensor that updates the corresponding slider on the display
-  ######################################################################################################
   - platform: homeassistant
     id: hall_lamp_state
     entity_id: switch.hall_lamp
-    on_press:
-      then:
-        - lvgl.widget.update:
-            id: hallway_accent_slider
-            bg_color: 0xE5CA3E
-    on_release:
-      then:
-        - lvgl.widget.update:
-            id: hallway_accent_slider
-            bg_color: 0xFF6B6B6B
+    trigger_on_initial_state: true
+    on_state:
+      - lvgl.widget.update:
+          id: [home_lamp_chip, lights_lamp_chip]
+          state:
+            checked: !lambda 'return x;'
+      - lvgl.label.update:
+          id: [home_lamp_state, lights_lamp_state]
+          text: !lambda 'return std::string(x ? "On" : "Off");'
 
-  ######################################################################################################
-  # Climate Control Boost Mode
-  # Binary sensor that updates the corresponding button on the display based on whether boost mode is active
-  ######################################################################################################
   - platform: homeassistant
     id: thermostat_boost
     entity_id: binary_sensor.thermostat_boost
-    on_press:
-      then:
-        - lvgl.widget.update:
-            id: btn_boost
-            bg_color: 0xFFFF6B00
-    on_release:
-      then:
-        - lvgl.widget.update:
-            id: btn_boost
-            bg_color: 0xFF3F51A6 #0xFF6B6B6B
+    trigger_on_initial_state: true
+    on_state:
+      - lvgl.widget.update:
+          id: btn_boost
+          state:
+            checked: !lambda 'return x;'
 
 text_sensor:
-  ############################################################################################################
-  # Weather Condition
-  # Updates the weather icon label on the display based on the current weather condition from Home Assistant
-  ############################################################################################################
+  # ---- Light on/off ----
+  - platform: homeassistant
+    id: hall_state
+    entity_id: light.hallway_overhead_group
+    on_value:
+      - script.execute: refresh_hall
+  - platform: homeassistant
+    id: living_state
+    entity_id: light.living_room
+    on_value:
+      - script.execute: refresh_living
+  - platform: homeassistant
+    id: livlamp_state
+    entity_id: light.livingroom_lamp
+    on_value:
+      - script.execute: refresh_livlamp
+  - platform: homeassistant
+    id: pcleds_state
+    entity_id: light.pc_leds_rgb_led_strip
+    on_value:
+      - script.execute: refresh_pcleds
+
+  # ---- Weather ----
   - platform: homeassistant
     id: weather_condition
-    entity_id: weather.forecast_home # Your specific entity
+    entity_id: weather.forecast_home
     on_value:
-      then:
-        - lvgl.label.update:
-            id: weather_row_1_label_2
-            # 'x' is the state coming from HA (e.g., "sunny")
-            text: !lambda |-
-              if (x == "sunny") return "${weather_sunny}";
-              if (x == "clear-night") return "${weather_night}";
-              if (x == "cloudy") return "${weather_partly_cloudy}";
-              if (x == "partlycloudy") return "${weather_partly_cloudy}";
-              if (x == "rainy") return "${weather_rainy}";
-              if (x == "pouring") return "${weather_pouring}";
-              if (x == "snowy") return "${weather_snowy}";
-              if (x == "lightning" || x == "lightning-rainy") return "${weather_partly_lightning}";
-              if (x == "fog") return "${weather_windy_variant}"; // Using windy-variant as a proxy for fog
-              
-              // Fallback if the API returns something unexpected
-              return "${weather_sunny_alert}";
+      - lvgl.label.update:
+          id: weather_icon
+          text: !lambda |-
+            if (x == "sunny") return "${weather_sunny}";
+            if (x == "clear-night") return "${weather_night}";
+            if (x == "cloudy") return "${weather_cloudy}";
+            if (x == "partlycloudy") return "${weather_partly_cloudy}";
+            if (x == "rainy") return "${weather_rainy}";
+            if (x == "pouring") return "${weather_pouring}";
+            if (x == "snowy") return "${weather_snowy}";
+            if (x == "snowy-rainy") return "${weather_snowy_rainy}";
+            if (x == "hail") return "${weather_hail}";
+            if (x == "lightning") return "${weather_lightning}";
+            if (x == "lightning-rainy") return "${weather_lightning_rainy}";
+            if (x == "fog") return "${weather_fog}";
+            if (x == "windy") return "${weather_windy}";
+            if (x == "windy-variant") return "${weather_windy_variant}";
+            return "${weather_sunny_alert}";
+      - lvgl.label.update:
+          id: weather_cond
+          text: !lambda |-
+            if (x == "sunny") return "Sunny";
+            if (x == "clear-night") return "Clear";
+            if (x == "cloudy") return "Cloudy";
+            if (x == "partlycloudy") return "Partly cloudy";
+            if (x == "rainy") return "Rain";
+            if (x == "pouring") return "Heavy rain";
+            if (x == "snowy") return "Snow";
+            if (x == "snowy-rainy") return "Sleet";
+            if (x == "hail") return "Hail";
+            if (x == "lightning") return "Thunder";
+            if (x == "lightning-rainy") return "Thunderstorm";
+            if (x == "fog") return "Fog";
+            if (x == "windy" || x == "windy-variant") return "Windy";
+            return "--";
 
-  - platform: homeassistant
-    id: weather_condition_name
-    entity_id: weather.forecast_home # Your specific entity
-    on_value:
-      then:
-        - lvgl.label.update:
-            id: weather_row_2_label_2
-            # 'x' is the state coming from HA (e.g., "sunny")
-            text: !lambda |-
-              if (x == "sunny") return "sunny";
-              if (x == "clear-night") return "clear-night";
-              if (x == "cloudy") return "cloudy";
-              if (x == "partlycloudy") return "partly-cloudy";
-              if (x == "rainy") return "rainy";
-              if (x == "pouring") return "pouring";
-              if (x == "snowy") return "snowy";
-              if (x == "lightning" || x == "lightning-rainy") return "lightning-storm";
-              if (x == "fog") return "foggy";
-              
-              // Fallback if the API returns something unexpected
-              return "loading...";
-
-
-
-  ####################################################################################################
-  # Block 2 Camera 4
-  # Last person detection time and "time ago" sensors, updating corresponding labels on the display
-  ####################################################################################################
-  - platform: homeassistant
-    id: b2c4_last_person_detection
-    entity_id: sensor.b2c4_last_person_detection
-    on_value:
-      then:
-        - lvgl.label.update:
-            id: lbl_b2c4_last_person_detection
-            text: !lambda return x.c_str();
-  - platform: homeassistant
-    id: b2c4_last_person_detection_ago
-    entity_id: sensor.b2c4_last_person_detection_ago
-    on_value:
-      then:
-        - lvgl.label.update:
-            id: lbl_b2c4_last_person_detection_ago
-            text: !lambda return x.c_str();
-
-  ####################################################################################################
-  # Block 2 Camera 0
-  # Last person detection time and "time ago" sensors, updating corresponding labels on the display
-  ####################################################################################################
+  # ---- Cameras: last person detection ----
+  # A new detection time also re-fetches that camera's snapshot, so the picture
+  # on Home always matches the "ago" text next to it.
   - platform: homeassistant
     id: b2c0_last_person_detection
     entity_id: sensor.b2c0_last_person_detection
     on_value:
-      then:
-        - lvgl.label.update:
-            id: lbl_b2c0_last_person_detection
-            text: !lambda return x.c_str();
+      - lvgl.label.update:
+          id: cam_entrance_time
+          text: !lambda 'return x;'
+      - component.update: online_img_cam_2
   - platform: homeassistant
     id: b2c0_last_person_detection_ago
     entity_id: sensor.b2c0_last_person_detection_ago
     on_value:
-      then:
-        - lvgl.label.update:
-            id: lbl_b2c0_last_person_detection_ago
-            text: !lambda return x.c_str();
+      - lvgl.label.update:
+          id: [home_entrance_ago, cam_entrance_ago]
+          text: !lambda 'return x;'
+  - platform: homeassistant
+    id: b2c4_last_person_detection
+    entity_id: sensor.b2c4_last_person_detection
+    on_value:
+      - lvgl.label.update:
+          id: cam_flat_time
+          text: !lambda 'return x;'
+      - component.update: online_img_cam_1
+  - platform: homeassistant
+    id: b2c4_last_person_detection_ago
+    entity_id: sensor.b2c4_last_person_detection_ago
+    on_value:
+      - lvgl.label.update:
+          id: [home_flat_ago, cam_flat_ago]
+          text: !lambda 'return x;'
 
- ####################################################################################################
-  # Climate Control HVAC Mode and Action
-  # Sensors that update the corresponding dropdown and label on the display with the current HVAC mode and action from Home Assistant.
-  ####################################################################################################
+  # ---- Heating mode and action ----
+  # The HVAC mode is the climate entity's state, not an attribute.
   - platform: homeassistant
     id: thermostat_hvac_mode
     entity_id: climate.thermostat
-    attribute: hvac_mode
     on_value:
-      then:
-        - lvgl.dropdown.update:
-            id: hvac_mode_dropdown
-            selected_index: !lambda |
-              if (x == "auto") return 0;
-              if (x == "heat") return 1;
-              return 2;
-
+      - lvgl.widget.update:
+          id: btn_mode_auto
+          state:
+            checked: !lambda 'return x == "auto";'
+      - lvgl.widget.update:
+          id: btn_mode_heat
+          state:
+            checked: !lambda 'return x == "heat";'
+      - lvgl.widget.update:
+          id: btn_mode_off
+          state:
+            checked: !lambda 'return x == "off";'
   - platform: homeassistant
     id: thermostat_action
     entity_id: climate.thermostat
     attribute: hvac_action
     on_value:
-      then:
-        - lvgl.label.update:
-            id: lbl_hvac_action
-            text: !lambda return x.c_str();
+      - lvgl.label.update:
+          id: lbl_hvac_action
+          text_color: !lambda 'return x == "heating" ? lv_color_hex(0xFF9A52) : lv_color_hex(0xA3ABB8);'
+          text: !lambda |-
+            if (x == "heating") return "Heating";
+            if (x == "idle") return "Idle";
+            if (x == "off") return "Off";
+            return x.c_str();
 
   - platform: template
     name: "Current Time"
     id: web_time
     icon: "mdi:clock-outline"
+
+script:
+  - id: refresh_hall
+    then:
+      - lvgl.widget.update:
+          id: [home_hall_chip, lights_hall_chip]
+          state:
+            checked: !lambda 'return id(hall_state).state == "on";'
+      - lvgl.label.update:
+          id: [home_hall_state, lights_hall_state]
+          text: !lambda |-
+            if (id(hall_state).state != "on") return std::string("Off");
+            float b = id(hall_bri).state;
+            return std::isnan(b) ? std::string("On") : str_sprintf("On · %d%%", (int) lroundf(b / 2.55f));
+      - lvgl.slider.update:
+          id: [home_hall_slider, lights_hall_slider]
+          value: !lambda |-
+            float b = id(hall_bri).state;
+            return (id(hall_state).state != "on" || std::isnan(b)) ? 0 : b / 2.55f;
+
+  - id: refresh_living
+    then:
+      - lvgl.widget.update:
+          id: [home_living_chip, lights_living_chip]
+          state:
+            checked: !lambda 'return id(living_state).state == "on";'
+      - lvgl.label.update:
+          id: [home_living_state, lights_living_state]
+          text: !lambda |-
+            if (id(living_state).state != "on") return std::string("Off");
+            float b = id(living_bri).state;
+            return std::isnan(b) ? std::string("On") : str_sprintf("On · %d%%", (int) lroundf(b / 2.55f));
+      - lvgl.slider.update:
+          id: lights_living_slider
+          value: !lambda |-
+            float b = id(living_bri).state;
+            return (id(living_state).state != "on" || std::isnan(b)) ? 0 : b / 2.55f;
+
+  - id: refresh_livlamp
+    then:
+      - lvgl.widget.update:
+          id: lights_livlamp_chip
+          state:
+            checked: !lambda 'return id(livlamp_state).state == "on";'
+      - lvgl.label.update:
+          id: lights_livlamp_state
+          text: !lambda |-
+            if (id(livlamp_state).state != "on") return std::string("Off");
+            float b = id(livlamp_bri).state;
+            return std::isnan(b) ? std::string("On") : str_sprintf("On · %d%%", (int) lroundf(b / 2.55f));
+      - lvgl.slider.update:
+          id: lights_livlamp_slider
+          value: !lambda |-
+            float b = id(livlamp_bri).state;
+            return (id(livlamp_state).state != "on" || std::isnan(b)) ? 0 : b / 2.55f;
+
+  - id: refresh_pcleds
+    then:
+      - lvgl.widget.update:
+          id: lights_pcleds_chip
+          state:
+            checked: !lambda 'return id(pcleds_state).state == "on";'
+      - lvgl.label.update:
+          id: lights_pcleds_state
+          text: !lambda |-
+            if (id(pcleds_state).state != "on") return std::string("Off");
+            float b = id(pcleds_bri).state;
+            return std::isnan(b) ? std::string("On") : str_sprintf("On · %d%%", (int) lroundf(b / 2.55f));
+      - lvgl.slider.update:
+          id: lights_pcleds_slider
+          value: !lambda |-
+            float b = id(pcleds_bri).state;
+            return (id(pcleds_state).state != "on" || std::isnan(b)) ? 0 : b / 2.55f;
+
+  - id: refresh_hilo
+    then:
+      - lvgl.label.update:
+          id: weather_hilo
+          text: !lambda |-
+            float h = id(high_temp_ha).state, l = id(low_temp_ha).state;
+            std::string hs = std::isnan(h) ? "--" : str_sprintf("%.0f", h);
+            std::string ls = std::isnan(l) ? "--" : str_sprintf("%.0f", l);
+            return "High " + hs + "°  ·  Low " + ls + "°";

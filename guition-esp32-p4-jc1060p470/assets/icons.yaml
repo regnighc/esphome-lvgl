@@ -1,87 +1,83 @@
-# http://materialdesignicons.com/cdn/7.4.47/
-
-# Define icons used
-font:
-  - file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
-    id: icon_font
-    size: 58
-    bpp: 8
-    glyphs: [
-      "\U000F0335",  # mdi-lightbulb
-      "\U000F042B",  # mdi-printer-3d
-      "\U000F0D43",  # mdi-air-filter
-      "\U000F1051",  # mdi-led-strip-variant
-      "\U000F03D7",  # mdi-package-variant-closed
-      "\U000F07D6",  # mdi-led-strip
-      "\U000F00AC",  # mdi-blinds-closed
-      "\U000F1011",  # mdi-blinds-open
-      "\U000F1A4C",  # mdi-lightbulb-night
-      "\U000F1087",  # mdi-router-network
-      "\U000F036B",  # mdi-message-video
-      "\U000F0614",  # mdi-application-outline
-      "\U000F089E",  # mdi-battery
-      "\U000F07DE",  # mdi-filament
-      "\U000F0317",  # mdi-lan
-      "\U000F0594",  # mdi-weather-night
-      "\U000F0F31",  # mdi-weather-night-partly-cloudy
-      "\U000F0595",  # mdi-weather-partly-cloudy
-      "\U000F0F32",  # mdi-weather-partly-lightning
-      "\U000F0F33",  # mdi-weather-partly-rainy
-      "\U000F0F34",  # mdi-weather-partly-snowy
-      "\U000F0F35",  # mdi-weather-partly-snowy-rainy
-      "\U000F0596",  # mdi-weather-pouring
-      "\U000F0597",  # mdi-weather-rainy
-      "\U000F0598",  # mdi-weather-snowy
-      "\U000F0F36",  # mdi-weather-snowy-heavy
-      "\U000F067F",  # mdi-weather-snowy-rainy
-      "\U000F0599",  # mdi-weather-sunny
-      "\U000F0F37",  # mdi-weather-sunny-alert
-      "\U000F14E4",  # mdi-weather-sunny-off
-      "\U000F059A",  # mdi-weather-sunset
-      "\U000F059B",  # mdi-weather-sunset-down
-      "\U000F059C",  # mdi-weather-sunset-up
-      "\U000F0F38",  # mdi-weather-tornado
-      "\U000F059D",  # mdi-weather-windy
-      "\U000F059E",  # mdi-weather-windy-variant     
-      ]
-
-# Map icons to names
+# Material Design Icons 7.4.47. Codepoints checked against the font's own glyph names.
 substitutions:
-  lightbulb:      "\U000F0335"
-  printer:        "\U000F042B"
-  aircon:         "\U000F0D43"
-  ledstrip:       "\U000F1051"
-  led_strip_variant: "\U000F1051"
-  package:        "\U000F03D7"
-  lights:         "\U000F07D6"
-  blinds_closed:  "\U000F00AC"
-  blinds_open:    "\U000F1011"
-  nightlight:     "\U000F1A4C"
-  network:        "\U000F1087"
-  videocall:      "\U000F036B"
-  application:    "\U000F0614"
-  battery:        "\U000F089E"
-  filament:       "\U000F07DE"
-  lan:            "\U000F0317"
-  weather_night:      "\U000F0594"
-  weather_night_partly_cloudy:      "\U000F0F31"
-  weather_partly_cloudy:      "\U000F0595"
-  weather_partly_lightning:      "\U000F0F32"
-  weather_partly_rainy:      "\U000F0F33"
-  weather_partly_snowy:      "\U000F0F34"
-  weather_partly_snowy_rainy:      "\U000F0F35"
-  weather_pouring:      "\U000F0596"
-  weather_rainy:      "\U000F0597"
-  weather_snowy:      "\U000F0598"
-  weather_snowy_heavy:      "\U000F0F36"
-  weather_snowy_rainy:      "\U000F067F"
-  weather_sunny:      "\U000F0599"
-  weather_sunny_alert:      "\U000F0F37"
-  weather_sunny_off:      "\U000F14E4"
-  weather_sunset:      "\U000F059A"
-  weather_sunset_down:      "\U000F059B"
-  weather_sunset_up:      "\U000F059C"
-  weather_tornado:      "\U000F0F38"
-  weather_windy:      "\U000F059D"
-  weather_windy_variant:      "\U000F059E"
+  icon_file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
 
+  ic_home:          "\U000F02DC"
+  ic_lightbulb:     "\U000F0335"
+  ic_ceiling:       "\U000F0769"
+  ic_lamp:          "\U000F06B5"
+  ic_floor_lamp:    "\U000F08DD"
+  ic_led_strip:     "\U000F1051"
+  ic_cctv:          "\U000F07AE"
+  ic_wifi:          "\U000F05A9"
+  ic_wifi_off:      "\U000F05AA"
+  ic_fire:          "\U000F0238"
+  ic_key:           "\U000F030B"
+  ic_minus:         "\U000F0374"
+  ic_plus:          "\U000F0415"
+
+  weather_cloudy:              "\U000F0590"
+  weather_fog:                 "\U000F0591"
+  weather_hail:                "\U000F0592"
+  weather_lightning:           "\U000F0593"
+  weather_lightning_rainy:     "\U000F067E"
+  weather_night:               "\U000F0594"
+  weather_night_partly_cloudy: "\U000F0F31"
+  weather_partly_cloudy:       "\U000F0595"
+  weather_pouring:             "\U000F0596"
+  weather_rainy:               "\U000F0597"
+  weather_snowy:               "\U000F0598"
+  weather_snowy_rainy:         "\U000F067F"
+  weather_sunny:               "\U000F0599"
+  weather_sunny_alert:         "\U000F0F37"
+  weather_windy:               "\U000F059D"
+  weather_windy_variant:       "\U000F059E"
+
+font:
+  # Controls: light chips, heating +/-, boost, door key, rail status
+  - file: ${icon_file}
+    id: mdi_28
+    size: 28
+    bpp: 4
+    glyphs: &ui_glyphs
+      - "\U000F02DC"  # home
+      - "\U000F0335"  # lightbulb
+      - "\U000F0769"  # ceiling-light
+      - "\U000F06B5"  # lamp
+      - "\U000F08DD"  # floor-lamp
+      - "\U000F1051"  # led-strip-variant
+      - "\U000F07AE"  # cctv
+      - "\U000F05A9"  # wifi
+      - "\U000F05AA"  # wifi-off
+      - "\U000F0238"  # fire
+      - "\U000F030B"  # key-variant
+      - "\U000F0374"  # minus
+      - "\U000F0415"  # plus
+  # Nav rail
+  - file: ${icon_file}
+    id: mdi_36
+    size: 36
+    bpp: 4
+    glyphs: *ui_glyphs
+  # Weather
+  - file: ${icon_file}
+    id: mdi_72
+    size: 72
+    bpp: 4
+    glyphs:
+      - "\U000F0590"
+      - "\U000F0591"
+      - "\U000F0592"
+      - "\U000F0593"
+      - "\U000F067E"
+      - "\U000F0594"
+      - "\U000F0F31"
+      - "\U000F0595"
+      - "\U000F0596"
+      - "\U000F0597"
+      - "\U000F0598"
+      - "\U000F067F"
+      - "\U000F0599"
+      - "\U000F0F37"
+      - "\U000F059D"
+      - "\U000F059E"

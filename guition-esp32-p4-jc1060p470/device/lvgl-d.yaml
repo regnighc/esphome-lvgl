@@ -1,0 +1,1228 @@
+################################################################################
+# Kiosk UI v2 (1024 x 600, landscape)
+#
+#   top_layer   nav rail (Home / Lights / Cameras), small clock, link status,
+#               and the wake catcher that absorbs the first touch after idle
+#   main_page     clock + weather, then three cards: Lights, Heating, Front door
+#   lighting_page one row per light, grouped by room
+#   cameras_page  one large view with a camera selector and the door button
+#
+# Layout is absolute (x / y / width / height) on purpose: every box is where the
+# numbers say it is, with no flex sizing to second-guess on the device.
+# Pages start at x = 96 because the rail lives in the top layer.
+################################################################################
+
+substitutions:
+  frigate_url: "http://192.168.2.127:5566"
+  cam_entrance: "B2C0"   # Main entrance door
+  cam_flat: "B2C4"       # Flat door
+
+globals:
+  - id: cam_selected     # 0 = main entrance, 1 = flat door, 2 = birdseye
+    type: int
+    restore_value: false
+    initial_value: '0'
+
+################################################################################
+# Camera images
+# `resize` fits the picture inside the box and keeps its aspect ratio, so the
+# widgets never need zoom or cropping.
+################################################################################
+image:
+  - platform: online_image
+    id: online_img_cam_2          # main entrance thumbnail on Home
+    url: "${frigate_url}/api/${cam_entrance}/person/snapshot.jpg"
+    format: JPEG
+    type: RGB565
+    byte_order: little_endian
+    resize: 256x192
+    update_interval: 10min
+    on_download_finished:
+      - lvgl.image.update:
+          id: w_cam_2
+          src: online_img_cam_2
+
+  - platform: online_image
+    id: online_img_cam_1          # flat door thumbnail on Home
+    url: "${frigate_url}/api/${cam_flat}/person/snapshot.jpg"
+    format: JPEG
+    type: RGB565
+    byte_order: little_endian
+    resize: 96x72
+    update_interval: 10min
+    on_download_finished:
+      - lvgl.image.update:
+          id: w_cam_1
+          src: online_img_cam_1
+
+  - platform: online_image
+    id: online_img_birdseye       # large view on Cameras; URL follows the selector
+    url: "${frigate_url}/api/${cam_entrance}/person/snapshot.jpg"
+    format: JPEG
+    type: RGB565
+    byte_order: little_endian
+    resize: 640x360
+    update_interval: never
+    on_download_finished:
+      - lvgl.image.update:
+          id: w_cam_view
+          src: online_img_birdseye
+
+interval:
+  # Refresh the large camera view only while someone is looking at it.
+  - interval: 10s
+    then:
+      - if:
+          condition:
+            and:
+              - lvgl.page.is_showing: cameras_page
+              - light.is_on: display_backlight
+          then:
+            - component.update: online_img_birdseye
+  # Link status in the nav rail.
+  - interval: 15s
+    then:
+      - if:
+          condition:
+            wifi.connected:
+          then:
+            - lvgl.label.update:
+                id: rail_wifi
+                text: "${ic_wifi}"
+                text_color: 0xA3ABB8
+          else:
+            - lvgl.label.update:
+                id: rail_wifi
+                text: "${ic_wifi_off}"
+                text_color: 0xFF6B6B
+      - if:
+          condition:
+            api.connected:
+          then:
+            - lvgl.widget.update:
+                id: rail_ha_dot
+                bg_color: 0x35C27A
+          else:
+            - lvgl.widget.update:
+                id: rail_ha_dot
+                bg_color: 0xFF6B6B
+
+script:
+  # ---- Heating: +/- change the number at once, then send one call to HA ----
+  - id: hvac_show_target
+    then:
+      - lvgl.label.update:
+          id: lbl_target_temp
+          text: !lambda 'return str_sprintf("%.1f°", id(target_temp_val));'
+  - id: hvac_nudge
+    parameters:
+      delta: float
+    then:
+      - lambda: |-
+          float t = id(target_temp_val) + delta;
+          if (t < 5.0f) t = 5.0f;
+          if (t > 30.0f) t = 30.0f;
+          id(target_temp_val) = t;
+      - script.execute: hvac_show_target
+      - script.execute: hvac_commit
+  - id: hvac_commit
+    mode: restart
+    then:
+      - delay: 800ms
+      - homeassistant.action:
+          action: climate.set_temperature
+          data:
+            entity_id: climate.thermostat
+          data_template:
+            temperature: "{{ t }}"
+          variables:
+            t: !lambda 'return id(target_temp_val);'
+
+  # ---- Door release ----
+  - id: door_open
+    mode: single
+    then:
+      - homeassistant.action:
+          action: switch.turn_on
+          data:
+            entity_id: switch.doorbell_door_entry_relay
+      - lvgl.label.update:
+          id: [home_door_lbl, cam_door_lbl]
+          text: "Opening..."
+      - delay: 3s
+      - lvgl.label.update:
+          id: [home_door_lbl, cam_door_lbl]
+          text: "Hold to open"
+
+  # ---- Camera selector ----
+  - id: select_cam
+    parameters:
+      cam: int
+    then:
+      - lambda: 'id(cam_selected) = cam;'
+      - lvgl.widget.update:
+          id: cam_btn_entrance
+          state:
+            checked: !lambda 'return id(cam_selected) == 0;'
+      - lvgl.widget.update:
+          id: cam_btn_flat
+          state:
+            checked: !lambda 'return id(cam_selected) == 1;'
+      - lvgl.widget.update:
+          id: cam_btn_birdseye
+          state:
+            checked: !lambda 'return id(cam_selected) == 2;'
+      - online_image.set_url:
+          id: online_img_birdseye
+          url: !lambda |-
+            if (id(cam_selected) == 1) return std::string("${frigate_url}/api/${cam_flat}/person/snapshot.jpg");
+            if (id(cam_selected) == 2) return std::string("${frigate_url}/api/birdseye/latest.jpg?height=360");
+            return std::string("${frigate_url}/api/${cam_entrance}/person/snapshot.jpg");
+          update: true
+
+################################################################################
+# LVGL
+################################################################################
+lvgl:
+  id: my_lvgl
+  color_depth: 16
+  buffer_size: 100%
+  byte_order: little_endian
+  default_font: roboto_20
+  displays:
+    - my_display
+  touchscreens:
+    - touchscreen_id: my_touchscreen
+      long_press_time: 1s        # "Hold to open" needs a full second
+  on_idle:
+    - timeout: 120s
+      then:
+        - script.execute: screen_dim
+    - timeout: 15min
+      then:
+        - script.execute: screen_off
+
+  # ============================================================================
+  # TOP LAYER: nav rail + wake catcher (drawn over every page)
+  # ============================================================================
+  top_layer:
+    widgets:
+      - obj:
+          id: nav_rail
+          x: 0
+          y: 0
+          width: 96
+          height: 600
+          bg_opa: COVER
+          bg_color: 0x14171D
+          scrollable: false
+          widgets:
+            - button:
+                id: nav_home
+                x: 8
+                y: 16
+                width: 80
+                height: 84
+                bg_opa: TRANSP
+                text_color: 0xA3ABB8
+                state:
+                  checked: true
+                checked:
+                  bg_opa: COVER
+                  bg_color: 0x24324A
+                  text_color: 0x8DB8FF
+                on_click:
+                  - lvgl.page.show: main_page
+                widgets:
+                  - label: {align: TOP_MID, y: 10, text_font: mdi_36, text: "${ic_home}"}
+                  - label: {align: BOTTOM_MID, y: -10, text_font: roboto_16, text: "Home"}
+            - button:
+                id: nav_lights
+                x: 8
+                y: 108
+                width: 80
+                height: 84
+                bg_opa: TRANSP
+                text_color: 0xA3ABB8
+                checked:
+                  bg_opa: COVER
+                  bg_color: 0x24324A
+                  text_color: 0x8DB8FF
+                on_click:
+                  - lvgl.page.show: lighting_page
+                widgets:
+                  - label: {align: TOP_MID, y: 10, text_font: mdi_36, text: "${ic_lightbulb}"}
+                  - label: {align: BOTTOM_MID, y: -10, text_font: roboto_16, text: "Lights"}
+            - button:
+                id: nav_cameras
+                x: 8
+                y: 200
+                width: 80
+                height: 84
+                bg_opa: TRANSP
+                text_color: 0xA3ABB8
+                checked:
+                  bg_opa: COVER
+                  bg_color: 0x24324A
+                  text_color: 0x8DB8FF
+                on_click:
+                  - lvgl.page.show: cameras_page
+                widgets:
+                  - label: {align: TOP_MID, y: 10, text_font: mdi_36, text: "${ic_cctv}"}
+                  - label: {align: BOTTOM_MID, y: -10, text_font: roboto_16, text: "Cameras"}
+
+            # Small clock: hidden on Home, where the big clock already shows it.
+            - label:
+                id: rail_time
+                align: BOTTOM_MID
+                y: -84
+                hidden: true
+                text_font: roboto_20
+                text_color: 0xF1F3F6
+                text: "--:--"
+            - label:
+                id: rail_wifi
+                align: BOTTOM_MID
+                y: -44
+                text_font: mdi_28
+                text_color: 0xA3ABB8
+                text: "${ic_wifi}"
+            - obj:
+                id: rail_ha_dot
+                align: BOTTOM_MID
+                x: -14
+                y: -20
+                width: 10
+                height: 10
+                radius: 5
+                bg_opa: COVER
+                bg_color: 0xA3ABB8
+            - label:
+                align: BOTTOM_MID
+                x: 8
+                y: -15
+                text_font: roboto_16
+                text_color: 0xA3ABB8
+                text: "HA"
+
+      # Shown while the screen is dimmed or off. It takes the first touch, so a
+      # wake-up tap can never land on the door button or a light.
+      - obj:
+          id: wake_catcher
+          x: 0
+          y: 0
+          width: 1024
+          height: 600
+          bg_opa: TRANSP
+          hidden: true
+          clickable: true
+          scrollable: false
+          on_click:
+            - lvgl.widget.hide: wake_catcher
+
+  pages:
+    # ==========================================================================
+    # HOME
+    # ==========================================================================
+    - id: main_page
+      scrollable: false
+      bg_opa: COVER
+      bg_color: 0x0D0F13
+      pad_all: 0
+      text_color: 0xF1F3F6
+      on_load:
+        - lvgl.widget.update: {id: nav_home, state: {checked: true}}
+        - lvgl.widget.update: {id: [nav_lights, nav_cameras], state: {checked: false}}
+        - lvgl.widget.hide: rail_time
+      widgets:
+        # ---- Clock and date ----
+        - label:
+            id: main_time
+            x: 120
+            y: 14
+            text_font: time_font
+            text: "--:--"
+        - label:
+            id: main_date
+            x: 122
+            y: 112
+            text_font: roboto_22
+            text_color: 0xA3ABB8
+            text: " "
+
+        # ---- Weather (right-aligned group) ----
+        - obj:
+            align: TOP_RIGHT
+            x: -24
+            y: 28
+            width: 460
+            height: 84
+            scrollable: false
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: end
+              flex_align_cross: center
+              flex_align_track: center
+              pad_column: 18
+            widgets:
+              - label:
+                  id: weather_icon
+                  text_font: mdi_72
+                  text: "${weather_cloudy}"
+              - label:
+                  id: weather_temp
+                  text_font: roboto_64
+                  text: "--°"
+              - obj:
+                  width: SIZE_CONTENT
+                  height: SIZE_CONTENT
+                  scrollable: false
+                  layout:
+                    type: flex
+                    flex_flow: column
+                    pad_row: 6
+                  widgets:
+                    - label:
+                        id: weather_cond
+                        text_font: roboto_22
+                        text: "--"
+                    - label:
+                        id: weather_hilo
+                        styles: st_muted
+                        text_font: roboto_20
+                        text: "High --°  ·  Low --°"
+
+        # ---- Card 1: Lights ----
+        - obj:
+            x: 112
+            y: 156
+            width: 288
+            height: 428
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {x: 16, y: 16, styles: st_muted, text: "Lights"}
+
+              # Hallway ceiling: chip toggles, bar dims
+              - obj:
+                  x: 16
+                  y: 52
+                  width: 256
+                  height: 148
+                  styles: st_tile
+                  scrollable: false
+                  widgets:
+                    - button:
+                        id: home_hall_chip
+                        x: 14
+                        y: 14
+                        width: 56
+                        height: 56
+                        styles: st_chip
+                        checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                        on_click:
+                          - homeassistant.action:
+                              action: light.toggle
+                              data:
+                                entity_id: light.hallway_overhead_group
+                        widgets:
+                          - label: {align: CENTER, text_font: mdi_28, text: "${ic_ceiling}"}
+                    - label: {x: 84, y: 16, styles: st_name, text: "Hallway"}
+                    - label: {id: home_hall_state, x: 84, y: 46, styles: st_muted, text: "--"}
+                    - slider:
+                        id: home_hall_slider
+                        x: 14
+                        y: 82
+                        width: 228
+                        height: 52
+                        min_value: 0
+                        max_value: 100
+                        on_release:
+                          - homeassistant.action:
+                              action: light.turn_on
+                              data:
+                                entity_id: light.hallway_overhead_group
+                              data_template:
+                                brightness_pct: "{{ v }}"
+                              variables:
+                                v: !lambda 'return (int) x;'
+
+              # Hall lamp (smart plug): whole tile toggles
+              - obj:
+                  x: 16
+                  y: 212
+                  width: 256
+                  height: 84
+                  styles: st_tile
+                  scrollable: false
+                  clickable: true
+                  pressed: {bg_color: 0x2E3440}
+                  on_click:
+                    - homeassistant.action:
+                        action: switch.toggle
+                        data:
+                          entity_id: switch.hall_lamp
+                  widgets:
+                    - obj:
+                        id: home_lamp_chip
+                        x: 14
+                        y: 14
+                        width: 56
+                        height: 56
+                        styles: st_chip
+                        clickable: false
+                        scrollable: false
+                        checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                        widgets:
+                          - label: {align: CENTER, text_font: mdi_28, text: "${ic_lamp}"}
+                    - label: {x: 84, y: 16, styles: st_name, text: "Hall lamp"}
+                    - label: {id: home_lamp_state, x: 84, y: 46, styles: st_muted, text: "--"}
+
+              # Living room ceiling: whole tile toggles
+              - obj:
+                  x: 16
+                  y: 308
+                  width: 256
+                  height: 84
+                  styles: st_tile
+                  scrollable: false
+                  clickable: true
+                  pressed: {bg_color: 0x2E3440}
+                  on_click:
+                    - homeassistant.action:
+                        action: light.toggle
+                        data:
+                          entity_id: light.living_room
+                  widgets:
+                    - obj:
+                        id: home_living_chip
+                        x: 14
+                        y: 14
+                        width: 56
+                        height: 56
+                        styles: st_chip
+                        clickable: false
+                        scrollable: false
+                        checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                        widgets:
+                          - label: {align: CENTER, text_font: mdi_28, text: "${ic_ceiling}"}
+                    - label: {x: 84, y: 16, styles: st_name, text: "Living room"}
+                    - label: {id: home_living_state, x: 84, y: 46, styles: st_muted, text: "--"}
+
+        # ---- Card 2: Heating ----
+        - obj:
+            x: 416
+            y: 156
+            width: 288
+            height: 428
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {x: 16, y: 16, styles: st_muted, text: "Heating"}
+              - label:
+                  id: lbl_hvac_action
+                  align: TOP_RIGHT
+                  x: -16
+                  y: 16
+                  styles: st_muted
+                  text: "--"
+              - label:
+                  id: lbl_target_temp
+                  align: TOP_MID
+                  y: 48
+                  text_font: roboto_76
+                  text: "--.-°"
+              - label:
+                  id: lbl_current_temp
+                  align: TOP_MID
+                  y: 138
+                  styles: st_muted
+                  text_font: roboto_20
+                  text: "Now --°"
+              - button:
+                  x: 16
+                  y: 176
+                  width: 122
+                  height: 64
+                  on_click:
+                    - script.execute:
+                        id: hvac_nudge
+                        delta: -0.5
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_36, text: "${ic_minus}"}
+              - button:
+                  x: 150
+                  y: 176
+                  width: 122
+                  height: 64
+                  on_click:
+                    - script.execute:
+                        id: hvac_nudge
+                        delta: 0.5
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_36, text: "${ic_plus}"}
+
+              # Mode: three-way selector, the checked one is the live HVAC mode
+              - obj:
+                  x: 16
+                  y: 252
+                  width: 256
+                  height: 56
+                  styles: st_tile
+                  scrollable: false
+                  widgets:
+                    - button:
+                        id: btn_mode_auto
+                        x: 4
+                        y: 4
+                        width: 80
+                        height: 48
+                        radius: 12
+                        bg_opa: TRANSP
+                        text_color: 0xC9CFD9
+                        checked: {bg_opa: COVER, bg_color: 0xF1F3F6, text_color: 0x14171D}
+                        on_click:
+                          - homeassistant.action:
+                              action: climate.set_hvac_mode
+                              data:
+                                entity_id: climate.thermostat
+                                hvac_mode: auto
+                        widgets:
+                          - label: {align: CENTER, text: "Auto"}
+                    - button:
+                        id: btn_mode_heat
+                        x: 88
+                        y: 4
+                        width: 80
+                        height: 48
+                        radius: 12
+                        bg_opa: TRANSP
+                        text_color: 0xC9CFD9
+                        checked: {bg_opa: COVER, bg_color: 0xF1F3F6, text_color: 0x14171D}
+                        on_click:
+                          - homeassistant.action:
+                              action: climate.set_hvac_mode
+                              data:
+                                entity_id: climate.thermostat
+                                hvac_mode: heat
+                        widgets:
+                          - label: {align: CENTER, text: "Heat"}
+                    - button:
+                        id: btn_mode_off
+                        x: 172
+                        y: 4
+                        width: 80
+                        height: 48
+                        radius: 12
+                        bg_opa: TRANSP
+                        text_color: 0xC9CFD9
+                        checked: {bg_opa: COVER, bg_color: 0xF1F3F6, text_color: 0x14171D}
+                        on_click:
+                          - homeassistant.action:
+                              action: climate.set_hvac_mode
+                              data:
+                                entity_id: climate.thermostat
+                                hvac_mode: "off"
+                        widgets:
+                          - label: {align: CENTER, text: "Off"}
+
+              - button:
+                  id: btn_boost
+                  x: 16
+                  y: 320
+                  width: 256
+                  height: 56
+                  checked: {bg_color: 0xFF8A3D, text_color: 0x2A1200}
+                  layout:
+                    type: flex
+                    flex_flow: row
+                    flex_align_main: center
+                    flex_align_cross: center
+                    flex_align_track: center
+                    pad_column: 10
+                  on_click:
+                    - homeassistant.action:
+                        action: climate.set_preset_mode
+                        data:
+                          entity_id: climate.thermostat
+                          preset_mode: boost
+                  widgets:
+                    - label: {text_font: mdi_28, text: "${ic_fire}"}
+                    - label: {text: "Boost"}
+
+        # ---- Card 3: Front door ----
+        - obj:
+            x: 720
+            y: 156
+            width: 288
+            height: 428
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {x: 16, y: 16, styles: st_muted, text: "Front door"}
+
+              # Main entrance snapshot: tap to open it on Cameras
+              - obj:
+                  x: 16
+                  y: 52
+                  width: 256
+                  height: 192
+                  radius: 14
+                  bg_opa: COVER
+                  bg_color: 0x2A2F3A
+                  clip_corner: true
+                  scrollable: false
+                  clickable: true
+                  on_click:
+                    - script.execute:
+                        id: select_cam
+                        cam: 0
+                    - lvgl.page.show: cameras_page
+                  widgets:
+                    - image:
+                        id: w_cam_2
+                        align: CENTER
+                        src: online_img_cam_2
+                    - label:
+                        id: home_entrance_ago
+                        align: BOTTOM_LEFT
+                        x: 8
+                        y: -8
+                        bg_opa: COVER
+                        bg_color: 0x0D0F13
+                        radius: 10
+                        pad_left: 10
+                        pad_right: 10
+                        pad_top: 4
+                        pad_bottom: 4
+                        text_font: roboto_16
+                        text: "Main entrance"
+
+              # Flat door: small snapshot + last person
+              - obj:
+                  x: 16
+                  y: 256
+                  width: 256
+                  height: 72
+                  scrollable: false
+                  clickable: true
+                  on_click:
+                    - script.execute:
+                        id: select_cam
+                        cam: 1
+                    - lvgl.page.show: cameras_page
+                  widgets:
+                    - obj:
+                        x: 0
+                        y: 0
+                        width: 96
+                        height: 72
+                        radius: 12
+                        bg_opa: COVER
+                        bg_color: 0x2A2F3A
+                        clip_corner: true
+                        clickable: false
+                        scrollable: false
+                        widgets:
+                          - image:
+                              id: w_cam_1
+                              align: CENTER
+                              src: online_img_cam_1
+                    - label: {x: 110, y: 10, text_font: roboto_20, text: "Flat door"}
+                    - label: {id: home_flat_ago, x: 110, y: 38, styles: st_muted, text: "--"}
+
+              - button:
+                  x: 16
+                  y: 340
+                  width: 256
+                  height: 72
+                  bg_color: 0x35C27A
+                  text_color: 0x06210F
+                  pressed: {bg_color: 0x2AA366}
+                  layout:
+                    type: flex
+                    flex_flow: row
+                    flex_align_main: center
+                    flex_align_cross: center
+                    flex_align_track: center
+                    pad_column: 12
+                  on_long_press:
+                    - script.execute: door_open
+                  widgets:
+                    - label: {text_font: mdi_28, text: "${ic_key}"}
+                    - label: {id: home_door_lbl, text_font: roboto_22, text: "Hold to open"}
+
+    # ==========================================================================
+    # LIGHTS  (row = chip | name + state | brightness | colour)
+    # ==========================================================================
+    - id: lighting_page
+      scrollable: false
+      bg_opa: COVER
+      bg_color: 0x0D0F13
+      pad_all: 0
+      text_color: 0xF1F3F6
+      on_load:
+        - lvgl.widget.update: {id: nav_lights, state: {checked: true}}
+        - lvgl.widget.update: {id: [nav_home, nav_cameras], state: {checked: false}}
+        - lvgl.widget.show: rail_time
+      widgets:
+        - label: {x: 120, y: 20, styles: st_muted, text: "Hallway"}
+
+        # ---- Hallway ceiling ----
+        - obj:
+            x: 112
+            y: 54
+            width: 896
+            height: 88
+            styles: st_card
+            scrollable: false
+            widgets:
+              - button:
+                  id: lights_hall_chip
+                  x: 16
+                  y: 16
+                  width: 56
+                  height: 56
+                  styles: st_chip
+                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  on_click:
+                    - homeassistant.action:
+                        action: light.toggle
+                        data:
+                          entity_id: light.hallway_overhead_group
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_28, text: "${ic_ceiling}"}
+              - label: {x: 88, y: 17, styles: st_name, text: "Ceiling"}
+              - label: {id: lights_hall_state, x: 88, y: 47, styles: st_muted, text: "--"}
+              - slider:
+                  id: lights_hall_slider
+                  x: 274
+                  y: 18
+                  width: 280
+                  height: 52
+                  min_value: 0
+                  max_value: 100
+                  on_release:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.hallway_overhead_group
+                        data_template:
+                          brightness_pct: "{{ v }}"
+                        variables:
+                          v: !lambda 'return (int) x;'
+              # Colour temperature in Kelvin, warm on the left
+              - slider:
+                  id: lights_hall_temp
+                  x: 570
+                  y: 18
+                  width: 310
+                  height: 52
+                  min_value: 2200
+                  max_value: 6500
+                  value: 2700
+                  bg_color: 0xFFB45E
+                  bg_grad_color: 0xCFE2FF
+                  bg_grad_dir: HOR
+                  indicator:
+                    bg_opa: TRANSP
+                  knob:
+                    bg_color: 0x14171D
+                    border_width: 2
+                    border_color: 0xF1F3F6
+                    radius: 5
+                    pad_left: -21
+                    pad_right: -21
+                    pad_top: -6
+                    pad_bottom: -6
+                  on_release:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.hallway_overhead_group
+                        data_template:
+                          color_temp_kelvin: "{{ k }}"
+                        variables:
+                          k: !lambda 'return (int) x;'
+
+        # ---- Hallway lamp (smart plug, whole row toggles) ----
+        - obj:
+            x: 112
+            y: 150
+            width: 896
+            height: 88
+            styles: st_card
+            scrollable: false
+            clickable: true
+            pressed: {bg_color: 0x242832}
+            on_click:
+              - homeassistant.action:
+                  action: switch.toggle
+                  data:
+                    entity_id: switch.hall_lamp
+            widgets:
+              - obj:
+                  id: lights_lamp_chip
+                  x: 16
+                  y: 16
+                  width: 56
+                  height: 56
+                  styles: st_chip
+                  clickable: false
+                  scrollable: false
+                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_28, text: "${ic_lamp}"}
+              - label: {x: 88, y: 17, styles: st_name, text: "Lamp"}
+              - label: {id: lights_lamp_state, x: 88, y: 47, styles: st_muted, text: "--"}
+              - label: {x: 274, y: 33, styles: st_muted, text: "Smart plug · tap the row to switch"}
+
+        - label: {x: 120, y: 258, styles: st_muted, text: "Living room"}
+
+        # ---- Living room ceiling ----
+        - obj:
+            x: 112
+            y: 292
+            width: 896
+            height: 88
+            styles: st_card
+            scrollable: false
+            widgets:
+              - button:
+                  id: lights_living_chip
+                  x: 16
+                  y: 16
+                  width: 56
+                  height: 56
+                  styles: st_chip
+                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  on_click:
+                    - homeassistant.action:
+                        action: light.toggle
+                        data:
+                          entity_id: light.living_room
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_28, text: "${ic_ceiling}"}
+              - label: {x: 88, y: 17, styles: st_name, text: "Ceiling"}
+              - label: {id: lights_living_state, x: 88, y: 47, styles: st_muted, text: "--"}
+              - slider:
+                  id: lights_living_slider
+                  x: 274
+                  y: 18
+                  width: 280
+                  height: 52
+                  min_value: 0
+                  max_value: 100
+                  on_release:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.living_room
+                        data_template:
+                          brightness_pct: "{{ v }}"
+                        variables:
+                          v: !lambda 'return (int) x;'
+
+        # ---- Living room lamp ----
+        - obj:
+            x: 112
+            y: 388
+            width: 896
+            height: 88
+            styles: st_card
+            scrollable: false
+            widgets:
+              - button:
+                  id: lights_livlamp_chip
+                  x: 16
+                  y: 16
+                  width: 56
+                  height: 56
+                  styles: st_chip
+                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  on_click:
+                    - homeassistant.action:
+                        action: light.toggle
+                        data:
+                          entity_id: light.livingroom_lamp
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_28, text: "${ic_floor_lamp}"}
+              - label: {x: 88, y: 17, styles: st_name, text: "Lamp"}
+              - label: {id: lights_livlamp_state, x: 88, y: 47, styles: st_muted, text: "--"}
+              - slider:
+                  id: lights_livlamp_slider
+                  x: 274
+                  y: 18
+                  width: 280
+                  height: 52
+                  min_value: 0
+                  max_value: 100
+                  on_release:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.livingroom_lamp
+                        data_template:
+                          brightness_pct: "{{ v }}"
+                        variables:
+                          v: !lambda 'return (int) x;'
+
+        # ---- PC LEDs: brightness + six colour presets ----
+        - obj:
+            x: 112
+            y: 484
+            width: 896
+            height: 88
+            styles: st_card
+            scrollable: false
+            widgets:
+              - button:
+                  id: lights_pcleds_chip
+                  x: 16
+                  y: 16
+                  width: 56
+                  height: 56
+                  styles: st_chip
+                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  on_click:
+                    - homeassistant.action:
+                        action: light.toggle
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_28, text: "${ic_led_strip}"}
+              - label: {x: 88, y: 17, styles: st_name, text: "PC LEDs"}
+              - label: {id: lights_pcleds_state, x: 88, y: 47, styles: st_muted, text: "--"}
+              - slider:
+                  id: lights_pcleds_slider
+                  x: 274
+                  y: 18
+                  width: 280
+                  height: 52
+                  min_value: 0
+                  max_value: 100
+                  on_release:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                        data_template:
+                          brightness_pct: "{{ v }}"
+                        variables:
+                          v: !lambda 'return (int) x;'
+              # Presets. data_template is rendered by HA, so "[r, g, b]" arrives as a list.
+              - button:
+                  x: 570
+                  y: 22
+                  width: 44
+                  height: 44
+                  radius: 22
+                  bg_color: 0xFFF4E5
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                        data_template:
+                          rgb_color: "[255, 244, 229]"   # warm white
+              - button:
+                  x: 623
+                  y: 22
+                  width: 44
+                  height: 44
+                  radius: 22
+                  bg_color: 0x90AC90
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                        data_template:
+                          rgb_color: "[144, 172, 144]"   # sage green
+              - button:
+                  x: 676
+                  y: 22
+                  width: 44
+                  height: 44
+                  radius: 22
+                  bg_color: 0xB496C8
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                        data_template:
+                          rgb_color: "[180, 150, 200]"   # soft lavender
+              - button:
+                  x: 729
+                  y: 22
+                  width: 44
+                  height: 44
+                  radius: 22
+                  bg_color: 0x87CEEB
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                        data_template:
+                          rgb_color: "[135, 206, 235]"   # nordic blue
+              - button:
+                  x: 782
+                  y: 22
+                  width: 44
+                  height: 44
+                  radius: 22
+                  bg_color: 0x008080
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                        data_template:
+                          rgb_color: "[0, 128, 128]"     # deep teal
+              - button:
+                  x: 835
+                  y: 22
+                  width: 44
+                  height: 44
+                  radius: 22
+                  bg_color: 0x191970
+                  border_width: 2
+                  border_color: 0x5A61B8
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.pc_leds_rgb_led_strip
+                        data_template:
+                          rgb_color: "[25, 25, 112]"     # midnight blue
+
+    # ==========================================================================
+    # CAMERAS
+    # ==========================================================================
+    - id: cameras_page
+      scrollable: false
+      bg_opa: COVER
+      bg_color: 0x0D0F13
+      pad_all: 0
+      text_color: 0xF1F3F6
+      on_load:
+        - lvgl.widget.update: {id: nav_cameras, state: {checked: true}}
+        - lvgl.widget.update: {id: [nav_home, nav_lights], state: {checked: false}}
+        - lvgl.widget.show: rail_time
+        - component.update: online_img_birdseye
+      widgets:
+        # ---- Large view (fits 16:9 or 4:3 inside 640 x 360) ----
+        - obj:
+            x: 112
+            y: 16
+            width: 640
+            height: 360
+            radius: 16
+            bg_opa: COVER
+            bg_color: 0x1A1D24
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - image:
+                  id: w_cam_view
+                  align: CENTER
+                  src: online_img_birdseye
+
+        # ---- Last person, one tile per door (tap = show that camera) ----
+        - obj:
+            x: 112
+            y: 388
+            width: 312
+            height: 196
+            styles: st_card
+            scrollable: false
+            clickable: true
+            on_click:
+              - script.execute:
+                  id: select_cam
+                  cam: 0
+            widgets:
+              - label: {x: 16, y: 16, styles: st_muted, text: "Main entrance · last person"}
+              - label: {id: cam_entrance_time, x: 16, y: 56, text_font: roboto_22, text: "--"}
+              - label: {id: cam_entrance_ago, x: 16, y: 96, styles: st_muted, text: "--"}
+        - obj:
+            x: 440
+            y: 388
+            width: 312
+            height: 196
+            styles: st_card
+            scrollable: false
+            clickable: true
+            on_click:
+              - script.execute:
+                  id: select_cam
+                  cam: 1
+            widgets:
+              - label: {x: 16, y: 16, styles: st_muted, text: "Flat door · last person"}
+              - label: {id: cam_flat_time, x: 16, y: 56, text_font: roboto_22, text: "--"}
+              - label: {id: cam_flat_ago, x: 16, y: 96, styles: st_muted, text: "--"}
+
+        # ---- Selector ----
+        - button:
+            id: cam_btn_entrance
+            x: 768
+            y: 16
+            width: 240
+            height: 84
+            bg_color: 0x1A1D24
+            state:
+              checked: true
+            checked: {bg_color: 0x24324A, text_color: 0x8DB8FF, border_width: 3, border_color: 0x5B9BFF}
+            on_click:
+              - script.execute:
+                  id: select_cam
+                  cam: 0
+            widgets:
+              - label: {align: LEFT_MID, x: 18, text_font: roboto_22, text: "Main entrance"}
+        - button:
+            id: cam_btn_flat
+            x: 768
+            y: 112
+            width: 240
+            height: 84
+            bg_color: 0x1A1D24
+            checked: {bg_color: 0x24324A, text_color: 0x8DB8FF, border_width: 3, border_color: 0x5B9BFF}
+            on_click:
+              - script.execute:
+                  id: select_cam
+                  cam: 1
+            widgets:
+              - label: {align: LEFT_MID, x: 18, text_font: roboto_22, text: "Flat door"}
+        - button:
+            id: cam_btn_birdseye
+            x: 768
+            y: 208
+            width: 240
+            height: 84
+            bg_color: 0x1A1D24
+            checked: {bg_color: 0x24324A, text_color: 0x8DB8FF, border_width: 3, border_color: 0x5B9BFF}
+            on_click:
+              - script.execute:
+                  id: select_cam
+                  cam: 2
+            widgets:
+              - label: {align: LEFT_MID, x: 18, text_font: roboto_22, text: "Birdseye"}
+
+        # ---- Door release ----
+        - button:
+            x: 768
+            y: 448
+            width: 240
+            height: 136
+            bg_color: 0x35C27A
+            text_color: 0x06210F
+            pressed: {bg_color: 0x2AA366}
+            on_long_press:
+              - script.execute: door_open
+            widgets:
+              - label: {align: TOP_MID, y: 24, text_font: mdi_36, text: "${ic_key}"}
+              - label: {id: cam_door_lbl, align: TOP_MID, y: 68, text_font: roboto_22, text: "Hold to open"}
+              - label: {align: TOP_MID, y: 98, text_font: roboto_16, text: "Main entrance"}

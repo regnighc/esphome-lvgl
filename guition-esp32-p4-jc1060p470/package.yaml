@@ -10,11 +10,14 @@ packages:
   sensors: !include device/sensors.yaml
   #lvgl: !include device/lvgl.yaml
   #lvgl: !include device/lvgl-b.yaml
-  lvgl: !include device/lvgl-c.yaml
+  #lvgl: !include device/lvgl-c.yaml
+  lvgl: !include device/lvgl-d.yaml   # UI v2: nav rail, Home / Lights / Cameras
   time: !include addon/time.yaml
   backlight: !include addon/backlight.yaml
   network: !include addon/network.yaml
   fonts: !include assets/fonts.yaml
   icons: !include assets/icons.yaml
   button: !include theme/button.yaml
-  screenshot: !include addon/screenshot.yaml
+  # Disabled: regnighc/esphome-lvgl-screenshot is written against LVGL 8
+  # (src/extra/others/snapshot, LV_IMG_CF_TRUE_COLOR_ALPHA) and cannot build on LVGL 9.5.
+  # screenshot: !include addon/screenshot.yaml

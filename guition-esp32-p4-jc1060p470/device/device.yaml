@@ -29,8 +29,9 @@ psram:
   mode: hex
   speed: 200MHz
 
-lvgl_screenshot:
-  id: my_png_tool
+# lvgl_screenshot disabled with addon/screenshot.yaml (LVGL 8 only), see package.yaml
+# lvgl_screenshot:
+#   id: my_png_tool
 
 # Esphome
 esphome:
@@ -49,15 +50,16 @@ esphome:
 
 # External components
 external_components:
-  - source: github://p1ngb4ck/esphome@dev
-    components: [audio, binary_storage, http_file_browser, nfs_client, picture_viewer, uart, usb_host, usb_uart, usb_storage, sd_storage, smb_client, storage, transcoder, video_player, webdav_server]
-    refresh: 7d
-  - source: github://regnighc/esphome-onlineimage-grayscale-fix@main  #github://jtenniswood/esphome-onlineimage-grayscale-fix@main
-    components: [online_image]
-    refresh: 7d
-  - source: github://regnighc/esphome-lvgl-screenshot@main
-    components: [ lvgl_screenshot ]
-    refresh: 1min
+  # p1ngb4ck/esphome@dev removed: storage.yaml is disabled, the source no longer
+  # ships http_file_browser (config fails validation on 2026.10), and it was
+  # silently overriding the core `audio` and `uart` components.
+  # regnighc/esphome-onlineimage-grayscale-fix removed: it is based on ESPHome 2026.2.1 and
+  # cannot be imported by 2026.10 (online_image was rebuilt on runtime_image). The core
+  # component is used instead; its `resize` now keeps the aspect ratio. Core still decodes
+  # every JPEG as RGB8888, so greyscale JPEGs need the fork rebased if they render wrong.
+  # - source: github://regnighc/esphome-lvgl-screenshot@main
+  #   components: [ lvgl_screenshot ]
+  #   refresh: 1min
 
 http_request:
   useragent: esphome/device
@@ -103,9 +105,18 @@ api:
               - lvgl.page.show: main_page
         - if:
             condition:
-              lambda: 'return page == "b2c0";'
+              lambda: 'return page == "lights";'
             then:
-              - lvgl.page.show: cam2_full_page
+              - lvgl.page.show: lighting_page
+        # "b2c0" kept so existing HA automations still work: opens Cameras on the main entrance.
+        - if:
+            condition:
+              lambda: 'return page == "b2c0" || page == "cameras";'
+            then:
+              - script.execute:
+                  id: select_cam
+                  cam: 0
+              - lvgl.page.show: cameras_page
 
 web_server:
   port: 80

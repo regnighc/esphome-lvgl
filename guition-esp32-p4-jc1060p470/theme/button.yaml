@@ -1,28 +1,72 @@
-substitutions:
-  icon_font: icon_font
-  button_on_color: 0xFF8C00
-  button_text_color: 0xFFFFFF
-  button_control_color: "0x313131"
-  button_height: 130px
-  button_width: 200px
-  padding: 14px
-  radius: 8px
-
+# Kiosk theme: palette and shared styles.
+#   ground 0x0D0F13   rail 0x14171D   card 0x1A1D24   tile 0x242832
+#   control 0x2E3440  track 0x3A404D  text 0xF1F3F6   muted 0xA3ABB8
+#   light-on 0xF2B53A heat 0xFF8A3D   nav 0x8DB8FF    door 0x35C27A
 lvgl:
-  style_definitions:
-    - id: control
-      bg_color: $button_control_color
-
   theme:
-    button:
-      text_font: label_font
-      scroll_on_focus: false
-      radius: $radius
-      width: $button_width
-      height: $button_height
-      pad_all: $padding
+    obj:
+      bg_opa: TRANSP
+      border_width: 0
+      outline_width: 0
       shadow_width: 0
-      text_color: $button_text_color
-      checked:
-        bg_color: $button_on_color
-        text_color: $button_text_color
+      radius: 0
+      pad_all: 0
+      text_color: 0xF1F3F6   # without this, labels inside cards inherit LVGL's dark default
+    button:
+      bg_opa: COVER
+      bg_color: 0x2E3440
+      border_width: 0
+      outline_width: 0
+      shadow_width: 0
+      radius: 16
+      pad_all: 0
+      text_color: 0xF1F3F6
+      text_font: roboto_20
+      pressed:
+        bg_color: 0x454C5B
+    slider:
+      bg_opa: COVER
+      bg_color: 0x3A404D
+      radius: 14
+      border_width: 0
+      outline_width: 0
+      pad_all: 0
+      indicator:
+        bg_opa: COVER
+        bg_color: 0xF2B53A
+        radius: 14
+      knob:
+        bg_opa: COVER
+        bg_color: 0xF1F3F6
+        radius: 3
+        border_width: 0
+        shadow_width: 0
+        # Knob starts as a 52px square; shrink it to a 6 x 28 pill.
+        pad_left: -23
+        pad_right: -23
+        pad_top: -12
+        pad_bottom: -12
+
+  style_definitions:
+    - id: st_card
+      bg_opa: COVER
+      bg_color: 0x1A1D24
+      radius: 20
+    - id: st_tile
+      bg_opa: COVER
+      bg_color: 0x242832
+      radius: 16
+    - id: st_muted
+      text_color: 0xA3ABB8
+      text_font: roboto_18
+    - id: st_name
+      text_color: 0xF1F3F6
+      text_font: roboto_22
+    # Round on/off chip: grey when off, amber when on. The icon label inside
+    # inherits text_color, so one state change recolours both.
+    - id: st_chip
+      bg_opa: COVER
+      bg_color: 0x3A404D
+      text_color: 0xC9CFD9
+      text_font: mdi_28
+      radius: 28

@@ -1,44 +1,33 @@
-# SNTP Time (standalone clock source)
+# SNTP clock. Updates the Home clock, the date, and the small clock in the nav rail.
 time:
   - platform: sntp
     id: sntp_time
-    timezone: "GMT0BST,M3.5.0/1,M10.5.0"   # bad?
-    #timezone: "GMT0BST-1,M3.5.0/1,M10.5.0"  # good?
+    timezone: "GMT0BST,M3.5.0/1,M10.5.0"
     servers:
       - 0.pool.ntp.org
       - 1.pool.ntp.org
       - 2.pool.ntp.org
     on_time_sync:
       then:
-        - lvgl.label.update:
-            id: main_time
-            text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-        - lvgl.label.update:
-            id: main_date
-            text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%A, %d %B").c_str() : "";'
-        # This updates your LVGL screen (existing code)
-        - lvgl.label.update:
-            id: main_time
-            text: !lambda 'return id(sntp_time).now().strftime("%H:%M");'        
-        # This updates the web browser API
-        - text_sensor.template.publish:
-            id: web_time
-            state: !lambda 'return id(sntp_time).now().strftime("%H:%M");'
+        - script.execute: clock_refresh
     on_time:
-      - minutes: '*'
-        seconds: 0
+      - seconds: 0
         then:
-          - lvgl.label.update:
-              id: main_time
-              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%H:%M").c_str() : "Syncing...";'
-          - lvgl.label.update:
-              id: main_date
-              text: !lambda 'auto now = id(sntp_time).now(); return now.is_valid() ? now.strftime("%A, %d %B").c_str() : "";'
-          # This updates your LVGL screen (existing code)
-          - lvgl.label.update:
-              id: main_time
-              text: !lambda 'return id(sntp_time).now().strftime("%H:%M");'        
-          # This updates the web browser API
-          - text_sensor.template.publish:
-              id: web_time
-              state: !lambda 'return id(sntp_time).now().strftime("%H:%M");'
+          - script.execute: clock_refresh
+
+script:
+  - id: clock_refresh
+    then:
+      - if:
+          condition:
+            lambda: 'return id(sntp_time).now().is_valid();'
+          then:
+            - lvgl.label.update:
+                id: [main_time, rail_time]
+                text: !lambda 'return id(sntp_time).now().strftime("%H:%M");'
+            - lvgl.label.update:
+                id: main_date
+                text: !lambda 'return id(sntp_time).now().strftime("%A %d %B");'
+            - text_sensor.template.publish:
+                id: web_time
+                state: !lambda 'return id(sntp_time).now().strftime("%H:%M");'

@@ -1,20 +1,45 @@
-# Backlight
+# Backlight and idle behaviour.
+#   awake  -> 100%
+#   2 min idle  -> back to Home, dim to 20% (still readable as a hallway clock)
+#   15 min idle -> off
+# While dimmed or off, a transparent layer (wake_catcher in the LVGL top layer)
+# swallows the first touch so it can only wake the screen, never press a control.
 switch:
   - platform: template
     id: backlight
     restore_mode: ALWAYS_ON
     internal: true
+    optimistic: true
     turn_on_action:
-      - light.turn_on: display_backlight
+      - script.execute: screen_wake
     turn_off_action:
       - light.turn_off: display_backlight
 
-# Screensaver Presence Trigger (disabled for always-on kiosk behaviour)
+script:
+  - id: screen_wake
+    mode: restart
+    then:
+      - light.turn_on:
+          id: display_backlight
+          brightness: 100%
+  - id: screen_dim
+    mode: restart
+    then:
+      - lvgl.widget.show: wake_catcher
+      - lvgl.page.show: main_page
+      - light.turn_on:
+          id: display_backlight
+          brightness: 20%
+  - id: screen_off
+    mode: restart
+    then:
+      - lvgl.widget.show: wake_catcher
+      - light.turn_off: display_backlight
+
 binary_sensor:
   - platform: homeassistant
     id: presence
     entity_id: binary_sensor.presence_presence
     on_press:
-      - lvgl.resume:
-      - switch.turn_on: backlight
-
+      - lvgl.widget.hide: wake_catcher
+      - script.execute: screen_wake

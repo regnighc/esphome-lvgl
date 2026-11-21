@@ -1,41 +1,51 @@
-# The styles below use these fonts, to change the font size, change the size here
+# Fonts for the kiosk UI. One text family (Roboto) plus the dot-matrix clock face.
+# Big numeric sizes only carry the glyphs they need, to keep flash use down.
+substitutions:
+  roboto_file: "gfonts://Roboto"
+  clock_file: "gfonts://Bitcount Grid Single@300"
+
 font:
-  - file: "gfonts://Roboto"
-    id: statistics_font
-    size: 48
+  - file: ${roboto_file}
+    id: roboto_16
+    size: 16
     bpp: 4
-
-  - file: "gfonts://Roboto"
-    id: climate_font
-    size: 64 #72 #82
-    bpp: 4
-
-  - file: "gfonts://Roboto"
-    id: label_font
-    size: 22
-    bpp: 4
-
-  - file: "gfonts://Roboto"
-    id: clockbar_font
-    size: 20
-    bpp: 8
-    
-  - file: "gfonts://Bitcount Grid Single@300"
-    id: time_font
-    size: 92 #72
-    bpp: 4
-
-  - file: "gfonts://Roboto"
-    id: date_font
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["°·"]
+  - file: ${roboto_file}
+    id: roboto_18
     size: 18
     bpp: 4
-
-  - file: "gfonts://Roboto"
-    id: highlowtemp_font
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["°·"]
+  - file: ${roboto_file}
+    id: roboto_20
+    size: 20
+    bpp: 4
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["°·"]
+  - file: ${roboto_file}
+    id: roboto_22
     size: 22
     bpp: 4
-
-  - file: "gfonts://Roboto"
-    id: high_temp_font
-    size: 58
-    bpp: 8
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["°·"]
+  - file: ${roboto_file}
+    id: roboto_44
+    size: 44
+    bpp: 4
+    glyphs: ["0123456789:-. "]
+  - file: ${roboto_file}
+    id: roboto_64
+    size: 64
+    bpp: 4
+    glyphs: ["0123456789-.° "]
+  - file: ${roboto_file}
+    id: roboto_76
+    size: 76
+    bpp: 4
+    glyphs: ["0123456789-.° "]
+  - file: ${clock_file}
+    id: time_font
+    size: 92
+    bpp: 4
+    glyphs: ["0123456789:- "]
