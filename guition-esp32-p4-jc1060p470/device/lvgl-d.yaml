@@ -82,19 +82,7 @@ interval:
   # Link status in the nav rail.
   - interval: 15s
     then:
-      - if:
-          condition:
-            wifi.connected:
-          then:
-            - lvgl.label.update:
-                id: rail_wifi
-                text: "${ic_wifi}"
-                text_color: 0xA3ABB8
-          else:
-            - lvgl.label.update:
-                id: rail_wifi
-                text: "${ic_wifi_off}"
-                text_color: 0xFF6B6B
+      - script.execute: rail_status
       - if:
           condition:
             api.connected:
@@ -108,12 +96,27 @@ interval:
                 bg_color: 0xFF6B6B
 
 script:
+  # ---- Wi-Fi icon: normal colour comes from the theme, offline is a warning colour ----
+  - id: rail_status
+    then:
+      - lvgl.label.update:
+          id: rail_wifi
+          text: !lambda 'return std::string(wifi::global_wifi_component->is_connected() ? "${ic_wifi}" : "${ic_wifi_off}");'
+          text_color: !lambda |-
+            bool aurora = id(ui_theme).active_index().value_or(0) == 1;
+            if (!wifi::global_wifi_component->is_connected())
+              return aurora ? lv_color_hex(0x2A0F1E) : lv_color_hex(0xFF6B6B);
+            return aurora ? lv_color_hex(0xF1ECFF) : lv_color_hex(0xA3ABB8);
+
   # ---- Heating: +/- change the number at once, then send one call to HA ----
   - id: hvac_show_target
     then:
       - lvgl.label.update:
-          id: lbl_target_temp
+          id: [lbl_target_temp, lbl_target_ring]
           text: !lambda 'return str_sprintf("%.1f°", id(target_temp_val));'
+      - lvgl.arc.update:
+          id: heat_ring
+          value: !lambda 'return id(target_temp_val) * 10.0f;'
   - id: hvac_nudge
     parameters:
       delta: float
@@ -213,8 +216,7 @@ lvgl:
           y: 0
           width: 96
           height: 600
-          bg_opa: COVER
-          bg_color: 0x14171D
+          styles: st_rail
           scrollable: false
           widgets:
             - button:
@@ -223,14 +225,11 @@ lvgl:
                 y: 16
                 width: 80
                 height: 84
-                bg_opa: TRANSP
-                text_color: 0xA3ABB8
+                styles: st_nav
                 state:
                   checked: true
                 checked:
-                  bg_opa: COVER
-                  bg_color: 0x24324A
-                  text_color: 0x8DB8FF
+                  styles: st_nav_on
                 on_click:
                   - lvgl.page.show: main_page
                 widgets:
@@ -242,12 +241,9 @@ lvgl:
                 y: 108
                 width: 80
                 height: 84
-                bg_opa: TRANSP
-                text_color: 0xA3ABB8
+                styles: st_nav
                 checked:
-                  bg_opa: COVER
-                  bg_color: 0x24324A
-                  text_color: 0x8DB8FF
+                  styles: st_nav_on
                 on_click:
                   - lvgl.page.show: lighting_page
                 widgets:
@@ -259,12 +255,9 @@ lvgl:
                 y: 200
                 width: 80
                 height: 84
-                bg_opa: TRANSP
-                text_color: 0xA3ABB8
+                styles: st_nav
                 checked:
-                  bg_opa: COVER
-                  bg_color: 0x24324A
-                  text_color: 0x8DB8FF
+                  styles: st_nav_on
                 on_click:
                   - lvgl.page.show: cameras_page
                 widgets:
@@ -278,14 +271,14 @@ lvgl:
                 y: -84
                 hidden: true
                 text_font: roboto_20
-                text_color: 0xF1F3F6
+                styles: st_rail_hi
                 text: "--:--"
             - label:
                 id: rail_wifi
                 align: BOTTOM_MID
                 y: -44
                 text_font: mdi_28
-                text_color: 0xA3ABB8
+                styles: st_rail_lo
                 text: "${ic_wifi}"
             - obj:
                 id: rail_ha_dot
@@ -295,6 +288,7 @@ lvgl:
                 width: 10
                 height: 10
                 radius: 5
+                styles: st_dot
                 bg_opa: COVER
                 bg_color: 0xA3ABB8
             - label:
@@ -302,7 +296,7 @@ lvgl:
                 x: 8
                 y: -15
                 text_font: roboto_16
-                text_color: 0xA3ABB8
+                styles: st_rail_lo
                 text: "HA"
 
       # Shown while the screen is dimmed or off. It takes the first touch, so a
@@ -326,10 +320,8 @@ lvgl:
     # ==========================================================================
     - id: main_page
       scrollable: false
-      bg_opa: COVER
-      bg_color: 0x0D0F13
+      styles: st_page
       pad_all: 0
-      text_color: 0xF1F3F6
       on_load:
         - lvgl.widget.update: {id: nav_home, state: {checked: true}}
         - lvgl.widget.update: {id: [nav_lights, nav_cameras], state: {checked: false}}
@@ -340,14 +332,17 @@ lvgl:
             id: main_time
             x: 120
             y: 14
-            text_font: time_font
+            styles: st_clock
             text: "--:--"
+            clickable: true
+            on_long_press:
+              - script.execute: toggle_theme
         - label:
             id: main_date
             x: 122
             y: 112
+            styles: st_muted
             text_font: roboto_22
-            text_color: 0xA3ABB8
             text: " "
 
         # ---- Weather (right-aligned group) ----
@@ -372,7 +367,7 @@ lvgl:
                   text: "${weather_cloudy}"
               - label:
                   id: weather_temp
-                  text_font: roboto_64
+                  styles: st_wx_num
                   text: "--°"
               - obj:
                   width: SIZE_CONTENT
@@ -420,7 +415,7 @@ lvgl:
                         width: 56
                         height: 56
                         styles: st_chip
-                        checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                        checked: {styles: st_chip_on}
                         on_click:
                           - homeassistant.action:
                               action: light.toggle
@@ -457,7 +452,7 @@ lvgl:
                   styles: st_tile
                   scrollable: false
                   clickable: true
-                  pressed: {bg_color: 0x2E3440}
+                  pressed: {styles: st_tile_press}
                   on_click:
                     - homeassistant.action:
                         action: switch.toggle
@@ -473,7 +468,7 @@ lvgl:
                         styles: st_chip
                         clickable: false
                         scrollable: false
-                        checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                        checked: {styles: st_chip_on}
                         widgets:
                           - label: {align: CENTER, text_font: mdi_28, text: "${ic_lamp}"}
                     - label: {x: 84, y: 16, styles: st_name, text: "Hall lamp"}
@@ -488,7 +483,7 @@ lvgl:
                   styles: st_tile
                   scrollable: false
                   clickable: true
-                  pressed: {bg_color: 0x2E3440}
+                  pressed: {styles: st_tile_press}
                   on_click:
                     - homeassistant.action:
                         action: light.toggle
@@ -504,7 +499,7 @@ lvgl:
                         styles: st_chip
                         clickable: false
                         scrollable: false
-                        checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                        checked: {styles: st_chip_on}
                         widgets:
                           - label: {align: CENTER, text_font: mdi_28, text: "${ic_ceiling}"}
                     - label: {x: 84, y: 16, styles: st_name, text: "Living room"}
@@ -527,41 +522,124 @@ lvgl:
                   y: 16
                   styles: st_muted
                   text: "--"
-              - label:
-                  id: lbl_target_temp
-                  align: TOP_MID
-                  y: 48
-                  text_font: roboto_76
-                  text: "--.-°"
-              - label:
-                  id: lbl_current_temp
-                  align: TOP_MID
-                  y: 138
-                  styles: st_muted
-                  text_font: roboto_20
-                  text: "Now --°"
-              - button:
-                  x: 16
-                  y: 176
-                  width: 122
-                  height: 64
-                  on_click:
-                    - script.execute:
-                        id: hvac_nudge
-                        delta: -0.5
+              # Classic: big number, -/+ underneath
+              - obj:
+                  id: heat_classic
+                  x: 0
+                  y: 40
+                  width: 288
+                  height: 200
+                  clickable: false
+                  scrollable: false
                   widgets:
-                    - label: {align: CENTER, text_font: mdi_36, text: "${ic_minus}"}
-              - button:
-                  x: 150
-                  y: 176
-                  width: 122
-                  height: 64
-                  on_click:
-                    - script.execute:
-                        id: hvac_nudge
-                        delta: 0.5
+                    - label:
+                        id: lbl_target_temp
+                        align: TOP_MID
+                        y: 8
+                        text_font: roboto_76
+                        text: "--.-°"
+                    - label:
+                        id: lbl_current_temp
+                        align: TOP_MID
+                        y: 98
+                        styles: st_muted
+                        text_font: roboto_20
+                        text: "Now --°"
+                    - button:
+                        x: 16
+                        y: 136
+                        width: 122
+                        height: 64
+                        on_click:
+                          - script.execute:
+                              id: hvac_nudge
+                              delta: -0.5
+                        widgets:
+                          - label: {align: CENTER, text_font: mdi_36, text: "${ic_minus}"}
+                    - button:
+                        x: 150
+                        y: 136
+                        width: 122
+                        height: 64
+                        on_click:
+                          - script.execute:
+                              id: hvac_nudge
+                              delta: 0.5
+                        widgets:
+                          - label: {align: CENTER, text_font: mdi_36, text: "${ic_plus}"}
+
+              # Aurora: ring gauge (10-30 degrees) with -/+ either side
+              - obj:
+                  id: heat_aurora
+                  x: 0
+                  y: 40
+                  width: 288
+                  height: 200
+                  hidden: true
+                  clickable: false
+                  scrollable: false
                   widgets:
-                    - label: {align: CENTER, text_font: mdi_36, text: "${ic_plus}"}
+                    - arc:
+                        id: heat_ring
+                        x: 66
+                        y: 18
+                        width: 156
+                        height: 156
+                        min_value: 100
+                        max_value: 300
+                        value: 200
+                        adjustable: false
+                        clickable: false
+                        arc_width: 12
+                        arc_color: 0x4A5175
+                        arc_rounded: true
+                        indicator:
+                          arc_width: 12
+                          arc_color: 0xB06BEA
+                          arc_rounded: true
+                        knob:
+                          bg_opa: COVER
+                          bg_color: 0xFFFFFF
+                          pad_all: 3
+                          radius: 9
+                        widgets:
+                          - label:
+                              id: lbl_target_ring
+                              align: CENTER
+                              y: -2
+                              text_font: light_44
+                              text: "--.-°"
+                    - label:
+                        id: lbl_current_ring
+                        align: TOP_MID
+                        y: 156
+                        styles: st_muted
+                        text_font: roboto_20
+                        text: "Now --°"
+                    - button:
+                        x: 8
+                        y: 70
+                        width: 52
+                        height: 52
+                        radius: 26
+                        on_click:
+                          - script.execute:
+                              id: hvac_nudge
+                              delta: -0.5
+                        widgets:
+                          - label: {align: CENTER, text_font: mdi_28, text: "${ic_minus}"}
+                    - button:
+                        x: 228
+                        y: 70
+                        width: 52
+                        height: 52
+                        radius: 26
+                        on_click:
+                          - script.execute:
+                              id: hvac_nudge
+                              delta: 0.5
+                        widgets:
+                          - label: {align: CENTER, text_font: mdi_28, text: "${ic_plus}"}
 
               # Mode: three-way selector, the checked one is the live HVAC mode
               - obj:
@@ -578,10 +656,8 @@ lvgl:
                         y: 4
                         width: 80
                         height: 48
-                        radius: 12
-                        bg_opa: TRANSP
-                        text_color: 0xC9CFD9
-                        checked: {bg_opa: COVER, bg_color: 0xF1F3F6, text_color: 0x14171D}
+                        styles: st_seg
+                        checked: {styles: st_seg_on}
                         on_click:
                           - homeassistant.action:
                               action: climate.set_hvac_mode
@@ -596,10 +672,8 @@ lvgl:
                         y: 4
                         width: 80
                         height: 48
-                        radius: 12
-                        bg_opa: TRANSP
-                        text_color: 0xC9CFD9
-                        checked: {bg_opa: COVER, bg_color: 0xF1F3F6, text_color: 0x14171D}
+                        styles: st_seg
+                        checked: {styles: st_seg_on}
                         on_click:
                           - homeassistant.action:
                               action: climate.set_hvac_mode
@@ -614,10 +688,8 @@ lvgl:
                         y: 4
                         width: 80
                         height: 48
-                        radius: 12
-                        bg_opa: TRANSP
-                        text_color: 0xC9CFD9
-                        checked: {bg_opa: COVER, bg_color: 0xF1F3F6, text_color: 0x14171D}
+                        styles: st_seg
+                        checked: {styles: st_seg_on}
                         on_click:
                           - homeassistant.action:
                               action: climate.set_hvac_mode
@@ -633,7 +705,7 @@ lvgl:
                   y: 320
                   width: 256
                   height: 56
-                  checked: {bg_color: 0xFF8A3D, text_color: 0x2A1200}
+                  checked: {styles: st_boost_on}
                   layout:
                     type: flex
                     flex_flow: row
@@ -669,8 +741,7 @@ lvgl:
                   width: 256
                   height: 192
                   radius: 14
-                  bg_opa: COVER
-                  bg_color: 0x2A2F3A
+                  styles: st_media
                   clip_corner: true
                   scrollable: false
                   clickable: true
@@ -689,8 +760,7 @@ lvgl:
                         align: BOTTOM_LEFT
                         x: 8
                         y: -8
-                        bg_opa: COVER
-                        bg_color: 0x0D0F13
+                        styles: st_badge
                         radius: 10
                         pad_left: 10
                         pad_right: 10
@@ -719,8 +789,7 @@ lvgl:
                         width: 96
                         height: 72
                         radius: 12
-                        bg_opa: COVER
-                        bg_color: 0x2A2F3A
+                        styles: st_media
                         clip_corner: true
                         clickable: false
                         scrollable: false
@@ -737,9 +806,8 @@ lvgl:
                   y: 340
                   width: 256
                   height: 72
-                  bg_color: 0x35C27A
-                  text_color: 0x06210F
-                  pressed: {bg_color: 0x2AA366}
+                  styles: st_door
+                  pressed: {styles: st_door_press}
                   layout:
                     type: flex
                     flex_flow: row
@@ -758,10 +826,8 @@ lvgl:
     # ==========================================================================
     - id: lighting_page
       scrollable: false
-      bg_opa: COVER
-      bg_color: 0x0D0F13
+      styles: st_page
       pad_all: 0
-      text_color: 0xF1F3F6
       on_load:
         - lvgl.widget.update: {id: nav_lights, state: {checked: true}}
         - lvgl.widget.update: {id: [nav_home, nav_cameras], state: {checked: false}}
@@ -785,7 +851,7 @@ lvgl:
                   width: 56
                   height: 56
                   styles: st_chip
-                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  checked: {styles: st_chip_on}
                   on_click:
                     - homeassistant.action:
                         action: light.toggle
@@ -855,7 +921,7 @@ lvgl:
             styles: st_card
             scrollable: false
             clickable: true
-            pressed: {bg_color: 0x242832}
+            pressed: {styles: st_card_press}
             on_click:
               - homeassistant.action:
                   action: switch.toggle
@@ -871,7 +937,7 @@ lvgl:
                   styles: st_chip
                   clickable: false
                   scrollable: false
-                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  checked: {styles: st_chip_on}
                   widgets:
                     - label: {align: CENTER, text_font: mdi_28, text: "${ic_lamp}"}
               - label: {x: 88, y: 17, styles: st_name, text: "Lamp"}
@@ -896,7 +962,7 @@ lvgl:
                   width: 56
                   height: 56
                   styles: st_chip
-                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  checked: {styles: st_chip_on}
                   on_click:
                     - homeassistant.action:
                         action: light.toggle
@@ -940,7 +1006,7 @@ lvgl:
                   width: 56
                   height: 56
                   styles: st_chip
-                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  checked: {styles: st_chip_on}
                   on_click:
                     - homeassistant.action:
                         action: light.toggle
@@ -984,7 +1050,7 @@ lvgl:
                   width: 56
                   height: 56
                   styles: st_chip
-                  checked: {bg_color: 0xF2B53A, text_color: 0x241A02}
+                  checked: {styles: st_chip_on}
                   on_click:
                     - homeassistant.action:
                         action: light.toggle
@@ -1104,10 +1170,8 @@ lvgl:
     # ==========================================================================
     - id: cameras_page
       scrollable: false
-      bg_opa: COVER
-      bg_color: 0x0D0F13
+      styles: st_page
       pad_all: 0
-      text_color: 0xF1F3F6
       on_load:
         - lvgl.widget.update: {id: nav_cameras, state: {checked: true}}
         - lvgl.widget.update: {id: [nav_home, nav_lights], state: {checked: false}}
@@ -1121,8 +1185,7 @@ lvgl:
             width: 640
             height: 360
             radius: 16
-            bg_opa: COVER
-            bg_color: 0x1A1D24
+            styles: st_view
             clip_corner: true
             scrollable: false
             widgets:
@@ -1172,10 +1235,10 @@ lvgl:
             y: 16
             width: 240
             height: 84
-            bg_color: 0x1A1D24
+            styles: st_cam
             state:
               checked: true
-            checked: {bg_color: 0x24324A, text_color: 0x8DB8FF, border_width: 3, border_color: 0x5B9BFF}
+            checked: {styles: st_cam_on}
             on_click:
               - script.execute:
                   id: select_cam
@@ -1188,8 +1251,8 @@ lvgl:
             y: 112
             width: 240
             height: 84
-            bg_color: 0x1A1D24
-            checked: {bg_color: 0x24324A, text_color: 0x8DB8FF, border_width: 3, border_color: 0x5B9BFF}
+            styles: st_cam
+            checked: {styles: st_cam_on}
             on_click:
               - script.execute:
                   id: select_cam
@@ -1202,8 +1265,8 @@ lvgl:
             y: 208
             width: 240
             height: 84
-            bg_color: 0x1A1D24
-            checked: {bg_color: 0x24324A, text_color: 0x8DB8FF, border_width: 3, border_color: 0x5B9BFF}
+            styles: st_cam
+            checked: {styles: st_cam_on}
             on_click:
               - script.execute:
                   id: select_cam
@@ -1217,9 +1280,8 @@ lvgl:
             y: 448
             width: 240
             height: 136
-            bg_color: 0x35C27A
-            text_color: 0x06210F
-            pressed: {bg_color: 0x2AA366}
+            styles: st_door
+            pressed: {styles: st_door_press}
             on_long_press:
               - script.execute: door_open
             widgets:

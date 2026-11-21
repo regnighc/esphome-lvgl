@@ -82,7 +82,7 @@ sensor:
     entity_id: sensor.thermostat_current_temperature
     on_value:
       - lvgl.label.update:
-          id: lbl_current_temp
+          id: [lbl_current_temp, lbl_current_ring]
           text: !lambda 'return std::isnan(x) ? std::string("Now --°") : str_sprintf("Now %.1f°", x);'
 
 binary_sensor:

@@ -3,6 +3,7 @@
 substitutions:
   roboto_file: "gfonts://Roboto"
   clock_file: "gfonts://Bitcount Grid Single@300"
+  light_file: "gfonts://Roboto@300"   # Aurora theme numerals
 
 font:
   - file: ${roboto_file}
@@ -49,3 +50,20 @@ font:
     size: 92
     bpp: 4
     glyphs: ["0123456789:- "]
+
+  # ---- Aurora theme: light-weight numerals (digits only, so a few KB each) ----
+  - file: ${light_file}
+    id: clock_light
+    size: 92
+    bpp: 4
+    glyphs: ["0123456789:- "]
+  - file: ${light_file}
+    id: light_64
+    size: 64
+    bpp: 4
+    glyphs: ["0123456789-.° "]
+  - file: ${light_file}
+    id: light_44
+    size: 44
+    bpp: 4
+    glyphs: ["0123456789-.° "]

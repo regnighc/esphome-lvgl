@@ -1,0 +1,264 @@
+################################################################################
+# Themes
+#
+#   Classic  the original v2 look: near-black, amber lights, green door button
+#   Aurora   navy cards with soft shadows, purple -> pink gradients, light numerals
+#
+# How it works: every colour that differs between themes lives in a named style
+# below (st_*) or in the LVGL default theme (button, slider). `apply_theme`
+# rewrites those styles in place with lvgl.style.update / lvgl.theme.update, and
+# LVGL repaints every widget that uses them. No reflash or page rebuild needed.
+#
+# Pick the theme from Home Assistant (select "Theme"), or long-press the clock
+# on Home to flip between them. The choice survives a reboot.
+#
+# Adding a theme: copy the Aurora block of anchors, change the values, add the
+# option to the select and one more branch to apply_theme.
+################################################################################
+
+# ---------------------------------------------------------------- Classic ----
+# Values are anchors so the boot styles and the "switch back" branch share them.
+.classic: &classic
+  page:       &c_page       {bg_opa: COVER, bg_color: 0x0D0F13, text_color: 0xF1F3F6}
+  rail:       &c_rail       {bg_opa: COVER, bg_color: 0x14171D, bg_grad_color: 0x14171D, bg_grad_dir: NONE}
+  nav:        &c_nav        {bg_opa: TRANSP, bg_color: 0x24324A, text_color: 0xA3ABB8}
+  nav_on:     &c_nav_on     {bg_opa: COVER, bg_color: 0x24324A, text_color: 0x8DB8FF}
+  rail_hi:    &c_rail_hi    {text_color: 0xF1F3F6}
+  rail_lo:    &c_rail_lo    {text_color: 0xA3ABB8}
+  card:       &c_card       {bg_opa: COVER, bg_color: 0x1A1D24, radius: 20, shadow_width: 0, shadow_color: 0x000000, shadow_opa: TRANSP, shadow_ofs_y: 0}
+  card_press: &c_card_press {bg_color: 0x242832}
+  tile:       &c_tile       {bg_opa: COVER, bg_color: 0x242832, radius: 16}
+  tile_press: &c_tile_press {bg_color: 0x2E3440}
+  muted:      &c_muted      {text_color: 0xA3ABB8, text_font: roboto_18}
+  name:       &c_name       {text_color: 0xF1F3F6, text_font: roboto_22}
+  chip:       &c_chip       {bg_opa: COVER, bg_color: 0x3A404D, bg_grad_dir: NONE, text_color: 0xC9CFD9, text_font: mdi_28, radius: 28}
+  chip_on:    &c_chip_on    {bg_color: 0xF2B53A, bg_grad_color: 0xF2B53A, bg_grad_dir: NONE, text_color: 0x241A02}
+  seg:        &c_seg        {bg_opa: TRANSP, text_color: 0xC9CFD9, radius: 12}
+  seg_on:     &c_seg_on     {bg_opa: COVER, bg_color: 0xF1F3F6, bg_grad_color: 0xF1F3F6, bg_grad_dir: NONE, text_color: 0x14171D}
+  boost_on:   &c_boost_on   {bg_color: 0xFF8A3D, bg_grad_color: 0xFF8A3D, bg_grad_dir: NONE, text_color: 0x2A1200}
+  door:       &c_door       {bg_opa: COVER, bg_color: 0x35C27A, bg_grad_color: 0x35C27A, bg_grad_dir: NONE, text_color: 0x06210F}
+  door_press: &c_door_press {bg_color: 0x2AA366, bg_grad_color: 0x2AA366}
+  media:      &c_media      {bg_opa: COVER, bg_color: 0x2A2F3A}
+  view:       &c_view       {bg_opa: COVER, bg_color: 0x1A1D24}
+  badge:      &c_badge      {bg_opa: COVER, bg_color: 0x0D0F13, text_color: 0xF1F3F6}
+  cam:        &c_cam        {bg_opa: COVER, bg_color: 0x1A1D24, text_color: 0xF1F3F6, border_width: 0}
+  cam_on:     &c_cam_on     {bg_color: 0x24324A, bg_grad_color: 0x24324A, bg_grad_dir: NONE, text_color: 0x8DB8FF, border_width: 3, border_color: 0x5B9BFF}
+  clock:      &c_clock      {text_font: time_font}
+  wx_num:     &c_wx_num     {text_font: roboto_64}
+  dot:        &c_dot        {border_width: 0, border_color: 0x14171D}
+  button:     &c_button     {bg_color: 0x2E3440, text_color: 0xF1F3F6}
+  button_pr:  &c_button_pr  {bg_color: 0x454C5B}
+  slider:     &c_slider     {bg_color: 0x3A404D}
+  slider_ind: &c_slider_ind {bg_color: 0xF2B53A, bg_grad_color: 0xF2B53A, bg_grad_dir: NONE}
+
+# ----------------------------------------------------------------- Aurora ----
+#   ground 0x232840  card 0x2E3450  tile/control 0x3A4062  track 0x4A5175
+#   text 0xF3F4FA    muted 0xAEB5D3 accent 0x8B6CF6 -> 0xEC4F93
+.aurora: &aurora
+  page:       &a_page       {bg_opa: COVER, bg_color: 0x232840, text_color: 0xF3F4FA}
+  rail:       &a_rail       {bg_opa: COVER, bg_color: 0x8B6CF6, bg_grad_color: 0xE8508F, bg_grad_dir: VER}
+  nav:        &a_nav        {bg_opa: TRANSP, bg_color: 0xFFFFFF, text_color: 0xF1ECFF}
+  nav_on:     &a_nav_on     {bg_opa: 22%, bg_color: 0xFFFFFF, text_color: 0xFFFFFF}
+  rail_hi:    &a_rail_hi    {text_color: 0xFFFFFF}
+  rail_lo:    &a_rail_lo    {text_color: 0xF1ECFF}
+  card:       &a_card       {bg_opa: COVER, bg_color: 0x2E3450, radius: 20, shadow_width: 24, shadow_color: 0x12152A, shadow_opa: 80%, shadow_ofs_y: 10}
+  card_press: &a_card_press {bg_color: 0x3A4062}
+  tile:       &a_tile       {bg_opa: COVER, bg_color: 0x3A4062, radius: 16}
+  tile_press: &a_tile_press {bg_color: 0x454C70}
+  muted:      &a_muted      {text_color: 0xAEB5D3, text_font: roboto_18}
+  name:       &a_name       {text_color: 0xF3F4FA, text_font: roboto_22}
+  chip:       &a_chip       {bg_opa: COVER, bg_color: 0x4A5175, bg_grad_dir: NONE, text_color: 0xD6DAF0, text_font: mdi_28, radius: 28}
+  chip_on:    &a_chip_on    {bg_color: 0x8B6CF6, bg_grad_color: 0xEC4F93, bg_grad_dir: HOR, text_color: 0xFFFFFF}
+  seg:        &a_seg        {bg_opa: TRANSP, text_color: 0xC9CEE8, radius: 12}
+  seg_on:     &a_seg_on     {bg_opa: COVER, bg_color: 0x8B6CF6, bg_grad_color: 0xEC4F93, bg_grad_dir: HOR, text_color: 0xFFFFFF}
+  boost_on:   &a_boost_on   {bg_color: 0xFF9A52, bg_grad_color: 0xEC4F93, bg_grad_dir: HOR, text_color: 0x2A0F1E}
+  door:       &a_door       {bg_opa: COVER, bg_color: 0x8B6CF6, bg_grad_color: 0xEC4F93, bg_grad_dir: HOR, text_color: 0xFFFFFF}
+  door_press: &a_door_press {bg_color: 0x7458E0, bg_grad_color: 0xD23F80}
+  media:      &a_media      {bg_opa: COVER, bg_color: 0x3A4062}
+  view:       &a_view       {bg_opa: COVER, bg_color: 0x2E3450}
+  badge:      &a_badge      {bg_opa: COVER, bg_color: 0x232840, text_color: 0xFFFFFF}
+  cam:        &a_cam        {bg_opa: COVER, bg_color: 0x2E3450, text_color: 0xF3F4FA, border_width: 0}
+  cam_on:     &a_cam_on     {bg_color: 0x8B6CF6, bg_grad_color: 0xEC4F93, bg_grad_dir: HOR, text_color: 0xFFFFFF, border_width: 0, border_color: 0x5B9BFF}
+  clock:      &a_clock      {text_font: clock_light}
+  wx_num:     &a_wx_num     {text_font: light_64}
+  dot:        &a_dot        {border_width: 2, border_color: 0xFFFFFF}
+  button:     &a_button     {bg_color: 0x3A4062, text_color: 0xF3F4FA}
+  button_pr:  &a_button_pr  {bg_color: 0x4A5276}
+  slider:     &a_slider     {bg_color: 0x4A5175}
+  slider_ind: &a_slider_ind {bg_color: 0x8B6CF6, bg_grad_color: 0xEC4F93, bg_grad_dir: HOR}
+
+################################################################################
+lvgl:
+  theme:
+    obj:
+      bg_opa: TRANSP
+      border_width: 0
+      outline_width: 0
+      shadow_width: 0
+      radius: 0
+      pad_all: 0
+      text_color: 0xF1F3F6   # without this, labels inside cards inherit LVGL's dark default
+    button:
+      bg_opa: COVER
+      <<: *c_button
+      border_width: 0
+      outline_width: 0
+      shadow_width: 0
+      radius: 16
+      pad_all: 0
+      text_font: roboto_20
+      pressed: *c_button_pr
+    slider:
+      bg_opa: COVER
+      <<: *c_slider
+      radius: 14
+      border_width: 0
+      outline_width: 0
+      pad_all: 0
+      indicator:
+        bg_opa: COVER
+        <<: *c_slider_ind
+        radius: 14
+      knob:
+        bg_opa: COVER
+        bg_color: 0xF1F3F6
+        radius: 3
+        border_width: 0
+        shadow_width: 0
+        # Knob starts as a 52px square; shrink it to a 6 x 28 pill.
+        pad_left: -23
+        pad_right: -23
+        pad_top: -12
+        pad_bottom: -12
+
+  # Boot values = Classic. apply_theme overwrites them.
+  style_definitions:
+    - {id: st_page,       <<: *c_page}
+    - {id: st_rail,       <<: *c_rail}
+    - {id: st_nav,        <<: *c_nav}
+    - {id: st_nav_on,     <<: *c_nav_on}
+    - {id: st_rail_hi,    <<: *c_rail_hi}
+    - {id: st_rail_lo,    <<: *c_rail_lo}
+    - {id: st_card,       <<: *c_card}
+    - {id: st_card_press, <<: *c_card_press}
+    - {id: st_tile,       <<: *c_tile}
+    - {id: st_tile_press, <<: *c_tile_press}
+    - {id: st_muted,      <<: *c_muted}
+    - {id: st_name,       <<: *c_name}
+    - {id: st_chip,       <<: *c_chip}
+    - {id: st_chip_on,    <<: *c_chip_on}
+    - {id: st_seg,        <<: *c_seg}
+    - {id: st_seg_on,     <<: *c_seg_on}
+    - {id: st_boost_on,   <<: *c_boost_on}
+    - {id: st_door,       <<: *c_door}
+    - {id: st_door_press, <<: *c_door_press}
+    - {id: st_media,      <<: *c_media}
+    - {id: st_view,       <<: *c_view}
+    - {id: st_badge,      <<: *c_badge}
+    - {id: st_cam,        <<: *c_cam}
+    - {id: st_cam_on,     <<: *c_cam_on}
+    - {id: st_clock,      <<: *c_clock}
+    - {id: st_wx_num,     <<: *c_wx_num}
+    - {id: st_dot,        <<: *c_dot}
+
+################################################################################
+select:
+  - platform: template
+    id: ui_theme
+    name: "Theme"
+    icon: "mdi:palette-outline"
+    options: [Classic, Aurora]
+    initial_option: Classic
+    optimistic: true
+    restore_value: true
+    on_value:
+      - script.execute: apply_theme
+
+esphome:
+  on_boot:
+    - priority: -100     # after LVGL is up
+      then:
+        - script.execute: apply_theme
+
+script:
+  - id: apply_theme
+    mode: restart
+    then:
+      - if:
+          condition:
+            lambda: 'return id(ui_theme).active_index().value_or(0) == 1;'
+          then:
+            - lvgl.style.update: {id: st_page,       <<: *a_page}
+            - lvgl.style.update: {id: st_rail,       <<: *a_rail}
+            - lvgl.style.update: {id: st_nav,        <<: *a_nav}
+            - lvgl.style.update: {id: st_nav_on,     <<: *a_nav_on}
+            - lvgl.style.update: {id: st_rail_hi,    <<: *a_rail_hi}
+            - lvgl.style.update: {id: st_rail_lo,    <<: *a_rail_lo}
+            - lvgl.style.update: {id: st_card,       <<: *a_card}
+            - lvgl.style.update: {id: st_card_press, <<: *a_card_press}
+            - lvgl.style.update: {id: st_tile,       <<: *a_tile}
+            - lvgl.style.update: {id: st_tile_press, <<: *a_tile_press}
+            - lvgl.style.update: {id: st_muted,      <<: *a_muted}
+            - lvgl.style.update: {id: st_name,       <<: *a_name}
+            - lvgl.style.update: {id: st_chip,       <<: *a_chip}
+            - lvgl.style.update: {id: st_chip_on,    <<: *a_chip_on}
+            - lvgl.style.update: {id: st_seg,        <<: *a_seg}
+            - lvgl.style.update: {id: st_seg_on,     <<: *a_seg_on}
+            - lvgl.style.update: {id: st_boost_on,   <<: *a_boost_on}
+            - lvgl.style.update: {id: st_door,       <<: *a_door}
+            - lvgl.style.update: {id: st_door_press, <<: *a_door_press}
+            - lvgl.style.update: {id: st_media,      <<: *a_media}
+            - lvgl.style.update: {id: st_view,       <<: *a_view}
+            - lvgl.style.update: {id: st_badge,      <<: *a_badge}
+            - lvgl.style.update: {id: st_cam,        <<: *a_cam}
+            - lvgl.style.update: {id: st_cam_on,     <<: *a_cam_on}
+            - lvgl.style.update: {id: st_clock,      <<: *a_clock}
+            - lvgl.style.update: {id: st_wx_num,     <<: *a_wx_num}
+            - lvgl.style.update: {id: st_dot,        <<: *a_dot}
+            - lvgl.theme.update:
+                button: {<<: *a_button, pressed: *a_button_pr}
+                slider: {<<: *a_slider, indicator: *a_slider_ind}
+            # Aurora shows heating as a ring gauge
+            - lvgl.widget.hide: heat_classic
+            - lvgl.widget.show: heat_aurora
+            - script.execute: rail_status
+          else:
+            - lvgl.style.update: {id: st_page,       <<: *c_page}
+            - lvgl.style.update: {id: st_rail,       <<: *c_rail}
+            - lvgl.style.update: {id: st_nav,        <<: *c_nav}
+            - lvgl.style.update: {id: st_nav_on,     <<: *c_nav_on}
+            - lvgl.style.update: {id: st_rail_hi,    <<: *c_rail_hi}
+            - lvgl.style.update: {id: st_rail_lo,    <<: *c_rail_lo}
+            - lvgl.style.update: {id: st_card,       <<: *c_card}
+            - lvgl.style.update: {id: st_card_press, <<: *c_card_press}
+            - lvgl.style.update: {id: st_tile,       <<: *c_tile}
+            - lvgl.style.update: {id: st_tile_press, <<: *c_tile_press}
+            - lvgl.style.update: {id: st_muted,      <<: *c_muted}
+            - lvgl.style.update: {id: st_name,       <<: *c_name}
+            - lvgl.style.update: {id: st_chip,       <<: *c_chip}
+            - lvgl.style.update: {id: st_chip_on,    <<: *c_chip_on}
+            - lvgl.style.update: {id: st_seg,        <<: *c_seg}
+            - lvgl.style.update: {id: st_seg_on,     <<: *c_seg_on}
+            - lvgl.style.update: {id: st_boost_on,   <<: *c_boost_on}
+            - lvgl.style.update: {id: st_door,       <<: *c_door}
+            - lvgl.style.update: {id: st_door_press, <<: *c_door_press}
+            - lvgl.style.update: {id: st_media,      <<: *c_media}
+            - lvgl.style.update: {id: st_view,       <<: *c_view}
+            - lvgl.style.update: {id: st_badge,      <<: *c_badge}
+            - lvgl.style.update: {id: st_cam,        <<: *c_cam}
+            - lvgl.style.update: {id: st_cam_on,     <<: *c_cam_on}
+            - lvgl.style.update: {id: st_clock,      <<: *c_clock}
+            - lvgl.style.update: {id: st_wx_num,     <<: *c_wx_num}
+            - lvgl.style.update: {id: st_dot,        <<: *c_dot}
+            - lvgl.theme.update:
+                button: {<<: *c_button, pressed: *c_button_pr}
+                slider: {<<: *c_slider, indicator: *c_slider_ind}
+            - lvgl.widget.hide: heat_aurora
+            - lvgl.widget.show: heat_classic
+            - script.execute: rail_status
+
+  - id: toggle_theme
+    then:
+      - select.next:
+          id: ui_theme
+          cycle: true
