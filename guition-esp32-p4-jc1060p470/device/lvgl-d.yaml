@@ -96,6 +96,54 @@ interval:
                 bg_color: 0xFF6B6B
 
 script:
+  # ---- Hallway ceiling: always comes on warm white (2700 K) ----
+  # WiZ bulbs resume their last colour when turned on without one, so every
+  # off -> on sends color_temp_kelvin. While the light is already on, brightness
+  # changes leave the temperature alone so the Lights page Kelvin slider sticks.
+  # Static data values must be quoted strings (ESPHome requirement).
+  - id: hall_toggle
+    then:
+      - if:
+          condition:
+            lambda: 'return id(hall_state).state == "on";'
+          then:
+            - homeassistant.action:
+                action: light.turn_off
+                data:
+                  entity_id: light.hallway_overhead_group
+          else:
+            - homeassistant.action:
+                action: light.turn_on
+                data:
+                  entity_id: light.hallway_overhead_group
+                  color_temp_kelvin: "2700"
+  - id: hall_brightness
+    parameters:
+      pct: int
+    then:
+      - if:
+          condition:
+            lambda: 'return id(hall_state).state == "on";'
+          then:
+            - homeassistant.action:
+                action: light.turn_on
+                data:
+                  entity_id: light.hallway_overhead_group
+                data_template:
+                  brightness_pct: "{{ v }}"
+                variables:
+                  v: !lambda 'return pct;'
+          else:
+            - homeassistant.action:
+                action: light.turn_on
+                data:
+                  entity_id: light.hallway_overhead_group
+                  color_temp_kelvin: "2700"
+                data_template:
+                  brightness_pct: "{{ v }}"
+                variables:
+                  v: !lambda 'return pct;'
+
   # ---- Wi-Fi icon: normal colour comes from the theme, offline is a warning colour ----
   - id: rail_status
     then:
@@ -417,10 +465,7 @@ lvgl:
                         styles: st_chip
                         checked: {styles: st_chip_on}
                         on_click:
-                          - homeassistant.action:
-                              action: light.toggle
-                              data:
-                                entity_id: light.hallway_overhead_group
+                          - script.execute: hall_toggle
                         widgets:
                           - label: {align: CENTER, text_font: mdi_28, text: "${ic_ceiling}"}
                     - label: {x: 84, y: 16, styles: st_name, text: "Hallway"}
@@ -434,14 +479,9 @@ lvgl:
                         min_value: 0
                         max_value: 100
                         on_release:
-                          - homeassistant.action:
-                              action: light.turn_on
-                              data:
-                                entity_id: light.hallway_overhead_group
-                              data_template:
-                                brightness_pct: "{{ v }}"
-                              variables:
-                                v: !lambda 'return (int) x;'
+                          - script.execute:
+                              id: hall_brightness
+                              pct: !lambda 'return (int) x;'
 
               # Hall lamp (smart plug): whole tile toggles
               - obj:
@@ -853,10 +893,7 @@ lvgl:
                   styles: st_chip
                   checked: {styles: st_chip_on}
                   on_click:
-                    - homeassistant.action:
-                        action: light.toggle
-                        data:
-                          entity_id: light.hallway_overhead_group
+                    - script.execute: hall_toggle
                   widgets:
                     - label: {align: CENTER, text_font: mdi_28, text: "${ic_ceiling}"}
               - label: {x: 88, y: 17, styles: st_name, text: "Ceiling"}
@@ -870,14 +907,9 @@ lvgl:
                   min_value: 0
                   max_value: 100
                   on_release:
-                    - homeassistant.action:
-                        action: light.turn_on
-                        data:
-                          entity_id: light.hallway_overhead_group
-                        data_template:
-                          brightness_pct: "{{ v }}"
-                        variables:
-                          v: !lambda 'return (int) x;'
+                    - script.execute:
+                        id: hall_brightness
+                        pct: !lambda 'return (int) x;'
               # Colour temperature in Kelvin, warm on the left
               - slider:
                   id: lights_hall_temp
