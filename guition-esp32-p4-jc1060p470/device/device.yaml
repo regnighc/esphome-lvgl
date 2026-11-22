@@ -38,6 +38,7 @@ esphome:
   name: ${name}
   friendly_name: ${friendly_name}
   area: ${room}
+  compile_process_limit: 2
   on_boot:
     - priority: 100
       then:
