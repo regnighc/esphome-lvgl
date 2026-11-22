@@ -10,25 +10,25 @@ font:
     id: roboto_16
     size: 16
     bpp: 4
-    glyphsets: [GF_Latin_Kernel]
+    glyphsets: [GF_Latin_Core]   # accents in calendar entries and song titles
     glyphs: ["°·"]
   - file: ${roboto_file}
     id: roboto_18
     size: 18
     bpp: 4
-    glyphsets: [GF_Latin_Kernel]
+    glyphsets: [GF_Latin_Core]   # accents in calendar entries and song titles
     glyphs: ["°·"]
   - file: ${roboto_file}
     id: roboto_20
     size: 20
     bpp: 4
-    glyphsets: [GF_Latin_Kernel]
+    glyphsets: [GF_Latin_Core]   # accents in calendar entries and song titles
     glyphs: ["°·"]
   - file: ${roboto_file}
     id: roboto_22
     size: 22
     bpp: 4
-    glyphsets: [GF_Latin_Kernel]
+    glyphsets: [GF_Latin_Core]   # accents in calendar entries and song titles
     glyphs: ["°·"]
   - file: ${roboto_file}
     id: roboto_44

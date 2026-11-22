@@ -15,6 +15,18 @@ substitutions:
   ic_key:           "\U000F030B"
   ic_minus:         "\U000F0374"
   ic_plus:          "\U000F0415"
+  ic_calendar:      "\U000F0E17"
+  ic_train:         "\U000F04DF"
+  ic_music:         "\U000F075A"
+  ic_play:          "\U000F040A"
+  ic_pause:         "\U000F03E4"
+  ic_next:          "\U000F04AD"
+  ic_prev:          "\U000F04AE"
+  ic_speaker:       "\U000F04C3"
+  ic_vol_low:       "\U000F057F"
+  ic_vol_high:      "\U000F057E"
+  ic_playlist:      "\U000F0CB8"
+  ic_alert:         "\U000F05D6"
 
   weather_cloudy:              "\U000F0590"
   weather_fog:                 "\U000F0591"
@@ -53,6 +65,18 @@ font:
       - "\U000F030B"  # key-variant
       - "\U000F0374"  # minus
       - "\U000F0415"  # plus
+      - "\U000F0E17"  # calendar-month
+      - "\U000F04DF"  # subway-variant
+      - "\U000F075A"  # music
+      - "\U000F040A"  # play
+      - "\U000F03E4"  # pause
+      - "\U000F04AD"  # skip-next
+      - "\U000F04AE"  # skip-previous
+      - "\U000F04C3"  # speaker
+      - "\U000F057F"  # volume-low
+      - "\U000F057E"  # volume-high
+      - "\U000F0CB8"  # playlist-music
+      - "\U000F05D6"  # alert-circle-outline
   # Nav rail
   - file: ${icon_file}
     id: mdi_36
@@ -81,3 +105,4 @@ font:
       - "\U000F0F37"
       - "\U000F059D"
       - "\U000F059E"
+      - "\U000F075A"  # music (artwork placeholder)

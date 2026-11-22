@@ -108,6 +108,21 @@ api:
               lambda: 'return page == "lights";'
             then:
               - lvgl.page.show: lighting_page
+        - if:
+            condition:
+              lambda: 'return page == "events";'
+            then:
+              - lvgl.page.show: events_page
+        - if:
+            condition:
+              lambda: 'return page == "travel";'
+            then:
+              - lvgl.page.show: travel_page
+        - if:
+            condition:
+              lambda: 'return page == "music";'
+            then:
+              - lvgl.page.show: music_page
         # "b2c0" kept so existing HA automations still work: opens Cameras on the main entrance.
         - if:
             condition:

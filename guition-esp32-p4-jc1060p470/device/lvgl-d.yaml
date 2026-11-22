@@ -96,6 +96,21 @@ interval:
                 bg_color: 0xFF6B6B
 
 script:
+  # ---- Nav rail: highlight the current page; the small clock hides on Home ----
+  - id: nav_mark
+    parameters:
+      page: int
+    then:
+      - lambda: |-
+          lv_obj_t *nav[] = {id(nav_home), id(nav_lights), id(nav_cameras),
+                             id(nav_events), id(nav_travel), id(nav_music)};
+          for (int i = 0; i < 6; i++) {
+            if (i == page) lv_obj_add_state(nav[i], LV_STATE_CHECKED);
+            else lv_obj_remove_state(nav[i], LV_STATE_CHECKED);
+          }
+          if (page == 0) lv_obj_add_flag(id(rail_time), LV_OBJ_FLAG_HIDDEN);
+          else lv_obj_remove_flag(id(rail_time), LV_OBJ_FLAG_HIDDEN);
+
   # ---- Hallway ceiling: always comes on warm white (2700 K) ----
   # WiZ bulbs resume their last colour when turned on without one, so every
   # off -> on sends color_temp_kelvin. While the light is already on, brightness
@@ -199,6 +214,9 @@ script:
             t: !lambda 'return id(target_temp_val);'
 
   # ---- Door release ----
+  # One tap, like the old BUZZ DOOR button. The relay automation holds the
+  # switch for 3 s itself; mode: single ignores repeat taps during that time,
+  # and the wake catcher stops a wake-up tap from reaching this button.
   - id: door_open
     mode: single
     then:
@@ -212,7 +230,7 @@ script:
       - delay: 3s
       - lvgl.label.update:
           id: [home_door_lbl, cam_door_lbl]
-          text: "Hold to open"
+          text: "Open door"
 
   # ---- Camera selector ----
   - id: select_cam
@@ -253,7 +271,7 @@ lvgl:
     - my_display
   touchscreens:
     - touchscreen_id: my_touchscreen
-      long_press_time: 1s        # "Hold to open" needs a full second
+      long_press_time: 1s        # long-press the clock to flip theme
   on_idle:
     - timeout: 120s
       then:
@@ -276,12 +294,13 @@ lvgl:
           styles: st_rail
           scrollable: false
           widgets:
+            # Six destinations, 72 px each (6 x 78 = 468, clear of the status block below)
             - button:
                 id: nav_home
                 x: 8
-                y: 16
+                y: 12
                 width: 80
-                height: 84
+                height: 72
                 styles: st_nav
                 state:
                   checked: true
@@ -290,37 +309,78 @@ lvgl:
                 on_click:
                   - lvgl.page.show: main_page
                 widgets:
-                  - label: {align: TOP_MID, y: 10, text_font: mdi_36, text: "${ic_home}"}
-                  - label: {align: BOTTOM_MID, y: -10, text_font: roboto_16, text: "Home"}
+                  - label: {align: TOP_MID, y: 9, text_font: mdi_28, text: "${ic_home}"}
+                  - label: {align: BOTTOM_MID, y: -8, text_font: roboto_16, text: "Home"}
             - button:
                 id: nav_lights
                 x: 8
-                y: 108
+                y: 90
                 width: 80
-                height: 84
+                height: 72
                 styles: st_nav
                 checked:
                   styles: st_nav_on
                 on_click:
                   - lvgl.page.show: lighting_page
                 widgets:
-                  - label: {align: TOP_MID, y: 10, text_font: mdi_36, text: "${ic_lightbulb}"}
-                  - label: {align: BOTTOM_MID, y: -10, text_font: roboto_16, text: "Lights"}
+                  - label: {align: TOP_MID, y: 9, text_font: mdi_28, text: "${ic_lightbulb}"}
+                  - label: {align: BOTTOM_MID, y: -8, text_font: roboto_16, text: "Lights"}
             - button:
                 id: nav_cameras
                 x: 8
-                y: 200
+                y: 168
                 width: 80
-                height: 84
+                height: 72
                 styles: st_nav
                 checked:
                   styles: st_nav_on
                 on_click:
                   - lvgl.page.show: cameras_page
                 widgets:
-                  - label: {align: TOP_MID, y: 10, text_font: mdi_36, text: "${ic_cctv}"}
-                  - label: {align: BOTTOM_MID, y: -10, text_font: roboto_16, text: "Cameras"}
-
+                  - label: {align: TOP_MID, y: 9, text_font: mdi_28, text: "${ic_cctv}"}
+                  - label: {align: BOTTOM_MID, y: -8, text_font: roboto_16, text: "Cameras"}
+            - button:
+                id: nav_events
+                x: 8
+                y: 246
+                width: 80
+                height: 72
+                styles: st_nav
+                checked:
+                  styles: st_nav_on
+                on_click:
+                  - lvgl.page.show: events_page
+                widgets:
+                  - label: {align: TOP_MID, y: 9, text_font: mdi_28, text: "${ic_calendar}"}
+                  - label: {align: BOTTOM_MID, y: -8, text_font: roboto_16, text: "Events"}
+            - button:
+                id: nav_travel
+                x: 8
+                y: 324
+                width: 80
+                height: 72
+                styles: st_nav
+                checked:
+                  styles: st_nav_on
+                on_click:
+                  - lvgl.page.show: travel_page
+                widgets:
+                  - label: {align: TOP_MID, y: 9, text_font: mdi_28, text: "${ic_train}"}
+                  - label: {align: BOTTOM_MID, y: -8, text_font: roboto_16, text: "Travel"}
+            - button:
+                id: nav_music
+                x: 8
+                y: 402
+                width: 80
+                height: 72
+                styles: st_nav
+                checked:
+                  styles: st_nav_on
+                on_click:
+                  - lvgl.page.show: music_page
+                widgets:
+                  - label: {align: TOP_MID, y: 9, text_font: mdi_28, text: "${ic_music}"}
+                  - label: {align: BOTTOM_MID, y: -8, text_font: roboto_16, text: "Music"}
             # Small clock: hidden on Home, where the big clock already shows it.
             - label:
                 id: rail_time
@@ -380,9 +440,7 @@ lvgl:
       styles: st_page
       pad_all: 0
       on_load:
-        - lvgl.widget.update: {id: nav_home, state: {checked: true}}
-        - lvgl.widget.update: {id: [nav_lights, nav_cameras], state: {checked: false}}
-        - lvgl.widget.hide: rail_time
+        - script.execute: {id: nav_mark, page: 0}
       widgets:
         # ---- Clock and date ----
         - label:
@@ -864,11 +922,11 @@ lvgl:
                     flex_align_cross: center
                     flex_align_track: center
                     pad_column: 12
-                  on_long_press:
+                  on_click:
                     - script.execute: door_open
                   widgets:
                     - label: {text_font: mdi_28, text: "${ic_key}"}
-                    - label: {id: home_door_lbl, text_font: roboto_22, text: "Hold to open"}
+                    - label: {id: home_door_lbl, text_font: roboto_22, text: "Open door"}
 
     # ==========================================================================
     # LIGHTS  (row = chip | name + state | brightness | colour)
@@ -878,9 +936,7 @@ lvgl:
       styles: st_page
       pad_all: 0
       on_load:
-        - lvgl.widget.update: {id: nav_lights, state: {checked: true}}
-        - lvgl.widget.update: {id: [nav_home, nav_cameras], state: {checked: false}}
-        - lvgl.widget.show: rail_time
+        - script.execute: {id: nav_mark, page: 1}
       widgets:
         - label: {x: 120, y: 20, styles: st_muted, text: "Hallway"}
 
@@ -1074,6 +1130,81 @@ lvgl:
                           brightness_pct: "{{ v }}"
                         variables:
                           v: !lambda 'return (int) x;'
+              # Presets, one tap each. Static data values must be quoted strings.
+              # Kelvin is clamped by HA to what the bulb supports.
+              - button:
+                  x: 570
+                  y: 14
+                  width: 70
+                  height: 60
+                  radius: 14
+                  bg_color: 0xF4F7FF
+                  text_color: 0x14171D
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.livingroom_lamp
+                          brightness_pct: "100"
+                          color_temp_kelvin: "6500"
+                  widgets:
+                    - label: {align: TOP_MID, y: 7, text_font: roboto_20, text: "100%"}
+                    - label: {align: BOTTOM_MID, y: -7, text_font: roboto_16, text: "White"}
+              - button:
+                  x: 650
+                  y: 14
+                  width: 70
+                  height: 60
+                  radius: 14
+                  bg_color: 0xFFD08A
+                  text_color: 0x2A1A00
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.livingroom_lamp
+                          brightness_pct: "100"
+                          color_temp_kelvin: "2700"
+                  widgets:
+                    - label: {align: TOP_MID, y: 7, text_font: roboto_20, text: "100%"}
+                    - label: {align: BOTTOM_MID, y: -7, text_font: roboto_16, text: "Warm"}
+              - button:
+                  x: 730
+                  y: 14
+                  width: 70
+                  height: 60
+                  radius: 14
+                  bg_color: 0x8A6638
+                  text_color: 0xFFF4E5
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.livingroom_lamp
+                          brightness_pct: "10"
+                          color_temp_kelvin: "2700"
+                  widgets:
+                    - label: {align: TOP_MID, y: 7, text_font: roboto_20, text: "10%"}
+                    - label: {align: BOTTOM_MID, y: -7, text_font: roboto_16, text: "Warm"}
+              - button:
+                  x: 810
+                  y: 14
+                  width: 70
+                  height: 60
+                  radius: 14
+                  bg_color: 0x7F2FE0
+                  text_color: 0xFFFFFF
+                  on_click:
+                    - homeassistant.action:
+                        action: light.turn_on
+                        data:
+                          entity_id: light.livingroom_lamp
+                          brightness_pct: "20"
+                        data_template:
+                          rgb_color: "[127, 0, 255]"
+                  widgets:
+                    - label: {align: TOP_MID, y: 7, text_font: roboto_20, text: "20%"}
+                    - label: {align: BOTTOM_MID, y: -7, text_font: roboto_16, text: "Violet"}
 
         # ---- PC LEDs: brightness + six colour presets ----
         - obj:
@@ -1214,9 +1345,7 @@ lvgl:
       styles: st_page
       pad_all: 0
       on_load:
-        - lvgl.widget.update: {id: nav_cameras, state: {checked: true}}
-        - lvgl.widget.update: {id: [nav_home, nav_lights], state: {checked: false}}
-        - lvgl.widget.show: rail_time
+        - script.execute: {id: nav_mark, page: 2}
         - component.update: online_img_birdseye
       widgets:
         # ---- Large view (fits 16:9 or 4:3 inside 640 x 360) ----
@@ -1323,9 +1452,9 @@ lvgl:
             height: 136
             styles: st_door
             pressed: {styles: st_door_press}
-            on_long_press:
+            on_click:
               - script.execute: door_open
             widgets:
               - label: {align: TOP_MID, y: 24, text_font: mdi_36, text: "${ic_key}"}
-              - label: {id: cam_door_lbl, align: TOP_MID, y: 68, text_font: roboto_22, text: "Hold to open"}
+              - label: {id: cam_door_lbl, align: TOP_MID, y: 68, text_font: roboto_22, text: "Open door"}
               - label: {align: TOP_MID, y: 98, text_font: roboto_16, text: "Main entrance"}

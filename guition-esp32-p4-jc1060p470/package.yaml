@@ -12,6 +12,7 @@ packages:
   #lvgl: !include device/lvgl-b.yaml
   #lvgl: !include device/lvgl-c.yaml
   lvgl: !include device/lvgl-d.yaml   # UI v2: nav rail, Home / Lights / Cameras
+  pages_extra: !include device/lvgl-pages-extra.yaml   # Events / Travel / Music
   time: !include addon/time.yaml
   backlight: !include addon/backlight.yaml
   network: !include addon/network.yaml

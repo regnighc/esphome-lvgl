@@ -1,0 +1,1076 @@
+################################################################################
+# Events, Travel and Music pages
+#
+# Each page reads ONE Home Assistant sensor with a few text attributes, defined
+# in homeassistant/kiosk.yaml. Hook up the calendar, TfL and speakers there; this
+# file only draws what those attributes say.
+#
+#   sensor.kiosk_agenda  attr events     rows "when|time|title|where", one per line
+#   sensor.kiosk_tfl     state = "HH:MM" (last refresh)
+#                        attr lines       20 statuses "Good Service|Minor Delays|..."
+#                        attr disruptions plain text, one disruption per line
+#   sensor.kiosk_music   attr title, artist, state, volume (0-100), speaker (0-3),
+#                        attr speakers "A|B|C|D", playlists "a|b|c|d|e|f"
+#   script.kiosk_music   called with command + value for every button on Music
+################################################################################
+
+text_sensor:
+  # ---- Events ----
+  - platform: homeassistant
+    id: agenda_events
+    entity_id: sensor.kiosk_agenda
+    attribute: events
+    on_value:
+      - lambda: |-
+          auto field = [](const std::string &s, int n) -> std::string {
+            size_t a = 0;
+            for (int i = 0; i < n; i++) { a = s.find('|', a); if (a == std::string::npos) return ""; a++; }
+            size_t b = s.find('|', a);
+            return s.substr(a, b == std::string::npos ? std::string::npos : b - a);
+          };
+          lv_obj_t *row[]   = {id(ev0_row), id(ev1_row), id(ev2_row), id(ev3_row), id(ev4_row), id(ev5_row)};
+          lv_obj_t *when[]  = {id(ev0_when), id(ev1_when), id(ev2_when), id(ev3_when), id(ev4_when), id(ev5_when)};
+          lv_obj_t *tm[]    = {id(ev0_time), id(ev1_time), id(ev2_time), id(ev3_time), id(ev4_time), id(ev5_time)};
+          lv_obj_t *title[] = {id(ev0_title), id(ev1_title), id(ev2_title), id(ev3_title), id(ev4_title), id(ev5_title)};
+          lv_obj_t *where[] = {id(ev0_where), id(ev1_where), id(ev2_where), id(ev3_where), id(ev4_where), id(ev5_where)};
+          std::vector<std::string> rows;
+          size_t a = 0;
+          while (a <= x.size() && rows.size() < 6) {
+            size_t b = x.find('\n', a);
+            std::string r = x.substr(a, b == std::string::npos ? std::string::npos : b - a);
+            if (!r.empty()) rows.push_back(r);
+            if (b == std::string::npos) break;
+            a = b + 1;
+          }
+          for (int i = 0; i < 6; i++) {
+            if (i < (int) rows.size()) {
+              lv_label_set_text(when[i],  field(rows[i], 0).c_str());
+              lv_label_set_text(tm[i],    field(rows[i], 1).c_str());
+              lv_label_set_text(title[i], field(rows[i], 2).c_str());
+              lv_label_set_text(where[i], field(rows[i], 3).c_str());
+              lv_obj_remove_flag(row[i], LV_OBJ_FLAG_HIDDEN);
+            } else {
+              lv_obj_add_flag(row[i], LV_OBJ_FLAG_HIDDEN);
+            }
+          }
+          if (rows.empty()) {
+            lv_obj_remove_flag(id(ev_empty), LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(id(ev_next_title), "Nothing coming up");
+            lv_label_set_text(id(ev_next_time), "");
+          } else {
+            lv_obj_add_flag(id(ev_empty), LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(id(ev_next_title), field(rows[0], 2).c_str());
+            std::string t = field(rows[0], 0) + " " + field(rows[0], 1);
+            lv_label_set_text(id(ev_next_time), t.c_str());
+          }
+
+  # ---- Travel ----
+  - platform: homeassistant
+    id: tfl_lines
+    entity_id: sensor.kiosk_tfl
+    attribute: lines
+    on_value:
+      - lambda: |-
+          lv_obj_t *st[]  = {id(tfl_s0), id(tfl_s1), id(tfl_s2), id(tfl_s3), id(tfl_s4), id(tfl_s5), id(tfl_s6), id(tfl_s7), id(tfl_s8), id(tfl_s9), id(tfl_s10), id(tfl_s11), id(tfl_s12), id(tfl_s13), id(tfl_s14), id(tfl_s15), id(tfl_s16), id(tfl_s17), id(tfl_s18), id(tfl_s19)};
+          lv_obj_t *dot[] = {id(tfl_d0), id(tfl_d1), id(tfl_d2), id(tfl_d3), id(tfl_d4), id(tfl_d5), id(tfl_d6), id(tfl_d7), id(tfl_d8), id(tfl_d9), id(tfl_d10), id(tfl_d11), id(tfl_d12), id(tfl_d13), id(tfl_d14), id(tfl_d15), id(tfl_d16), id(tfl_d17), id(tfl_d18), id(tfl_d19)};
+          size_t a = 0;
+          for (int i = 0; i < 20; i++) {
+            std::string v;
+            if (a <= x.size()) {
+              size_t b = x.find('|', a);
+              v = x.substr(a, b == std::string::npos ? std::string::npos : b - a);
+              a = (b == std::string::npos) ? x.size() + 1 : b + 1;
+            }
+            uint32_t c;
+            bool good = false;
+            if (v.empty() || v == "unknown") { v = "No data"; c = 0x6B7280; }
+            else if (v.find("Good") != std::string::npos) { c = 0x35C27A; good = true; }
+            else if (v.find("Minor") != std::string::npos || v.find("Reduced") != std::string::npos ||
+                     v.find("Planned") != std::string::npos || v.find("Special") != std::string::npos) c = 0xF2B53A;
+            else c = 0xFF6B6B;
+            lv_label_set_text(st[i], v.c_str());
+            lv_obj_set_style_bg_color(dot[i], lv_color_hex(c), 0);
+            // Problems are written in the status colour; good service stays muted (theme colour).
+            if (good) lv_obj_remove_local_style_prop(st[i], LV_STYLE_TEXT_COLOR, 0);
+            else lv_obj_set_style_text_color(st[i], lv_color_hex(c), 0);
+          }
+  - platform: homeassistant
+    id: tfl_disruptions
+    entity_id: sensor.kiosk_tfl
+    attribute: disruptions
+    on_value:
+      - lvgl.label.update:
+          id: tfl_disrupt
+          text: !lambda 'return x.empty() ? std::string("No disruptions reported.") : x;'
+  - platform: homeassistant
+    id: tfl_updated
+    entity_id: sensor.kiosk_tfl
+    on_value:
+      - lvgl.label.update:
+          id: tfl_updated_lbl
+          text: !lambda 'return "Updated " + x;'
+
+  # ---- Music ----
+  - platform: homeassistant
+    id: music_title
+    entity_id: sensor.kiosk_music
+    attribute: title
+    on_value:
+      - lvgl.label.update:
+          id: mu_title
+          text: !lambda 'return x.empty() ? std::string("Nothing playing") : x;'
+  - platform: homeassistant
+    id: music_artist
+    entity_id: sensor.kiosk_music
+    attribute: artist
+    on_value:
+      - lvgl.label.update: {id: mu_artist, text: !lambda 'return x;'}
+  - platform: homeassistant
+    id: music_state
+    entity_id: sensor.kiosk_music
+    attribute: state
+    on_value:
+      - lvgl.label.update:
+          id: mu_play_icon
+          text: !lambda 'return std::string(x == "playing" ? "${ic_pause}" : "${ic_play}");'
+      - lvgl.label.update:
+          id: mu_state
+          text: !lambda |-
+            if (x == "playing") return std::string("Playing");
+            if (x == "paused") return std::string("Paused");
+            if (x == "idle" || x == "on") return std::string("Ready");
+            if (x == "off" || x == "standby") return std::string("Speaker off");
+            return std::string("Not connected");
+  - platform: homeassistant
+    id: music_speakers
+    entity_id: sensor.kiosk_music
+    attribute: speakers
+    on_value:
+      - lambda: |-
+          lv_obj_t *lbl[] = {id(spk_l0), id(spk_l1), id(spk_l2), id(spk_l3)};
+          lv_obj_t *btn[] = {id(spk_b0), id(spk_b1), id(spk_b2), id(spk_b3)};
+          size_t a = 0;
+          for (int i = 0; i < 4; i++) {
+            std::string v;
+            if (a <= x.size()) {
+              size_t b = x.find('|', a);
+              v = x.substr(a, b == std::string::npos ? std::string::npos : b - a);
+              a = (b == std::string::npos) ? x.size() + 1 : b + 1;
+            }
+            lv_label_set_text(lbl[i], v.c_str());
+            if (v.empty()) lv_obj_add_flag(btn[i], LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_remove_flag(btn[i], LV_OBJ_FLAG_HIDDEN);
+          }
+      - script.execute: music_show_speaker
+  - platform: homeassistant
+    id: music_playlists
+    entity_id: sensor.kiosk_music
+    attribute: playlists
+    on_value:
+      - lambda: |-
+          lv_obj_t *lbl[] = {id(pl_l0), id(pl_l1), id(pl_l2), id(pl_l3), id(pl_l4), id(pl_l5)};
+          lv_obj_t *btn[] = {id(pl_b0), id(pl_b1), id(pl_b2), id(pl_b3), id(pl_b4), id(pl_b5)};
+          size_t a = 0;
+          for (int i = 0; i < 6; i++) {
+            std::string v;
+            if (a <= x.size()) {
+              size_t b = x.find('|', a);
+              v = x.substr(a, b == std::string::npos ? std::string::npos : b - a);
+              a = (b == std::string::npos) ? x.size() + 1 : b + 1;
+            }
+            lv_label_set_text(lbl[i], v.c_str());
+            if (v.empty()) lv_obj_add_flag(btn[i], LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_remove_flag(btn[i], LV_OBJ_FLAG_HIDDEN);
+          }
+
+sensor:
+  - platform: homeassistant
+    id: music_volume
+    entity_id: sensor.kiosk_music
+    attribute: volume
+    on_value:
+      - if:
+          condition:
+            lambda: 'return !std::isnan(x);'
+          then:
+            - lvgl.slider.update: {id: mu_volume, value: !lambda 'return x;'}
+  - platform: homeassistant
+    id: music_speaker_idx
+    entity_id: sensor.kiosk_music
+    attribute: speaker
+    on_value:
+      - if:
+          condition:
+            lambda: 'return !std::isnan(x);'
+          then:
+            - globals.set: {id: music_speaker, value: !lambda 'return (int) x;'}
+            - script.execute: music_show_speaker
+
+globals:
+  - id: music_speaker
+    type: int
+    restore_value: false
+    initial_value: '0'
+
+script:
+  # Every Music control goes through one HA script (homeassistant/kiosk.yaml).
+  - id: music_cmd
+    parameters:
+      command: string
+      value: int
+    then:
+      - homeassistant.action:
+          action: script.kiosk_music
+          data_template:
+            command: "{{ c }}"
+            value: "{{ v }}"
+          variables:
+            c: !lambda 'return command;'
+            v: !lambda 'return value;'
+  - id: music_show_speaker
+    then:
+      - lambda: |-
+          lv_obj_t *btn[] = {id(spk_b0), id(spk_b1), id(spk_b2), id(spk_b3)};
+          lv_obj_t *lbl[] = {id(spk_l0), id(spk_l1), id(spk_l2), id(spk_l3)};
+          int s = id(music_speaker);
+          for (int i = 0; i < 4; i++) {
+            if (i == s) lv_obj_add_state(btn[i], LV_STATE_CHECKED);
+            else lv_obj_remove_state(btn[i], LV_STATE_CHECKED);
+          }
+          if (s >= 0 && s < 4) {
+            std::string t = std::string("on ") + lv_label_get_text(lbl[s]);
+            lv_label_set_text(id(mu_where), t.c_str());
+          }
+  - id: events_show_date
+    then:
+      - if:
+          condition:
+            lambda: 'return id(sntp_time).now().is_valid();'
+          then:
+            - lvgl.label.update:
+                id: ev_weekday
+                text: !lambda 'return id(sntp_time).now().strftime("%A");'
+            - lvgl.label.update:
+                id: ev_daynum
+                text: !lambda 'return id(sntp_time).now().strftime("%d");'
+            - lvgl.label.update:
+                id: ev_month
+                text: !lambda 'return id(sntp_time).now().strftime("%B %Y");'
+
+lvgl:
+  pages:
+    # ==========================================================================
+    # EVENTS  (Google Calendar via HA: next six entries)
+    # ==========================================================================
+    - id: events_page
+      scrollable: false
+      styles: st_page
+      pad_all: 0
+      on_load:
+        - script.execute: {id: nav_mark, page: 3}
+        - script.execute: events_show_date
+      widgets:
+        - obj:
+            x: 112
+            y: 16
+            width: 280
+            height: 568
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {id: ev_weekday, x: 24, y: 24, styles: st_muted, text_font: roboto_22, text: " "}
+              - label: {id: ev_daynum, x: 22, y: 54, text_font: roboto_76, text: "--"}
+              - label: {id: ev_month, x: 24, y: 142, styles: st_name, text: " "}
+              - obj: {x: 24, y: 196, width: 232, height: 2, styles: st_tile, radius: 1}
+              - label: {x: 24, y: 218, styles: st_muted, text: "Next up"}
+              - label: {id: ev_next_time, x: 24, y: 248, width: 232, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label:
+                  id: ev_next_title
+                  x: 24
+                  y: 278
+                  width: 232
+                  height: 116
+                  long_mode: DOT
+                  styles: st_name
+                  text: "Waiting for calendar..."
+              - label:
+                  x: 24
+                  y: 516
+                  styles: st_muted
+                  text_font: roboto_16
+                  text: "Google Calendar"
+        - label:
+            id: ev_empty
+            x: 408
+            y: 250
+            width: 600
+            text_align: CENTER
+            styles: st_muted
+            text_font: roboto_22
+            text: "No upcoming events"
+        - obj:
+            id: ev0_row
+            x: 408
+            y: 16
+            width: 600
+            height: 86
+            styles: st_card
+            hidden: true
+            scrollable: false
+            widgets:
+              - label: {id: ev0_when, x: 20, y: 14, width: 110, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label: {id: ev0_time, x: 20, y: 44, width: 110, height: 28, long_mode: DOT, text_font: roboto_22, text: " "}
+              - label: {id: ev0_title, x: 140, y: 14, width: 440, height: 28, long_mode: DOT, styles: st_name, text: " "}
+              - label: {id: ev0_where, x: 140, y: 46, width: 440, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+        - obj:
+            id: ev1_row
+            x: 408
+            y: 110
+            width: 600
+            height: 86
+            styles: st_card
+            hidden: true
+            scrollable: false
+            widgets:
+              - label: {id: ev1_when, x: 20, y: 14, width: 110, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label: {id: ev1_time, x: 20, y: 44, width: 110, height: 28, long_mode: DOT, text_font: roboto_22, text: " "}
+              - label: {id: ev1_title, x: 140, y: 14, width: 440, height: 28, long_mode: DOT, styles: st_name, text: " "}
+              - label: {id: ev1_where, x: 140, y: 46, width: 440, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+        - obj:
+            id: ev2_row
+            x: 408
+            y: 204
+            width: 600
+            height: 86
+            styles: st_card
+            hidden: true
+            scrollable: false
+            widgets:
+              - label: {id: ev2_when, x: 20, y: 14, width: 110, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label: {id: ev2_time, x: 20, y: 44, width: 110, height: 28, long_mode: DOT, text_font: roboto_22, text: " "}
+              - label: {id: ev2_title, x: 140, y: 14, width: 440, height: 28, long_mode: DOT, styles: st_name, text: " "}
+              - label: {id: ev2_where, x: 140, y: 46, width: 440, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+        - obj:
+            id: ev3_row
+            x: 408
+            y: 298
+            width: 600
+            height: 86
+            styles: st_card
+            hidden: true
+            scrollable: false
+            widgets:
+              - label: {id: ev3_when, x: 20, y: 14, width: 110, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label: {id: ev3_time, x: 20, y: 44, width: 110, height: 28, long_mode: DOT, text_font: roboto_22, text: " "}
+              - label: {id: ev3_title, x: 140, y: 14, width: 440, height: 28, long_mode: DOT, styles: st_name, text: " "}
+              - label: {id: ev3_where, x: 140, y: 46, width: 440, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+        - obj:
+            id: ev4_row
+            x: 408
+            y: 392
+            width: 600
+            height: 86
+            styles: st_card
+            hidden: true
+            scrollable: false
+            widgets:
+              - label: {id: ev4_when, x: 20, y: 14, width: 110, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label: {id: ev4_time, x: 20, y: 44, width: 110, height: 28, long_mode: DOT, text_font: roboto_22, text: " "}
+              - label: {id: ev4_title, x: 140, y: 14, width: 440, height: 28, long_mode: DOT, styles: st_name, text: " "}
+              - label: {id: ev4_where, x: 140, y: 46, width: 440, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+        - obj:
+            id: ev5_row
+            x: 408
+            y: 486
+            width: 600
+            height: 86
+            styles: st_card
+            hidden: true
+            scrollable: false
+            widgets:
+              - label: {id: ev5_when, x: 20, y: 14, width: 110, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label: {id: ev5_time, x: 20, y: 44, width: 110, height: 28, long_mode: DOT, text_font: roboto_22, text: " "}
+              - label: {id: ev5_title, x: 140, y: 14, width: 440, height: 28, long_mode: DOT, styles: st_name, text: " "}
+              - label: {id: ev5_where, x: 140, y: 46, width: 440, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+
+    # ==========================================================================
+    # TRAVEL  (TfL line status + other major disruptions)
+    # ==========================================================================
+    - id: travel_page
+      scrollable: false
+      styles: st_page
+      pad_all: 0
+      on_load:
+        - script.execute: {id: nav_mark, page: 4}
+      widgets:
+        - label: {x: 120, y: 18, styles: st_muted, text: "Tube, Elizabeth line, DLR, Overground and trams"}
+        - label: {id: tfl_updated_lbl, align: TOP_RIGHT, x: -20, y: 18, styles: st_muted, text: "Updated --:--"}
+        - obj:
+            x: 112
+            y: 52
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0xB36305
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Bakerloo"}
+              - label: {id: tfl_s0, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d0, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 339
+            y: 52
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0xE32017
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Central"}
+              - label: {id: tfl_s1, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d1, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 566
+            y: 52
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0xFFD300
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Circle"}
+              - label: {id: tfl_s2, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d2, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 793
+            y: 52
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x00782A
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "District"}
+              - label: {id: tfl_s3, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d3, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 112
+            y: 124
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0xF3A9BB
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Hammersmith & City"}
+              - label: {id: tfl_s4, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d4, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 339
+            y: 124
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0xA0A5A9
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Jubilee"}
+              - label: {id: tfl_s5, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d5, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 566
+            y: 124
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x9B0056
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Metropolitan"}
+              - label: {id: tfl_s6, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d6, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 793
+            y: 124
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x000000
+                  border_width: 1
+                  border_color: 0x6B7280
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Northern"}
+              - label: {id: tfl_s7, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d7, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 112
+            y: 196
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x003688
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Piccadilly"}
+              - label: {id: tfl_s8, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d8, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 339
+            y: 196
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x0098D4
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Victoria"}
+              - label: {id: tfl_s9, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d9, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 566
+            y: 196
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x95CDBA
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Waterloo & City"}
+              - label: {id: tfl_s10, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d10, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 793
+            y: 196
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x6950A1
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Elizabeth line"}
+              - label: {id: tfl_s11, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d11, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 112
+            y: 268
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x00A4A7
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "DLR"}
+              - label: {id: tfl_s12, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d12, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 339
+            y: 268
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x61686B
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Liberty"}
+              - label: {id: tfl_s13, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d13, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 566
+            y: 268
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0xFFA600
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Lioness"}
+              - label: {id: tfl_s14, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d14, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 793
+            y: 268
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x006FE6
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Mildmay"}
+              - label: {id: tfl_s15, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d15, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 112
+            y: 340
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x18A95D
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Suffragette"}
+              - label: {id: tfl_s16, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d16, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 339
+            y: 340
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x893B67
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Weaver"}
+              - label: {id: tfl_s17, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d17, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 566
+            y: 340
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0xDC241F
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Windrush"}
+              - label: {id: tfl_s18, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d18, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 793
+            y: 340
+            width: 215
+            height: 62
+            styles: st_card
+            radius: 14
+            clip_corner: true
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 0
+                  y: 0
+                  width: 8
+                  height: 62
+                  bg_opa: COVER
+                  bg_color: 0x5FB526
+              - label: {x: 20, y: 8, width: 187, height: 24, long_mode: DOT, styles: st_name, text_font: roboto_18, text: "Trams"}
+              - label: {id: tfl_s19, x: 20, y: 34, width: 160, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: "--"}
+              - obj: {id: tfl_d19, align: TOP_RIGHT, x: -14, y: 39, width: 12, height: 12, radius: 6, bg_opa: COVER, bg_color: 0x6B7280}
+        - obj:
+            x: 112
+            y: 414
+            width: 896
+            height: 170
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {x: 20, y: 16, text_font: mdi_28, styles: st_muted, text: "${ic_alert}"}
+              - label: {x: 58, y: 20, styles: st_muted, text: "Disruptions"}
+              - label:
+                  id: tfl_disrupt
+                  x: 20
+                  y: 56
+                  width: 856
+                  height: 100
+                  long_mode: DOT
+                  text_font: roboto_18
+                  text: "Waiting for TfL status..."
+
+    # ==========================================================================
+    # MUSIC  (Spotify / Google / Alexa speakers via HA script.kiosk_music)
+    # ==========================================================================
+    - id: music_page
+      scrollable: false
+      styles: st_page
+      pad_all: 0
+      on_load:
+        - script.execute: {id: nav_mark, page: 5}
+      widgets:
+        # ---- Now playing ----
+        - obj:
+            x: 112
+            y: 16
+            width: 440
+            height: 356
+            styles: st_card
+            scrollable: false
+            widgets:
+              - obj:
+                  x: 20
+                  y: 20
+                  width: 140
+                  height: 140
+                  radius: 16
+                  styles: st_media
+                  scrollable: false
+                  widgets:
+                    - label: {align: CENTER, styles: st_muted, text_font: mdi_72, text: "${ic_music}"}
+              - label:
+                  id: mu_title
+                  x: 180
+                  y: 26
+                  width: 240
+                  height: 58
+                  long_mode: DOT
+                  styles: st_name
+                  text: "Nothing playing"
+              - label: {id: mu_artist, x: 180, y: 92, width: 240, height: 24, long_mode: DOT, styles: st_muted, text: " "}
+              - label: {id: mu_where, x: 180, y: 124, width: 240, height: 22, long_mode: DOT, styles: st_muted, text_font: roboto_16, text: " "}
+              - button:
+                  x: 60
+                  y: 196
+                  width: 88
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: previous, value: 0}
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_36, text: "${ic_prev}"}
+              - button:
+                  x: 176
+                  y: 188
+                  width: 88
+                  height: 80
+                  radius: 40
+                  styles: st_door
+                  on_click:
+                    - script.execute: {id: music_cmd, command: play_pause, value: 0}
+                  widgets:
+                    - label: {id: mu_play_icon, align: CENTER, text_font: mdi_36, text: "${ic_play}"}
+              - button:
+                  x: 292
+                  y: 196
+                  width: 88
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: next, value: 0}
+                  widgets:
+                    - label: {align: CENTER, text_font: mdi_36, text: "${ic_next}"}
+              - label: {x: 20, y: 296, styles: st_muted, text_font: mdi_28, text: "${ic_vol_low}"}
+              - slider:
+                  id: mu_volume
+                  x: 60
+                  y: 288
+                  width: 320
+                  height: 44
+                  min_value: 0
+                  max_value: 100
+                  on_release:
+                    - script.execute: {id: music_cmd, command: volume, value: !lambda 'return (int) x;'}
+              - label: {x: 392, y: 296, styles: st_muted, text_font: mdi_28, text: "${ic_vol_high}"}
+
+        # ---- Speakers ----
+        - obj:
+            x: 568
+            y: 16
+            width: 440
+            height: 216
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {x: 20, y: 16, styles: st_muted, text: "Play on"}
+              - button:
+                  id: spk_b0
+                  x: 20
+                  y: 52
+                  width: 196
+                  height: 72
+                  styles: st_cam
+                  checked: {styles: st_cam_on}
+                  on_click:
+                    - globals.set: {id: music_speaker, value: '0'}
+                    - script.execute: music_show_speaker
+                    - script.execute: {id: music_cmd, command: speaker, value: 0}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 14, text_font: mdi_28, text: "${ic_speaker}"}
+                    - label: {id: spk_l0, align: LEFT_MID, x: 50, width: 136, height: 26, long_mode: DOT, text_font: roboto_20, text: "Speaker 1"}
+              - button:
+                  id: spk_b1
+                  x: 224
+                  y: 52
+                  width: 196
+                  height: 72
+                  styles: st_cam
+                  checked: {styles: st_cam_on}
+                  on_click:
+                    - globals.set: {id: music_speaker, value: '1'}
+                    - script.execute: music_show_speaker
+                    - script.execute: {id: music_cmd, command: speaker, value: 1}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 14, text_font: mdi_28, text: "${ic_speaker}"}
+                    - label: {id: spk_l1, align: LEFT_MID, x: 50, width: 136, height: 26, long_mode: DOT, text_font: roboto_20, text: "Speaker 2"}
+              - button:
+                  id: spk_b2
+                  x: 20
+                  y: 132
+                  width: 196
+                  height: 72
+                  styles: st_cam
+                  checked: {styles: st_cam_on}
+                  on_click:
+                    - globals.set: {id: music_speaker, value: '2'}
+                    - script.execute: music_show_speaker
+                    - script.execute: {id: music_cmd, command: speaker, value: 2}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 14, text_font: mdi_28, text: "${ic_speaker}"}
+                    - label: {id: spk_l2, align: LEFT_MID, x: 50, width: 136, height: 26, long_mode: DOT, text_font: roboto_20, text: "Speaker 3"}
+              - button:
+                  id: spk_b3
+                  x: 224
+                  y: 132
+                  width: 196
+                  height: 72
+                  styles: st_cam
+                  checked: {styles: st_cam_on}
+                  on_click:
+                    - globals.set: {id: music_speaker, value: '3'}
+                    - script.execute: music_show_speaker
+                    - script.execute: {id: music_cmd, command: speaker, value: 3}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 14, text_font: mdi_28, text: "${ic_speaker}"}
+                    - label: {id: spk_l3, align: LEFT_MID, x: 50, width: 136, height: 26, long_mode: DOT, text_font: roboto_20, text: "Speaker 4"}
+
+        # ---- Status ----
+        - obj:
+            x: 568
+            y: 248
+            width: 440
+            height: 124
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {id: mu_state, x: 20, y: 22, styles: st_name, text: "Not connected"}
+              - label:
+                  x: 20
+                  y: 58
+                  width: 400
+                  long_mode: WRAP
+                  styles: st_muted
+                  text: "Pick a speaker, then a playlist below."
+
+        # ---- Playlists (names come from HA) ----
+        - obj:
+            x: 112
+            y: 384
+            width: 896
+            height: 200
+            styles: st_card
+            scrollable: false
+            widgets:
+              - label: {x: 20, y: 14, styles: st_muted, text: "Playlists"}
+              - button:
+                  id: pl_b0
+                  x: 20
+                  y: 46
+                  width: 280
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: playlist, value: 0}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 16, text_font: mdi_28, text: "${ic_playlist}"}
+                    - label: {id: pl_l0, align: LEFT_MID, x: 56, width: 210, height: 26, long_mode: DOT, text_font: roboto_20, text: "Playlist 1"}
+              - button:
+                  id: pl_b1
+                  x: 312
+                  y: 46
+                  width: 280
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: playlist, value: 1}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 16, text_font: mdi_28, text: "${ic_playlist}"}
+                    - label: {id: pl_l1, align: LEFT_MID, x: 56, width: 210, height: 26, long_mode: DOT, text_font: roboto_20, text: "Playlist 2"}
+              - button:
+                  id: pl_b2
+                  x: 604
+                  y: 46
+                  width: 280
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: playlist, value: 2}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 16, text_font: mdi_28, text: "${ic_playlist}"}
+                    - label: {id: pl_l2, align: LEFT_MID, x: 56, width: 210, height: 26, long_mode: DOT, text_font: roboto_20, text: "Playlist 3"}
+              - button:
+                  id: pl_b3
+                  x: 20
+                  y: 122
+                  width: 280
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: playlist, value: 3}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 16, text_font: mdi_28, text: "${ic_playlist}"}
+                    - label: {id: pl_l3, align: LEFT_MID, x: 56, width: 210, height: 26, long_mode: DOT, text_font: roboto_20, text: "Playlist 4"}
+              - button:
+                  id: pl_b4
+                  x: 312
+                  y: 122
+                  width: 280
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: playlist, value: 4}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 16, text_font: mdi_28, text: "${ic_playlist}"}
+                    - label: {id: pl_l4, align: LEFT_MID, x: 56, width: 210, height: 26, long_mode: DOT, text_font: roboto_20, text: "Playlist 5"}
+              - button:
+                  id: pl_b5
+                  x: 604
+                  y: 122
+                  width: 280
+                  height: 64
+                  on_click:
+                    - script.execute: {id: music_cmd, command: playlist, value: 5}
+                  widgets:
+                    - label: {align: LEFT_MID, x: 16, text_font: mdi_28, text: "${ic_playlist}"}
+                    - label: {id: pl_l5, align: LEFT_MID, x: 56, width: 210, height: 26, long_mode: DOT, text_font: roboto_20, text: "Playlist 6"}

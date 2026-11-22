@@ -1,0 +1,272 @@
+################################################################################
+# Home Assistant package for the hallway kiosk (Events, Travel, Music pages)
+#
+# Install:
+#   1. Copy this file to <config>/packages/kiosk.yaml
+#   2. In configuration.yaml:
+#        homeassistant:
+#          packages:
+#            kiosk: !include packages/kiosk.yaml
+#   3. Edit the three REPLACE_ME blocks below, then restart HA.
+#
+# What the panel reads (keep these names; the panel YAML depends on them):
+#   sensor.kiosk_agenda  attribute events     "when|time|title|where" rows, one per line
+#   sensor.kiosk_tfl     state = "HH:MM" of the last refresh
+#                        attribute lines       20 statuses joined by "|"
+#                        attribute disruptions one disruption per line
+#   sensor.kiosk_music   attributes title, artist, state, volume, speaker,
+#                        speakers, playlists
+#   script.kiosk_music   called by every Music button (command + value)
+################################################################################
+
+input_number:
+  kiosk_speaker:
+    name: Kiosk speaker
+    min: 0
+    max: 3
+    step: 1
+    mode: box
+
+rest_command:
+  # TfL unified API. Works without a key at this rate (one call every 3 min).
+  # To add a key: append "?app_key=YOUR_KEY" to both URLs.
+  kiosk_tfl_status:
+    url: "https://api.tfl.gov.uk/Line/Mode/tube,elizabeth-line,dlr,overground,tram/Status"
+    method: GET
+    timeout: 20
+  kiosk_tfl_rail:
+    url: "https://api.tfl.gov.uk/Line/Mode/national-rail/Status"
+    method: GET
+    timeout: 20
+
+template:
+  ##############################################################################
+  # EVENTS: next six entries from your calendar(s)
+  ##############################################################################
+  - triggers:
+      - trigger: time_pattern
+        minutes: "/10"
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - action: calendar.get_events
+        target:
+          # REPLACE_ME: your Google Calendar entity, or several, e.g.
+          #   entity_id: [calendar.family, calendar.james_work]
+          entity_id: calendar.replace_me   # must stay lowercase
+        data:
+          duration:
+            days: 14
+        response_variable: agenda
+        continue_on_error: true
+    sensor:
+      - name: Kiosk agenda
+        unique_id: kiosk_agenda
+        icon: mdi:calendar-month
+        state: "{{ now().strftime('%H:%M') }}"
+        attributes:
+          events: >-
+            {%- set ns = namespace(ev=[], out=[]) -%}
+            {%- if agenda is defined and agenda is mapping -%}
+              {%- for cal in agenda.values() -%}
+                {%- set ns.ev = ns.ev + (cal.events | default([])) -%}
+              {%- endfor -%}
+            {%- endif -%}
+            {%- for e in ns.ev | sort(attribute='start') -%}
+              {%- if loop.index <= 6 -%}
+                {%- set allday = 'T' not in (e.start | string) -%}
+                {%- set start = as_datetime(e.start) if allday else as_local(as_datetime(e.start)) -%}
+                {%- set d = start.date() -%}
+                {%- set today = now().date() -%}
+                {%- if d == today -%}{%- set when = 'Today' -%}
+                {%- elif (d - today).days == 1 -%}{%- set when = 'Tomorrow' -%}
+                {%- else -%}{%- set when = start.strftime('%a ') ~ start.day -%}
+                {%- endif -%}
+                {%- set t = 'All day' if allday else start.strftime('%H:%M') -%}
+                {%- set title = (e.summary | default('Busy')) | replace('|', '/') | replace('\n', ' ') -%}
+                {%- set where = (e.location | default('')) | replace('|', '/') | replace('\n', ', ') -%}
+                {%- set ns.out = ns.out + [when ~ '|' ~ t ~ '|' ~ title ~ '|' ~ where] -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ ns.out | join('\n') }}
+
+  ##############################################################################
+  # TRAVEL: TfL line status + other major disruptions (national rail operators)
+  ##############################################################################
+  - triggers:
+      - trigger: time_pattern
+        minutes: "/3"
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+    actions:
+      - action: rest_command.kiosk_tfl_status
+        response_variable: tfl
+        continue_on_error: true
+      - action: rest_command.kiosk_tfl_rail
+        response_variable: rail
+        continue_on_error: true
+    sensor:
+      - name: Kiosk TfL
+        unique_id: kiosk_tfl
+        icon: mdi:subway-variant
+        state: "{{ now().strftime('%H:%M') }}"
+        attributes:
+          # Same order as the panel grid. Do not reorder without changing the panel.
+          lines: >-
+            {%- set order = ['bakerloo','central','circle','district','hammersmith-city','jubilee',
+                             'metropolitan','northern','piccadilly','victoria','waterloo-city','elizabeth',
+                             'dlr','liberty','lioness','mildmay','suffragette','weaver','windrush','tram'] -%}
+            {%- set data = tfl.content if tfl is defined and tfl.status == 200 and tfl.content is list else [] -%}
+            {%- set ns = namespace(out=[]) -%}
+            {%- for lid in order -%}
+              {%- set line = data | selectattr('id', 'eq', lid) | first | default(none) -%}
+              {%- if line and line.lineStatuses -%}
+                {%- set worst = line.lineStatuses | sort(attribute='statusSeverity') | first -%}
+                {%- set ns.out = ns.out + [worst.statusSeverityDescription] -%}
+              {%- else -%}
+                {%- set ns.out = ns.out + ['unknown'] -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ ns.out | join('|') }}
+          disruptions: >-
+            {%- set data = tfl.content if tfl is defined and tfl.status == 200 and tfl.content is list else [] -%}
+            {%- set rdata = rail.content if rail is defined and rail.status == 200 and rail.content is list else [] -%}
+            {%- set ns = namespace(out=[]) -%}
+            {%- for line in data -%}
+              {%- for st in line.lineStatuses | default([]) if st.statusSeverity != 10 and st.reason -%}
+                {%- set r = st.reason | regex_replace('^[^:]{1,40}:\\s*', '') | truncate(150) -%}
+                {%- set item = line.name ~ ': ' ~ r -%}
+                {%- if item not in ns.out -%}{%- set ns.out = ns.out + [item] -%}{%- endif -%}
+              {%- endfor -%}
+            {%- endfor -%}
+            {%- for op in rdata -%}
+              {%- for st in op.lineStatuses | default([]) if st.statusSeverity not in [10, 18, 19] -%}
+                {%- set ns.out = ns.out + ['Rail — ' ~ op.name ~ ': ' ~ st.statusSeverityDescription] -%}
+              {%- endfor -%}
+            {%- endfor -%}
+            {%- if not data -%}{%- set ns.out = ['TfL status unavailable.'] + ns.out -%}{%- endif -%}
+            {{ ns.out[:6] | join('\n') }}
+
+  ##############################################################################
+  # MUSIC: speakers and playlists the panel offers
+  #
+  # Recommended: Music Assistant. It exposes every Google, Nest and Alexa speaker
+  # as a media_player that plays "spotify:playlist:..." URIs directly.
+  # For "Everywhere", make a media_player group of the other speakers.
+  ##############################################################################
+  - variables:
+      # REPLACE_ME: up to 4 speakers, shown left-to-right, top-to-bottom.
+      speakers:
+        - {name: "Living room Hub", entity: media_player.living_room_hub}
+        - {name: "Kitchen Echo",    entity: media_player.kitchen_echo}
+        - {name: "Bedroom Echo",    entity: media_player.bedroom_echo}
+        - {name: "Everywhere",      entity: media_player.everywhere}
+      # REPLACE_ME: up to 6 playlists. Copy the URI from Spotify: Share > Copy link,
+      # then "open.spotify.com/playlist/ABC" becomes "spotify:playlist:ABC".
+      playlists:
+        - {name: "Sunday Morning", uri: "spotify:playlist:REPLACE_ME"}
+        - {name: "Focus Flow",     uri: "spotify:playlist:REPLACE_ME"}
+        - {name: "Dinner Jazz",    uri: "spotify:playlist:REPLACE_ME"}
+        - {name: "Kids' Favourites", uri: "spotify:playlist:REPLACE_ME"}
+        - {name: "Workout Mix",    uri: "spotify:playlist:REPLACE_ME"}
+        - {name: "Sleep",          uri: "spotify:playlist:REPLACE_ME"}
+    triggers:
+      # REPLACE_ME: same entities as `speakers` above, so the panel follows them.
+      - trigger: state
+        entity_id:
+          - media_player.living_room_hub
+          - media_player.kitchen_echo
+          - media_player.bedroom_echo
+          - media_player.everywhere
+          - input_number.kiosk_speaker
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: time_pattern
+        minutes: "/5"
+    sensor:
+      - name: Kiosk music
+        unique_id: kiosk_music
+        icon: mdi:music
+        state: >-
+          {%- set i = states('input_number.kiosk_speaker') | int(0) -%}
+          {{ speakers[i].name if i < speakers | count else 'none' }}
+        attributes:
+          speaker: "{{ states('input_number.kiosk_speaker') | int(0) }}"
+          speakers: "{{ speakers | map(attribute='name') | join('|') }}"
+          playlists: "{{ playlists | map(attribute='name') | join('|') }}"
+          speaker_entities: "{{ speakers | map(attribute='entity') | list }}"
+          playlist_uris: "{{ playlists | map(attribute='uri') | list }}"
+          state: >-
+            {%- set i = states('input_number.kiosk_speaker') | int(0) -%}
+            {{ states(speakers[i].entity) if i < speakers | count else 'unavailable' }}
+          title: >-
+            {%- set i = states('input_number.kiosk_speaker') | int(0) -%}
+            {{ (state_attr(speakers[i].entity, 'media_title') if i < speakers | count else '') or '' }}
+          artist: >-
+            {%- set i = states('input_number.kiosk_speaker') | int(0) -%}
+            {{ (state_attr(speakers[i].entity, 'media_artist') if i < speakers | count else '') or '' }}
+          volume: >-
+            {%- set i = states('input_number.kiosk_speaker') | int(0) -%}
+            {%- set v = state_attr(speakers[i].entity, 'volume_level') if i < speakers | count else none -%}
+            {{ (v * 100) | round(0) | int if v is number else none }}
+
+script:
+  kiosk_music:
+    alias: Kiosk music control
+    description: Called by the hallway kiosk Music page.
+    mode: queued
+    fields:
+      command:
+        description: speaker | playlist | play_pause | next | previous | volume
+      value:
+        description: index (speaker, playlist) or 0-100 (volume)
+    variables:
+      n: "{{ value | int(0) }}"
+      ents: "{{ state_attr('sensor.kiosk_music', 'speaker_entities') or [] }}"
+      uris: "{{ state_attr('sensor.kiosk_music', 'playlist_uris') or [] }}"
+      i: "{{ states('input_number.kiosk_speaker') | int(0) }}"
+      target: "{{ ents[i] if i < ents | count else '' }}"
+    sequence:
+      - choose:
+          - conditions: "{{ command == 'speaker' }}"
+            sequence:
+              - action: input_number.set_value
+                target: {entity_id: input_number.kiosk_speaker}
+                data: {value: "{{ n }}"}
+          - conditions: "{{ target == '' }}"
+            sequence:
+              - stop: "No speaker configured for the kiosk"
+          - conditions: "{{ command == 'playlist' and n < uris | count }}"
+            sequence:
+              # Music Assistant / any player that accepts Spotify URIs.
+              # Spotify integration instead: media_player.select_source on the
+              # spotify entity (source = speaker name), then play_media on it.
+              - action: media_player.play_media
+                target: {entity_id: "{{ target }}"}
+                data:
+                  media_content_id: "{{ uris[n] }}"
+                  media_content_type: playlist
+          - conditions: "{{ command == 'play_pause' }}"
+            sequence:
+              - action: media_player.media_play_pause
+                target: {entity_id: "{{ target }}"}
+          - conditions: "{{ command == 'next' }}"
+            sequence:
+              - action: media_player.media_next_track
+                target: {entity_id: "{{ target }}"}
+          - conditions: "{{ command == 'previous' }}"
+            sequence:
+              - action: media_player.media_previous_track
+                target: {entity_id: "{{ target }}"}
+          - conditions: "{{ command == 'volume' }}"
+            sequence:
+              - action: media_player.volume_set
+                target: {entity_id: "{{ target }}"}
+                data:
+                  volume_level: "{{ [[n, 0] | max, 100] | min / 100 }}"
