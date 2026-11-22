@@ -63,9 +63,13 @@ sensor:
           text: !lambda 'return std::isnan(x) ? std::string("--°") : str_sprintf("%.0f°", x);'
 
   # ---- Heating ----
+  # Read straight from the climate entity (standard attributes on every HA
+  # climate integration, Hive included). A missing value arrives as NaN: the
+  # labels show "--.-°" and +/- start from the room temperature instead.
   - platform: homeassistant
     id: thermostat_target_temp
-    entity_id: sensor.thermostat_target_temperature
+    entity_id: climate.thermostat
+    attribute: temperature
     on_value:
       # Ignore HA echoes while the user is still tapping +/-.
       - if:
@@ -79,7 +83,8 @@ sensor:
             - script.execute: hvac_show_target
   - platform: homeassistant
     id: thermostat_current_temp
-    entity_id: sensor.thermostat_current_temperature
+    entity_id: climate.thermostat
+    attribute: current_temperature
     on_value:
       - lvgl.label.update:
           id: [lbl_current_temp, lbl_current_ring]

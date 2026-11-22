@@ -161,16 +161,25 @@ script:
     then:
       - lvgl.label.update:
           id: [lbl_target_temp, lbl_target_ring]
-          text: !lambda 'return str_sprintf("%.1f°", id(target_temp_val));'
+          text: !lambda |-
+            float t = id(target_temp_val);
+            return std::isnan(t) ? std::string("--.-°") : str_sprintf("%.1f°", t);
       - lvgl.arc.update:
           id: heat_ring
-          value: !lambda 'return id(target_temp_val) * 10.0f;'
+          value: !lambda |-
+            float t = id(target_temp_val);
+            return std::isnan(t) ? 100.0f : t * 10.0f;
   - id: hvac_nudge
     parameters:
       delta: float
     then:
       - lambda: |-
-          float t = id(target_temp_val) + delta;
+          // No target from HA yet: start from the room temperature, else 20.
+          float base = id(target_temp_val);
+          if (std::isnan(base)) base = id(thermostat_current_temp).state;
+          if (std::isnan(base)) base = 20.0f;
+          base = roundf(base * 2.0f) / 2.0f;
+          float t = base + delta;
           if (t < 5.0f) t = 5.0f;
           if (t > 30.0f) t = 30.0f;
           id(target_temp_val) = t;
